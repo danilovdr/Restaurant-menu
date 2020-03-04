@@ -6,7 +6,7 @@ namespace Restaurant_menu.Models
     {
         public int Id { get; set; }
         public List<Dish> Dishes { get; set; }
-        public List<Ingredients> Ingredients { get; set; }
+        public List<Ingredient> Ingredients { get; set; }
         public double Gram { get; set; }
     }
 }
