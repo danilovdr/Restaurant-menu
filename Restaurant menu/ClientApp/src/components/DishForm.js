@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Container, Row, Col, Alert, Label, Input, Button } from 'reactstrap';
+import { Container, Row, Col, Form, Alert, Label, Input, Button, FormGroup } from 'reactstrap';
 
 class DishForm extends Component {
     constructor(props) {
@@ -11,20 +11,20 @@ class DishForm extends Component {
             description: "",
             cost: "",
             weight: "",
-            colories100gram: "",
-            coockingTimeMinutes: "",
+            calories: "",
+            coockingTime: "",
             successDisplay: "none",
             successText: "",
             errorDisplay: "none",
             errorText: ""
         }
 
-        this.addDish = this.addDish.bind(this);
+        this.onFormSubmit = this.onFormSubmit.bind(this);
         this.setName = this.setName.bind(this);
         this.setDescription = this.setDescription.bind(this);
         this.setCost = this.setCost.bind(this);
         this.setWeight = this.setWeight.bind(this);
-        this.setColories = this.setColories.bind(this);
+        this.setCalories = this.setCalories.bind(this);
         this.setCoockingTime = this.setCoockingTime.bind(this);
         this.showSuccess = this.showSuccess.bind(this);
         this.hideSuccess = this.hideSuccess.bind(this);
@@ -34,64 +34,73 @@ class DishForm extends Component {
 
     render() {
         return (
-            <Container className="mt-3 pt-2 pb-2 border" style={this.props}>
-                <Row style={{ display: this.state.successDisplay }} >
-                    <Col>
-                        <Alert color="success">{this.state.successText}</Alert>
-                    </Col>
-                </Row>
-                <Row style={{ display: this.state.errorDisplay }} >
-                    <Col>
-                        <Alert color="danger">{this.state.errorText}</Alert>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Label for="exampleEmail">Name</Label>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" onInput={e => this.setName(e.target.value)} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Label for="exampleEmail">Description</Label>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" onInput={e => this.setDescription(e.target.value)} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Label for="exampleEmail">Cost</Label>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" onInput={e => this.setCost(e.target.value)} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Label for="exampleEmail">Weight</Label>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" onInput={e => this.setWeight(e.target.value)} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Label for="exampleEmail">Colories per 100 gram</Label>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" onInput={e => this.setColories(e.target.value)} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Label for="exampleEmail">Coocking time in minutes</Label>
-                        <Input type="email" name="email" id="exampleEmail" placeholder="with a placeholder" onInput={e => this.setCoockingTime(e.target.value)} />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col>
-                        <Button size="md" color="primary" onClick={this.addDish} > Добавить</Button>
-                    </Col>
-                </Row>
-            </Container >
+            <Form >
+                <FormGroup>
+                    <Label for="name">Name</Label>
+                    <Input
+                        type="text"
+                        name="name"
+                        id="name"
+                        placeholder="Dish name"
+                        value={this.state.name}
+                        onChange={this.setName} />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="description">Description</Label>
+                    <Input
+                        type="text"
+                        name="description"
+                        id="description"
+                        placeholder="Dish description (max 250 sym)"
+                        value={this.state.description}
+                        onChange={this.setDescription} />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="cost">Cost</Label>
+                    <Input
+                        type="number"
+                        name="cost"
+                        id="cost"
+                        placeholder="Dish cost"
+                        value={this.state.cost}
+                        onChange={this.setCost} />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="weight">Weight</Label>
+                    <Input
+                        type="number"
+                        name="weight"
+                        id="weight"
+                        placeholder="Dish weight (gram)"
+                        value={this.state.weight}
+                        onChange={this.setWeight} />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="calories">Calories</Label>
+                    <Input
+                        type="number"
+                        name="calories"
+                        id="calories"
+                        placeholder="Calories per 100 gram"
+                        value={this.state.calories}
+                        onChange={this.setCalories} />
+                </FormGroup>
+                <FormGroup>
+                    <Label for="coockingTime">Coocking time</Label>
+                    <Input
+                        type="number"
+                        name="coockingTime"
+                        id="coockingTime"
+                        placeholder="Coocking time in minutes"
+                        value={this.state.coockingTime}
+                        onChange={this.setCoockingTime} />
+                </FormGroup>
+                <Button type="button" onClick={this.onFormSubmit} > Submit</Button>
+            </Form>
         )
-
     }
 
-    async addDish() {
+    onFormSubmit() {
         this.hideSuccess();
         this.hideError();
 
@@ -100,13 +109,13 @@ class DishForm extends Component {
             Description: this.state.description,
             Cost: this.state.cost,
             Weight: this.state.weight,
-            Colories100gram: this.state.colories100gram,
-            CoockingTimeMinutes: this.state.coockingTimeMinutes
+            Colories: this.state.calories,
+            CoockingTime: this.state.coockingTime
         };
 
         console.log(dish);
 
-        await fetch('https://localhost:44334/dish/add', {
+        fetch('https://localhost:44334/dish/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -121,28 +130,28 @@ class DishForm extends Component {
         });
     }
 
-    setName(name) {
-        this.setState({ name: name });
+    setName(event) {
+        this.setState({ name: event.target.value });
     }
 
-    setDescription(description) {
-        this.setState({ description: description });
+    setDescription(event) {
+        this.setState({ description: event.target.value });
     }
 
-    setCost(cost) {
-        this.setState({ cost: cost });
+    setCost(event) {
+        this.setState({ cost: event.target.value });
     }
 
-    setWeight(weight) {
-        this.setState({ weight: weight });
+    setWeight(event) {
+        this.setState({ weight: event.target.value });
     }
 
-    setColories(colories) {
-        this.setState({ colories100gram: colories });
+    setCalories(event) {
+        this.setState({ calories: event.target.value });
     }
 
-    setCoockingTime(coockingTime) {
-        this.setState({ coockingTimeMinutes: coockingTime });
+    setCoockingTime(event) {
+        this.setState({ coockingTime: event.target.value });
     }
 
     showSuccess(successText) {

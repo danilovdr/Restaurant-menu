@@ -12,7 +12,7 @@ namespace Restaurant_menu.Models
         public string Description { get; set; }
         public int Cost { get; set; }
         public int Weight { get; set; }
-        public int Calories100Gram { get; set; }
-        public int CoockingTimeMinutes { get; set; }
+        public int Calories { get; set; }
+        public int CoockingTime { get; set; }
     }
 }

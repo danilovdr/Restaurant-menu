@@ -15,7 +15,7 @@ namespace Restaurant_menu.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Dish dish)
+        public IActionResult Add([FromBody] Dish dish)
         {
             return Ok();
         }
