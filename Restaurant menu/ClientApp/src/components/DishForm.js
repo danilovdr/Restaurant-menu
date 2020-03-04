@@ -34,69 +34,97 @@ class DishForm extends Component {
 
     render() {
         return (
-            <Form >
-                <FormGroup>
-                    <Label for="name">Name</Label>
-                    <Input
-                        type="text"
-                        name="name"
-                        id="name"
-                        placeholder="Dish name"
-                        value={this.state.name}
-                        onChange={this.setName} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="description">Description</Label>
-                    <Input
-                        type="text"
-                        name="description"
-                        id="description"
-                        placeholder="Dish description (max 250 sym)"
-                        value={this.state.description}
-                        onChange={this.setDescription} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="cost">Cost</Label>
-                    <Input
-                        type="number"
-                        name="cost"
-                        id="cost"
-                        placeholder="Dish cost"
-                        value={this.state.cost}
-                        onChange={this.setCost} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="weight">Weight</Label>
-                    <Input
-                        type="number"
-                        name="weight"
-                        id="weight"
-                        placeholder="Dish weight (gram)"
-                        value={this.state.weight}
-                        onChange={this.setWeight} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="calories">Calories</Label>
-                    <Input
-                        type="number"
-                        name="calories"
-                        id="calories"
-                        placeholder="Calories per 100 gram"
-                        value={this.state.calories}
-                        onChange={this.setCalories} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="coockingTime">Coocking time</Label>
-                    <Input
-                        type="number"
-                        name="coockingTime"
-                        id="coockingTime"
-                        placeholder="Coocking time in minutes"
-                        value={this.state.coockingTime}
-                        onChange={this.setCoockingTime} />
-                </FormGroup>
-                <Button type="button" onClick={this.onFormSubmit} > Submit</Button>
-            </Form>
+            <Container className="border" style={{ display: this.props.display }} >
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <Label for="name">Name</Label>
+                            <Input
+                                type="text"
+                                name="name"
+                                id="name"
+                                placeholder="Dish name"
+                                value={this.state.name}
+                                onChange={this.setName} />
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <Label for="description">Description</Label>
+                            <Input
+                                type="text"
+                                name="description"
+                                id="description"
+                                placeholder="Dish description (max 250 sym)"
+                                value={this.state.description}
+                                onChange={this.setDescription} />
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <Label for="cost">Cost</Label>
+                            <Input
+                                type="number"
+                                name="cost"
+                                id="cost"
+                                placeholder="Dish cost"
+                                value={this.state.cost}
+                                onChange={this.setCost} />
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <Label for="weight">Weight</Label>
+                            <Input
+                                type="number"
+                                name="weight"
+                                id="weight"
+                                placeholder="Dish weight (gram)"
+                                value={this.state.weight}
+                                onChange={this.setWeight} />
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <Label for="calories">Calories</Label>
+                            <Input
+                                type="number"
+                                name="calories"
+                                id="calories"
+                                placeholder="Calories per 100 gram"
+                                value={this.state.calories}
+                                onChange={this.setCalories} />
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <FormGroup>
+                            <Label for="coockingTime">Coocking time</Label>
+                            <Input
+                                type="number"
+                                name="coockingTime"
+                                id="coockingTime"
+                                placeholder="Coocking time in minutes"
+                                value={this.state.coockingTime}
+                                onChange={this.setCoockingTime} />
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Button type="button" onClick={this.onFormSubmit}>Add dish</Button>
+                    </Col>
+                </Row>
+            </Container >
         )
     }
 
@@ -109,16 +137,16 @@ class DishForm extends Component {
             Description: this.state.description,
             Cost: this.state.cost,
             Weight: this.state.weight,
-            Colories: this.state.calories,
+            Calories: this.state.calories,
             CoockingTime: this.state.coockingTime
         };
 
-        console.log(dish);
+        console.log(JSON.stringify(dish));
 
         fetch('https://localhost:44334/dish/add', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(dish)
         }).then(responce => {
