@@ -135,27 +135,21 @@ class DishForm extends Component {
         let dish = {
             Name: this.state.name,
             Description: this.state.description,
-            Cost: this.state.cost,
-            Weight: this.state.weight,
-            Calories: this.state.calories,
-            CoockingTime: this.state.coockingTime
+            Cost: parseInt(this.state.cost),
+            Weight: parseInt(this.state.weight),
+            Calories: parseInt(this.state.calories),
+            CoockingTime: parseInt(this.state.coockingTime)
         };
 
         console.log(JSON.stringify(dish));
 
-        fetch('https://localhost:44334/dish/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dish)
-        }).then(responce => {
-            if (responce.ok) {
-                this.showSuccess("Запрос отправлен успешно");
-            } else {
-                this.showError("Error: " + responce.status);
-            }
-        });
+        let url = "https://localhost:44334/dish/add";
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+        xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+
+        xhr.send(JSON.stringify(dish));
     }
 
     setName(event) {

@@ -23,7 +23,6 @@ namespace Restaurant_menu
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connection));
-
             services.AddControllers();
 
             services.AddSpaStaticFiles(configuration =>
