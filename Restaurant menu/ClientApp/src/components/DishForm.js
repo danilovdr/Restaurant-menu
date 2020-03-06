@@ -143,7 +143,7 @@ class DishForm extends Component {
 
         console.log(JSON.stringify(dish));
 
-        let url = "https://localhost:44334/dish/add";
+        let url = "https://localhost:44334/api/dish/";
 
         let xhr = new XMLHttpRequest();
         xhr.open("POST", url);

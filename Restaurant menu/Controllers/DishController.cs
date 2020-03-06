@@ -4,8 +4,10 @@ using Restaurant_menu.Models;
 using System;
 using System.Linq;
 
-namespace Restaurant_menu.Controllers
+namespace Restaurant_menu.ControllerBase
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class DishController : Controller
     {
         private ApplicationDbContext _dbContext;
@@ -15,8 +17,8 @@ namespace Restaurant_menu.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpPut]
-        public IActionResult Index([FromBody] Dish dish)
+        [HttpPost]
+        public IActionResult Post([FromBody] Dish dish)
         {
             dish.Adding = DateTime.Now;
 
@@ -30,7 +32,7 @@ namespace Restaurant_menu.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Index([FromBody] Dish dish)
+        public IActionResult Delete([FromBody] Dish dish)
         {
             Dish deleteDish = _dbContext.Dishes.FirstOrDefault(p => p.Name == dish.Name &&
             p.Description == dish.Description && p.Cost == dish.Cost && p.Weight == dish.Weight &&
