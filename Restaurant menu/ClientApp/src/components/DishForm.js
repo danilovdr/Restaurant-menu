@@ -1,6 +1,6 @@
 ﻿import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Container, Row, Col, Form, Alert, Label, Input, Button, FormGroup } from 'reactstrap';
+import { Container, Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
 
 class DishForm extends Component {
     constructor(props) {
@@ -34,7 +34,7 @@ class DishForm extends Component {
 
     render() {
         return (
-            <Container className="border" style={{ display: this.props.display }} >
+            <div className="border mt-3 p-3" style={{ display: this.props.display }} >
                 <Row>
                     <Col>
                         <FormGroup>
@@ -121,10 +121,10 @@ class DishForm extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <Button type="button" onClick={this.onFormSubmit}>Add dish</Button>
+                        <Button type="button" color="success" onClick={this.onFormSubmit}>Add dish</Button>
                     </Col>
                 </Row>
-            </Container >
+            </div >
         )
     }
 
@@ -141,15 +141,15 @@ class DishForm extends Component {
             CoockingTime: parseInt(this.state.coockingTime)
         };
 
-        console.log(JSON.stringify(dish));
-
         let url = "https://localhost:44334/api/dish/";
 
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", url);
-        xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-
-        xhr.send(JSON.stringify(dish));
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dish)
+        });
     }
 
     setName(event) {

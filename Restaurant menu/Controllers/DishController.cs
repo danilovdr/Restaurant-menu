@@ -2,6 +2,7 @@
 using Restaurant_menu.Data;
 using Restaurant_menu.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Restaurant_menu.ControllerBase
@@ -17,33 +18,50 @@ namespace Restaurant_menu.ControllerBase
             _dbContext = dbContext;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            List<Dish> dishes = _dbContext.Dishes.ToList();
+            return Json(dishes);
+        }
+
         [HttpPost]
-        public IActionResult Post([FromBody] Dish dish)
+        public IActionResult Create([FromBody] Dish dish)
         {
             dish.Adding = DateTime.Now;
+            _dbContext.Dishes.Add(dish);
+            _dbContext.SaveChanges();
+            return Ok();
+        }
 
-            if (_dbContext.Dishes.FirstOrDefault(p => p.Name == dish.Name) == null)
+        [HttpPut]
+        public IActionResult Update([FromBody] Dish dish)
+        {
+            Dish changedDish = _dbContext.Dishes.FirstOrDefault(p => p.Id == dish.Id);
+
+            if (changedDish == null)
             {
-                _dbContext.Dishes.Add(dish);
+                return NotFound();
+            }
+            else
+            {
+                _dbContext.Update(dish);
                 return Ok();
             }
-
-            return null;
         }
 
         [HttpDelete]
-        public IActionResult Delete([FromBody] Dish dish)
+        public IActionResult Delete(long id)
         {
-            Dish deleteDish = _dbContext.Dishes.FirstOrDefault(p => p.Name == dish.Name &&
-            p.Description == dish.Description && p.Cost == dish.Cost && p.Weight == dish.Weight &&
-            p.Calories == dish.Calories);
+            Dish deleteDish = _dbContext.Dishes.FirstOrDefault(p => p.Id == id);
 
-            if (deleteDish != null) { 
+            if (deleteDish != null)
+            {
                 _dbContext.Dishes.Remove(deleteDish);
                 return Ok();
             }
 
-            return null;
+            return NotFound();
         }
     }
 }

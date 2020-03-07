@@ -12,7 +12,6 @@ namespace Restaurant_menu.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions)
             :base(dbContextOptions)
         {
-            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
     }
