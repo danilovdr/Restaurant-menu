@@ -1,208 +1,89 @@
-﻿import React, { Component } from 'react';
+﻿import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Container, Row, Col, Label, Input, Button, FormGroup } from 'reactstrap';
+import { Collapse, Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
-class DishForm extends Component {
-    constructor(props) {
-        super(props);
+function DishForm() {
+    const [isOpen, setIsOpen] = useState(false);
+    const [name, setName] = useState("");
+    const [description, setDescriotion] = useState("");
+    const [cost, setCost] = useState(-1);
+    const [weight, setWeight] = useState(-1);
+    const [calories, setCalories] = useState(-1);
+    const [coockingTime, setCoockingTime] = useState(-1);
 
-        this.state = {
-            name: "",
-            description: "",
-            cost: "",
-            weight: "",
-            calories: "",
-            coockingTime: "",
-            successDisplay: "none",
-            successText: "",
-            errorDisplay: "none",
-            errorText: ""
+    const cardStyle = {
+        width: "1000px",
+    }
+
+    const buttonStyle = {
+        width: "200px",
+    }
+
+    const toggleStyle = {
+        width: "200px",
+        marginBottom: "1rem"
+    };
+
+    const toggle = () => setIsOpen(!isOpen);
+
+    const sendData = () => {
+        console.log("send data post");
+        let data = {
+            Name: name,
+            Description: description,
+            Cost: parseInt(cost),
+            Weight: parseInt(weight),
+            Calories: parseInt(calories),
+            CoockingTime: parseInt(coockingTime)
         }
 
-        this.onFormSubmit = this.onFormSubmit.bind(this);
-        this.setName = this.setName.bind(this);
-        this.setDescription = this.setDescription.bind(this);
-        this.setCost = this.setCost.bind(this);
-        this.setWeight = this.setWeight.bind(this);
-        this.setCalories = this.setCalories.bind(this);
-        this.setCoockingTime = this.setCoockingTime.bind(this);
-        this.showSuccess = this.showSuccess.bind(this);
-        this.hideSuccess = this.hideSuccess.bind(this);
-        this.showError = this.showError.bind(this);
-        this.hideError = this.hideError.bind(this);
-    }
-
-    render() {
-        return (
-            <div className="border mt-3 p-3" style={{ display: this.props.display }} >
-                <Row>
-                    <Col>
-                        <FormGroup>
-                            <Label for="name">Name</Label>
-                            <Input
-                                type="text"
-                                name="name"
-                                id="name"
-                                placeholder="Dish name"
-                                value={this.state.name}
-                                onChange={this.setName} />
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <FormGroup>
-                            <Label for="description">Description</Label>
-                            <Input
-                                type="text"
-                                name="description"
-                                id="description"
-                                placeholder="Dish description (max 250 sym)"
-                                value={this.state.description}
-                                onChange={this.setDescription} />
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <FormGroup>
-                            <Label for="cost">Cost</Label>
-                            <Input
-                                type="number"
-                                name="cost"
-                                id="cost"
-                                placeholder="Dish cost"
-                                value={this.state.cost}
-                                onChange={this.setCost} />
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <FormGroup>
-                            <Label for="weight">Weight</Label>
-                            <Input
-                                type="number"
-                                name="weight"
-                                id="weight"
-                                placeholder="Dish weight (gram)"
-                                value={this.state.weight}
-                                onChange={this.setWeight} />
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <FormGroup>
-                            <Label for="calories">Calories</Label>
-                            <Input
-                                type="number"
-                                name="calories"
-                                id="calories"
-                                placeholder="Calories per 100 gram"
-                                value={this.state.calories}
-                                onChange={this.setCalories} />
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <FormGroup>
-                            <Label for="coockingTime">Coocking time</Label>
-                            <Input
-                                type="number"
-                                name="coockingTime"
-                                id="coockingTime"
-                                placeholder="Coocking time in minutes"
-                                value={this.state.coockingTime}
-                                onChange={this.setCoockingTime} />
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Button type="button" color="success" onClick={this.onFormSubmit}>Add dish</Button>
-                    </Col>
-                </Row>
-            </div >
-        )
-    }
-
-    onFormSubmit() {
-        this.hideSuccess();
-        this.hideError();
-
-        let dish = {
-            Name: this.state.name,
-            Description: this.state.description,
-            Cost: parseInt(this.state.cost),
-            Weight: parseInt(this.state.weight),
-            Calories: parseInt(this.state.calories),
-            CoockingTime: parseInt(this.state.coockingTime)
-        };
-
-        let url = "https://localhost:44334/api/dish/";
+        let url = "https://localhost:44334/api/dish";
 
         fetch(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json;charset=utf-8"
             },
-            body: JSON.stringify(dish)
+            body: JSON.stringify(data)
         });
-    }
+    };
 
-    setName(event) {
-        this.setState({ name: event.target.value });
-    }
-
-    setDescription(event) {
-        this.setState({ description: event.target.value });
-    }
-
-    setCost(event) {
-        this.setState({ cost: event.target.value });
-    }
-
-    setWeight(event) {
-        this.setState({ weight: event.target.value });
-    }
-
-    setCalories(event) {
-        this.setState({ calories: event.target.value });
-    }
-
-    setCoockingTime(event) {
-        this.setState({ coockingTime: event.target.value });
-    }
-
-    showSuccess(successText) {
-        this.setState({
-            successDisplay: "block",
-            successText: successText
-        });
-    }
-
-    hideSuccess() {
-        this.setState({
-            successDisplay: "none",
-            successText: ""
-        });
-    }
-
-    showError(errorText) {
-        this.setState({
-            errorDisplay: "block",
-            errorText: errorText
-        });
-    }
-
-    hideError() {
-        this.setState({
-            errorDisplay: "none",
-            errorText: ""
-        });
-    }
+    return (
+        <Card>
+            <CardBody style={cardStyle} >
+                <Button color="primary" onClick={toggle} style={toggleStyle}>Create dish</Button>
+                <Collapse isOpen={isOpen} >
+                    <FormGroup>
+                        <Label for="nameForm">Name</Label>
+                        <Input type="text" id="nameForm" placeholder="Name" onChange={event => setName(event.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="descriptionForm">Description</Label>
+                        <Input type="textarea" id="descriptionForm" placeholder="Description" onChange={event => setDescriotion(event.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="costForm">Cost</Label>
+                        <Input type="number" id="costForm" placeholder="Cost" onChange={event => setCost(event.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="weightForm">Weight</Label>
+                        <Input type="number" id="weightForm" placeholder="Weight" onChange={event => setWeight(event.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="caloriesForm">Calories</Label>
+                        <Input type="number" id="caloriesForm" placeholder="Calories" onChange={event => setCalories(event.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="coockingTimeForm">Coocking time</Label>
+                        <Input type="number" id="coockingTimeForm" placeholder="Coocking time" onChange={event => setCoockingTime(event.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Button color="success" style={buttonStyle} onClick={sendData} > Create</Button>
+                    </FormGroup>
+                </Collapse>
+            </CardBody>
+        </Card>
+    )
 }
 
 export default DishForm;

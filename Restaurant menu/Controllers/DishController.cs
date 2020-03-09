@@ -37,27 +37,20 @@ namespace Restaurant_menu.ControllerBase
         [HttpPut]
         public IActionResult Update([FromBody] Dish dish)
         {
-            Dish changedDish = _dbContext.Dishes.FirstOrDefault(p => p.Id == dish.Id);
-
-            if (changedDish == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                _dbContext.Update(dish);
-                return Ok();
-            }
+            _dbContext.Update(dish);
+            _dbContext.SaveChanges();
+            return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Delete(long id)
+        public IActionResult Delete([FromBody] long id)
         {
             Dish deleteDish = _dbContext.Dishes.FirstOrDefault(p => p.Id == id);
 
             if (deleteDish != null)
             {
                 _dbContext.Dishes.Remove(deleteDish);
+                _dbContext.SaveChanges();
                 return Ok();
             }
 
