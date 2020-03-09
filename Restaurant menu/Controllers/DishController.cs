@@ -25,6 +25,7 @@ namespace Restaurant_menu.ControllerBase
             return Json(dishes);
         }
 
+        //TODO Post используется для обновления данных
         [HttpPost]
         public IActionResult Create([FromBody] Dish dish)
         {
@@ -34,6 +35,7 @@ namespace Restaurant_menu.ControllerBase
             return Ok();
         }
 
+        //TODO Put используется для создания данных
         [HttpPut]
         public IActionResult Update([FromBody] Dish dish)
         {
