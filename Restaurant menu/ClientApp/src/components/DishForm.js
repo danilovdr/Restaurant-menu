@@ -40,7 +40,7 @@ function DishForm() {
         let url = "https://localhost:44334/api/dish";
 
         fetch(url, {
-            method: "POST",
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },

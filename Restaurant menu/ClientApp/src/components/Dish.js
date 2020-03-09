@@ -74,7 +74,7 @@ function Dish(props) {
 
         let url = "https://localhost:44334/api/dish";
         fetch(url, {
-            method: "PUT",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },
