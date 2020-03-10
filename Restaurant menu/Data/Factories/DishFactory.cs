@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Restaurant_menu.Data.Interfaces.Factories;
+﻿using Restaurant_menu.Data.Interfaces.Factories;
 using Restaurant_menu.Models;
 using System;
 using System.Collections.Generic;
@@ -8,13 +7,9 @@ namespace Restaurant_menu.Data.Factories
 {
     public class DishFactory : IDishFactory
     {
-        public DishFactory()
+        public Dish CreateDish(string name, string description, int cost, int weight, int calories, int coockingTime)
         {
-        }
-
-        public Dish CreateDish(string name, string description, int cost, int weight, int calories, int coockingTime, Ingredient[] ingredients)
-        {
-            Dish dish = CreateDish(0, name, description, cost, weight, calories, coockingTime, ingredients);
+            Dish dish = CreateDish(0, name, description, cost, weight, calories, coockingTime, null);
             return dish;
         }
 
@@ -40,7 +35,11 @@ namespace Restaurant_menu.Data.Factories
             };
 
             createdDish.Ingredients = new List<Ingredient>();
-            createdDish.Ingredients.AddRange(ingredients);
+
+            if (ingredients != null)
+            {
+                createdDish.Ingredients.AddRange(ingredients);
+            }
 
             return createdDish;
         }

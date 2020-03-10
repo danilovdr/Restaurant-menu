@@ -31,17 +31,18 @@ namespace Restaurant_menu.Data.Services
 
         public void Create(Dish dish)
         {
-            Ingredient[] ingredients = _ingredientsFactory.GetIngredients(dish);
-            _dbContext.Ingredients.AddRange(ingredients);
-
             Dish createdDish = _dishFactory.CreateDish(
                 dish.Name,
                 dish.Description,
                 dish.Cost,
                 dish.Weight,
                 dish.Calories,
-                dish.CoockingTime,
-                ingredients);
+                dish.CoockingTime);
+
+            Ingredient[] ingredients = _ingredientsFactory.GetIngredients(createdDish);
+            createdDish.Ingredients.AddRange(ingredients);
+
+            _dbContext.Ingredients.AddRange(ingredients);
             _dbContext.Dishes.Add(createdDish);
             _dbContext.SaveChanges();
         }

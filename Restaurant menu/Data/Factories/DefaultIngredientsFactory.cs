@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Restaurant_menu.Data.Interfaces.Contexts;
-using Restaurant_menu.Data.Interfaces.Factories;
+﻿using Restaurant_menu.Data.Interfaces.Factories;
 using Restaurant_menu.Models;
 
 namespace Restaurant_menu.Data.Factories

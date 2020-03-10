@@ -27,16 +27,25 @@ const App = () => {
     const [dishes, setDishes] = useState(getDishes());
 
     const createDish = (dish) => {
-        fetch(url, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            },
-            body: JSON.stringify(dish)
-        });
+        let xhr = new XMLHttpRequest();
+        xhr.open("PUT", url, false);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify(dish));
 
-        dishes.push(dish);
-        setDishes(dishes);
+        let newDishes = getDishes();
+        setDishes(newDishes);
+
+        //fetch(url, {
+        //    method: "PUT",
+        //    headers: {
+        //        "Content-Type": "application/json;charset=utf-8"
+        //    },
+        //    body: JSON.stringify(dish)
+        //}).then(resp => {
+        //    let newDishes = getDishes();
+        //    console.log(newDishes);
+        //    setDishes(newDishes);
+        //});
     }
 
     const deleteDish = (id) => {
