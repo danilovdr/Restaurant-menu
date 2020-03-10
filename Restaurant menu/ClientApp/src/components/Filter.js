@@ -1,22 +1,12 @@
 ﻿import 'bootstrap/dist/css/bootstrap.css';
 import React, { useState } from 'react';
-import { Card, CardBody, FormGroup, Label, Input } from 'reactstrap';
+import { Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
 const Filter = () => {
     const cardStyle = {
-        width: "300px",
+        width: "250px",
         alignSelf: "flex-start"
-    }
-
-    const halfInputContainer = {
-        display: "flex",
-        justifyContent: "space-between"
-    }
-
-    const halfInput = {
-        display: "inline",
-        width: "45%"
-    }
+    };
 
     return (
         <Card className="mr-3" style={cardStyle} >
@@ -28,34 +18,37 @@ const Filter = () => {
                 </FormGroup>
                 <FormGroup>
                     <Label>Cost</Label>
-                    <div style={halfInputContainer} >
-                        <Input type="text" placeholder="min" style={halfInput} />
-                        <Input type="text" placeholder="max" style={halfInput} />
+                    <div className="d-flex justify-content-around">
+                        <Input className="w-50 mr-3" type="text" placeholder="min"/>
+                        <Input className="w-50" type="text" placeholder="max" />
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <Label>Weight</Label>
-                    <div style={halfInputContainer} >
-                        <Input type="text" placeholder="min" style={halfInput} />
-                        <Input type="text" placeholder="max" style={halfInput} />
+                    <div className="d-flex justify-content-around">
+                        <Input className="w-50 mr-3" type="text" placeholder="min" />
+                        <Input className="w-50" type="text" placeholder="max" />
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <Label>Calories</Label>
-                    <div style={halfInputContainer} >
-                        <Input type="text" placeholder="min" style={halfInput} />
-                        <Input type="text" placeholder="max" style={halfInput} />
+                    <div className="d-flex justify-content-around">
+                        <Input className="w-50 mr-3" type="text" placeholder="min" />
+                        <Input className="w-50" type="text" placeholder="max" />
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <Label>Coocking time</Label>
-                    <div style={halfInputContainer} >
-                        <Input type="text" placeholder="min" style={halfInput} />
-                        <Input type="text" placeholder="max" style={halfInput} />
+                    <div className="d-flex justify-content-around">
+                        <Input className="w-50 mr-3" type="text" placeholder="min" />
+                        <Input className="w-50" type="text" placeholder="max"/>
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    
+                    <Button className="w-100" color="primary"> Filter</Button>
+                </FormGroup>
+                <FormGroup>
+                    <Button className="w-100" color="secondary"> Reset</Button>
                 </FormGroup>
             </CardBody>
         </Card>

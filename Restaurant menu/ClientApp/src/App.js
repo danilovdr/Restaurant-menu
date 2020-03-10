@@ -4,6 +4,7 @@ import { Container } from 'reactstrap';
 import Filter from './components/Filter';
 import DishForm from './components/DishForm';
 import Dish from './components/Dish';
+import SortPanel from './components/SortPanel';
 
 const App = () => {
     const url = "https://localhost:44334/api/dish/";
@@ -27,25 +28,16 @@ const App = () => {
     const [dishes, setDishes] = useState(getDishes());
 
     const createDish = (dish) => {
-        let xhr = new XMLHttpRequest();
-        xhr.open("PUT", url, false);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.send(JSON.stringify(dish));
-
-        let newDishes = getDishes();
-        setDishes(newDishes);
-
-        //fetch(url, {
-        //    method: "PUT",
-        //    headers: {
-        //        "Content-Type": "application/json;charset=utf-8"
-        //    },
-        //    body: JSON.stringify(dish)
-        //}).then(resp => {
-        //    let newDishes = getDishes();
-        //    console.log(newDishes);
-        //    setDishes(newDishes);
-        //});
+        fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            },
+            body: JSON.stringify(dish)
+        }).then(() => {
+            let newDishes = getDishes();
+            setDishes(newDishes);
+        });
     }
 
     const deleteDish = (id) => {
@@ -55,11 +47,14 @@ const App = () => {
                 "Contenty-Type": "application/json;charset=utf-8"
             },
             body: JSON.stringify(id)
+        }).then(() => {
+            let newDishes = dishes.filter(item => item.id !== id);
+            setDishes(newDishes);
         });
+    }
 
+    const sortDish = (fieldName) => {
 
-        let newDishes = dishes.filter(item => item.id !== id);
-        setDishes(newDishes);
     }
 
     return (
@@ -72,6 +67,7 @@ const App = () => {
                     <Filter />
                     <div style={contentStyle} >
                         <DishForm createDish={createDish} />
+                        <SortPanel sortDish={sortDish} />
                         <div className="d-flex flex-wrap justify-content-start">
                             {dishes.map(item =>
                                 <Dish key={item.id}

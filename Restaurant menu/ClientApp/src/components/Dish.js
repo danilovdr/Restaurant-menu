@@ -54,7 +54,7 @@ function Dish(props) {
 
     //EditBtn
     const acceptColor = "success";
-    const editColor = "warning";
+    const editColor = "primary";
     const [editBtnColor, setEditBtnColor] = useState(editColor);
 
     const acceptText = "Accept";
