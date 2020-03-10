@@ -9,6 +9,6 @@ namespace Restaurant_menu.Services.Interfaces
         void CreateDish(Dish dish);
         void UpdateDish(Dish dish);
         void DeleteDish(long id);
-        List<Dish> SortByField(string fieldName, bool ascending);
+        List<Dish> SortByField(List<Dish> dishes, string fieldName, bool ascending);
     }
 }

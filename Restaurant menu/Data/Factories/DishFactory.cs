@@ -8,24 +8,28 @@ namespace Restaurant_menu.Data.Factories
 {
     public class DishFactory : IDishFactory
     {
-        public DishFactory([FromServices] IDefaultIngredientsFactory ingredientsFactory)
+        public DishFactory()
         {
-            _ingredientsFactory = ingredientsFactory;
         }
 
-        private IDefaultIngredientsFactory _ingredientsFactory;
-
-        public Dish CreateDish(string name, string description, int cost, int weight, int calories, int coockingTime)
+        public Dish CreateDish(string name, string description, int cost, int weight, int calories, int coockingTime, Ingredient[] ingredients)
         {
-            var ingredients = _ingredientsFactory.GetIngredients();
-            Dish createdDish = CreateDish(name, description, cost, weight, calories, coockingTime, ingredients);
-            return createdDish;
+            Dish dish = CreateDish(0, name, description, cost, weight, calories, coockingTime, ingredients);
+            return dish;
         }
 
-        public Dish CreateDish(string name, string description, int cost, int weight, int calories, int coockingTime, List<Ingredient> ingredients)
+        //public Dish CreateDish(long id, string name, string description, int cost, int weight, int calories, int coockingTime)
+        //{
+        //    var ingredients = _ingredientsFactory.GetIngredients();
+        //    Dish createdDish = CreateDish(id, name, description, cost, weight, calories, coockingTime, ingredients);
+        //    return createdDish;
+        //}
+
+        public Dish CreateDish(long id, string name, string description, int cost, int weight, int calories, int coockingTime, Ingredient[] ingredients)
         {
             Dish createdDish = new Dish()
             {
+                Id = id,
                 CreateDate = DateTime.Now,
                 Name = name,
                 Description = description,
@@ -33,8 +37,10 @@ namespace Restaurant_menu.Data.Factories
                 Weight = weight,
                 Calories = calories,
                 CoockingTime = coockingTime,
-                Ingredients = ingredients
             };
+
+            createdDish.Ingredients = new List<Ingredient>();
+            createdDish.Ingredients.AddRange(ingredients);
 
             return createdDish;
         }

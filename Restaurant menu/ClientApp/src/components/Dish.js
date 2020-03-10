@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+﻿import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
@@ -109,9 +109,9 @@ function Dish(props) {
         }
     }
 
-    const del = () => {
-        console.log(props.id);
+    const deleteDish = () => {
         let url = "https://localhost:44334/api/dish";
+
         fetch(url, {
             method: "DELETE",
             headers: {
@@ -119,10 +119,12 @@ function Dish(props) {
             },
             body: JSON.stringify(props.id)
         });
+
+        props.deleteDish(props.id);
     }
 
     return (
-        <Card style={cardStyle} >
+        <Card className="mt-3 mr-3" style={cardStyle} >
             <CardBody>
                 <FormGroup>
                     <Label>Name</Label>
@@ -151,7 +153,7 @@ function Dish(props) {
                 <FormGroup>
                     <div style={buttonContainerStyle}>
                         <Button color={editBtnColor} style={buttonStyle} onClick={toggleEdit}>{editBtnText}</Button>
-                        <Button color="danger" style={buttonStyle} onClick={del}> Delete</Button>
+                        <Button color="danger" style={buttonStyle} onClick={deleteDish}> Delete</Button>
                     </div>
                 </FormGroup>
             </CardBody>

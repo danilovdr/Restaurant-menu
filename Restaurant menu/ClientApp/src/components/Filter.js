@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Card, CardBody, FormGroup, Label, Input } from 'reactstrap';
 
 const Filter = () => {
-
     const cardStyle = {
+        width: "300px",
         alignSelf: "flex-start"
     }
 
@@ -15,11 +15,11 @@ const Filter = () => {
 
     const halfInput = {
         display: "inline",
-        width: "90px"
+        width: "45%"
     }
 
     return (
-        <Card style={cardStyle} >
+        <Card className="mr-3" style={cardStyle} >
             <CardBody>
                 <h3>Filter</h3>
                 <FormGroup>

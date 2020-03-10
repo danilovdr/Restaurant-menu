@@ -2,7 +2,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import { Collapse, Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
-function DishForm() {
+function DishForm(props) {
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState("");
     const [description, setDescriotion] = useState("");
@@ -12,12 +12,12 @@ function DishForm() {
     const [coockingTime, setCoockingTime] = useState(-1);
 
     const cardStyle = {
-        width: "1000px",
-    }
+        width: "100%"
+    };
 
     const buttonStyle = {
         width: "200px",
-    }
+    };
 
     const toggleStyle = {
         width: "200px",
@@ -26,9 +26,8 @@ function DishForm() {
 
     const toggle = () => setIsOpen(!isOpen);
 
-    const sendData = () => {
-        console.log("send data post");
-        let data = {
+    const createDish = () => {
+        let dish = {
             Name: name,
             Description: description,
             Cost: parseInt(cost),
@@ -37,20 +36,12 @@ function DishForm() {
             CoockingTime: parseInt(coockingTime)
         }
 
-        let url = "https://localhost:44334/api/dish";
-
-        fetch(url, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            },
-            body: JSON.stringify(data)
-        });
+        props.createDish(dish);
     };
 
     return (
-        <Card>
-            <CardBody style={cardStyle} >
+        <Card style={cardStyle} >
+            <CardBody>
                 <Button color="primary" onClick={toggle} style={toggleStyle}>Create dish</Button>
                 <Collapse isOpen={isOpen} >
                     <FormGroup>
@@ -78,7 +69,7 @@ function DishForm() {
                         <Input type="number" id="coockingTimeForm" placeholder="Coocking time" onChange={event => setCoockingTime(event.target.value)} />
                     </FormGroup>
                     <FormGroup>
-                        <Button color="success" style={buttonStyle} onClick={sendData} > Create</Button>
+                        <Button color="success" style={buttonStyle} onClick={createDish} > Create</Button>
                     </FormGroup>
                 </Collapse>
             </CardBody>

@@ -1,17 +1,24 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Restaurant_menu.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Restaurant_menu.Data.Interfaces.Contexts;
 
 namespace Restaurant_menu.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IApplcationDbContext
     {
-        public DbSet<Dish> Dishes { get; set; }
-        public DbSet<Ingredient> Ingredients { get; set; }
-
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> dbContextOptions)
-            :base(dbContextOptions)
+        public ApplicationDbContext([FromServices] IConfiguration configuration)
         {
+            _configuration = configuration;
             Database.EnsureCreated();
+        }
+
+        private IConfiguration _configuration;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            string connectionString = _configuration.GetConnectionString("DefaultConnection");
+            optionsBuilder.UseSqlite(connectionString);
         }
     }
 }

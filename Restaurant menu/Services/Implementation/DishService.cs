@@ -2,10 +2,8 @@
 using Restaurant_menu.Data.Interfaces;
 using Restaurant_menu.Models;
 using Restaurant_menu.Services.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Restaurant_menu.Services.Implementation
 {
@@ -28,31 +26,57 @@ namespace Restaurant_menu.Services.Implementation
             _dishDataService.Delete(id);
         }
 
-        public List<Dish> SortByField(string fieldName, bool ascending)
+        public List<Dish> SortByField(List<Dish> dishes, string fieldName, bool ascending)
         {
-            List<Dish> allDishes = _dishDataService.GetAll();
             List<Dish> sortedDishes;
 
-            switch (fieldName)
+            if (ascending)
             {
-                case "Name":
-                    sortedDishes = allDishes.OrderBy(p => p.Name).ToList();
-                    break;
-                case "Cost":
-                    sortedDishes = allDishes.OrderBy(p => p.Cost).ToList();
-                    break;
-                case "Weight":
-                    sortedDishes = allDishes.OrderBy(p => p.Weight).ToList();
-                    break;
-                case "Calories":
-                    sortedDishes = allDishes.OrderBy(p => p.Calories).ToList();
-                    break;
-                case "CoockingTime":
-                    sortedDishes = allDishes.OrderBy(p => p.CoockingTime).ToList();
-                    break;
-                default:
-                    sortedDishes = null;
-                    break;
+                switch (fieldName)
+                {
+                    case "Name":
+                        sortedDishes = dishes.OrderBy(p => p.Name).ToList();
+                        break;
+                    case "Cost":
+                        sortedDishes = dishes.OrderBy(p => p.Cost).ToList();
+                        break;
+                    case "Weight":
+                        sortedDishes = dishes.OrderBy(p => p.Weight).ToList();
+                        break;
+                    case "Calories":
+                        sortedDishes = dishes.OrderBy(p => p.Calories).ToList();
+                        break;
+                    case "CoockingTime":
+                        sortedDishes = dishes.OrderBy(p => p.CoockingTime).ToList();
+                        break;
+                    default:
+                        sortedDishes = null;
+                        break;
+                }
+            }
+            else
+            {
+                switch (fieldName)
+                {
+                    case "Name":
+                        sortedDishes = dishes.OrderByDescending(p => p.Name).ToList();
+                        break;
+                    case "Cost":
+                        sortedDishes = dishes.OrderByDescending(p => p.Cost).ToList();
+                        break;
+                    case "Weight":
+                        sortedDishes = dishes.OrderByDescending(p => p.Weight).ToList();
+                        break;
+                    case "Calories":
+                        sortedDishes = dishes.OrderByDescending(p => p.Calories).ToList();
+                        break;
+                    case "CoockingTime":
+                        sortedDishes = dishes.OrderByDescending(p => p.CoockingTime).ToList();
+                        break;
+                    default:
+                        sortedDishes = null;
+                        break;
+                }
             }
 
             return sortedDishes;

@@ -1,6 +1,7 @@
-﻿using Restaurant_menu.Data.Interfaces.Factories;
+﻿using Microsoft.AspNetCore.Mvc;
+using Restaurant_menu.Data.Interfaces.Contexts;
+using Restaurant_menu.Data.Interfaces.Factories;
 using Restaurant_menu.Models;
-using System.Collections.Generic;
 
 namespace Restaurant_menu.Data.Factories
 {
@@ -8,17 +9,21 @@ namespace Restaurant_menu.Data.Factories
     {
         public DefaultIngredientsFactory()
         {
-            _ingredients = new List<Ingredient>();
-            _ingredients.Add(new Ingredient() { Name = "Любовь" });
-            _ingredients.Add(new Ingredient() { Name = "Доброта" });
-            _ingredients.Add(new Ingredient() { Name = "Забота" });
         }
 
-        private List<Ingredient> _ingredients;
-
-        public List<Ingredient> GetIngredients()
+        public Ingredient[] GetIngredients()
         {
-            return _ingredients;
+            return GetIngredients(null);
+        }
+
+        public Ingredient[] GetIngredients(Dish dish)
+        {
+            Ingredient[] ingredients = new Ingredient[3];
+            ingredients[0] = new Ingredient() { Name = "Любовь", Dish = dish };
+            ingredients[1] = new Ingredient() { Name = "Доброта", Dish = dish };
+            ingredients[2] = new Ingredient() { Name = "Забота", Dish = dish };
+
+            return ingredients;
         }
     }
 }
