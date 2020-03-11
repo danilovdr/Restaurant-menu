@@ -28,15 +28,15 @@ const App = () => {
     });
 
     const updateDishes = async () => {
-        let url = "https://localhost:44334/api/dish/";
+        let url = "https://localhost:44334/api/dish/?";
+
+        console.log(filterParams.name);
 
         if (sortParams.fieldName != null && sortParams.ascending != null) {
-            url += "?fieldNameSort=" + sortParams.fieldName + "&byAscending=" + sortParams.ascending;
-        } else {
-            url += "?";
+            url += "&fieldNameSort=" + sortParams.fieldName + "&byAscending=" + sortParams.ascending;
         }
 
-        if (filterParams.name != null) url += "&fNale=" + filterParams.name;
+        if (filterParams.name != null) url += "&fName=" + filterParams.name;
 
         if (filterParams.cost.min != -1) url += "&fMinCost=" + filterParams.cost.min;
         if (filterParams.cost.max != -1) url += "&fMaxCost=" + filterParams.cost.max;
