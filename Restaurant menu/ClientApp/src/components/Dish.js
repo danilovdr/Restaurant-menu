@@ -9,38 +9,44 @@ function Dish(props) {
 
     //name
     const [name, setName] = useState(props.name);
+    const changeName = (event) => setName(event.target.value);
     const nameComponentText = <p>{name}</p>;
-    const nameComponentInput = <Input type="text" defaultValue={name} onChange={event => setName(event.target.value)} />;
+    const nameComponentInput = <Input type="text" defaultValue={name} onChange={changeName} />;
     const [nameComponent, setNameComponent] = useState(nameComponentText);
 
     //Description
     const [description, setDescription] = useState(props.description);
+    const changeDescription = (event) => setDescription(event.target.value);
     const descriptionComponentText = <p>{description}</p>;
-    const descriptionComponentInput = <Input type="textarea" defaultValue={description} onChange={event => setDescription(event.target.value)} />;
+    const descriptionComponentInput = <Input type="textarea" defaultValue={description} onChange={changeDescription} />;
     const [descriptionComponent, setDescriptionComponent] = useState(descriptionComponentText);
 
     //Cost
     const [cost, setCost] = useState(props.cost);
+    const changeCost = (event) => setCost(event.target.value);
     const costComponentText = <p>{cost}</p>;
-    const costComponentInput = <Input type="text" defaultValue={cost} onChange={event => setCost(event.target.value)} />;
+    const costComponentInput = <Input type="text" defaultValue={cost} onChange={changeCost} />;
     const [costComponent, setCostComponent] = useState(costComponentText);
 
     //Weight
     const [weight, setWeight] = useState(props.weight);
+    const changeWeight = (event) => setWeight(event.target.value);
     const weightComponentText = <p>{weight}</p>;
-    const weightComponentInput = <Input type="text" defaultValue={weight} onChange={event => setWeight(event.target.value)} />;
+    const weightComponentInput = <Input type="text" defaultValue={weight} onChange={changeWeight} />;
     const [weightComponent, setWeightComponent] = useState(weightComponentText);
 
     //Calories
     const [calories, setCalories] = useState(props.calories);
+    const changeCalories = (event) => setCalories(event.target.value);
     const caloriesComponentText = <p>{calories}</p>;
-    const caloriesComponentInput = <Input type="text" defaultValue={calories} onChange={event => setCalories(event.target.value)} />;
+    const caloriesComponentInput = <Input type="text" defaultValue={calories} onChange={changeCalories} />;
     const [caloriesComponent, setCaloriesComponent] = useState(caloriesComponentText);
 
     //CoockingTime
     const [coockingTime, setCoockingTime] = useState(props.coockingTime);
+    const changeCoockimgTime = (event) => setCoockingTime(event.target.value);
     const coockingTimeComponentText = <p>{coockingTime}</p>;
-    const coockingTimeComponentInput = <Input type="text" defaultValue={coockingTime} onChange={event => setCoockingTime(event.target.value)} />;
+    const coockingTimeComponentInput = <Input type="text" defaultValue={coockingTime} onChange={changeCoockimgTime} />;
     const [coockingTimeComponent, setCoockingTimeComponent] = useState(coockingTimeComponentText);
 
     const buttonContainerStyle = {
@@ -62,17 +68,18 @@ function Dish(props) {
     const [editBtnText, setEditBtnText] = useState(editText);
 
     const sendData = () => {
+        console.log("Send data");
         let data = {
             Id: props.id,
             Name: name,
             Description: description,
-            Cost: cost,
-            Weight: weight,
-            Calories: calories,
-            CoockingTime: coockingTime
+            Cost: parseInt(cost),
+            Weight: parseInt(weight),
+            Calories: parseInt(calories),
+            CoockingTime: parseInt(coockingTime)
         };
 
-        let url = "https://localhost:44334/api/dish";
+        let url = "https://localhost:44334/api/dish/";
         fetch(url, {
             method: "POST",
             headers: {
@@ -110,16 +117,6 @@ function Dish(props) {
     }
 
     const deleteDish = () => {
-        let url = "https://localhost:44334/api/dish";
-
-        fetch(url, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(props.id)
-        });
-
         props.deleteDish(props.id);
     }
 

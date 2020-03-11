@@ -10,20 +10,24 @@ namespace Restaurant_menu.ControllerBase
     [Route("api/[controller]")]
     public class DishController : Controller
     {
-        public DishController([FromServices] IDishService dishService,
-            [FromServices] IApplcationDbContext applcationDbContext)
+        public DishController([FromServices] IDishService dishService)
         {
             _dishService = dishService;
-            _applcationDbContext = applcationDbContext;
         }
 
         private IDishService _dishService;
-        private IApplcationDbContext _applcationDbContext;
+
+        public IApplcationDbContext ApplcationDbContext { get; }
 
         [HttpGet]
-        public IActionResult Get(string fieldSortName)
+        public IActionResult Get(string fieldNameSort, bool ascending)
         {
             List<Dish> dishes = _dishService.GetAll();
+            if (fieldNameSort != null)
+            {
+                dishes = _dishService.SortByField(dishes, fieldNameSort, ascending);
+            }
+
             return Json(dishes);
         }
 

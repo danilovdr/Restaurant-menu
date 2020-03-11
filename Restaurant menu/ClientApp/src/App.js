@@ -44,7 +44,7 @@ const App = () => {
         fetch(url, {
             method: "DELETE",
             headers: {
-                "Contenty-Type": "application/json;charset=utf-8"
+                "Content-Type": "application/json;charset=utf-8"
             },
             body: JSON.stringify(id)
         }).then(() => {
@@ -53,8 +53,12 @@ const App = () => {
         });
     }
 
-    const sortDish = (fieldName) => {
-
+    const sortDish = (fieldName, ascending) => {
+        let xhr = new XMLHttpRequest();
+        let sortUrl = url + "?fieldNameSort=" + fieldName + "&ascending=" + ascending;
+        xhr.open("GET", sortUrl, false);
+        xhr.send();
+        setDishes(JSON.parse(xhr.responseText));
     }
 
     return (
