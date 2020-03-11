@@ -7,6 +7,15 @@ function Dish(props) {
         width: "300px"
     }
 
+    const buttonContainerStyle = {
+        display: "flex",
+        justifyContent: "space-between"
+    }
+
+    const buttonStyle = {
+        width: "125px"
+    }
+
     //name
     const [name, setName] = useState(props.name);
     const changeName = (event) => setName(event.target.value);
@@ -49,15 +58,6 @@ function Dish(props) {
     const coockingTimeComponentInput = <Input type="text" defaultValue={coockingTime} onChange={changeCoockimgTime} />;
     const [coockingTimeComponent, setCoockingTimeComponent] = useState(coockingTimeComponentText);
 
-    const buttonContainerStyle = {
-        display: "flex",
-        justifyContent: "space-between"
-    }
-
-    const buttonStyle = {
-        width: "125px"
-    }
-
     //EditBtn
     const acceptColor = "success";
     const editColor = "primary";
@@ -67,8 +67,9 @@ function Dish(props) {
     const editText = "Edit";
     const [editBtnText, setEditBtnText] = useState(editText);
 
-    const sendData = () => {
-        console.log("Send data");
+    const [isEdit, setIsEdit] = useState(false);
+
+    const updateDish = () => {
         let data = {
             Id: props.id,
             Name: name,
@@ -87,9 +88,9 @@ function Dish(props) {
             },
             body: JSON.stringify(data)
         });
-    };
 
-    const [isEdit, setIsEdit] = useState(false);
+        //props.updateDishes();
+    };
 
     const toggleEdit = () => {
         setIsEdit(!isEdit);
@@ -112,13 +113,12 @@ function Dish(props) {
             setCoockingTimeComponent(coockingTimeComponentText);
             setEditBtnColor(editColor);
             setEditBtnText(editText);
-            sendData();
+            updateDish();
         }
     }
 
-    const deleteDish = () => {
-        props.deleteDish(props.id);
-    }
+    const deleteDish = () => props.deleteDish(props.id);
+
 
     return (
         <Card className="mt-3 mr-3" style={cardStyle} >

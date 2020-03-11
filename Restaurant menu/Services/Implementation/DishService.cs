@@ -26,60 +26,89 @@ namespace Restaurant_menu.Services.Implementation
             _dishDataService.Delete(id);
         }
 
-        public List<Dish> SortByField(List<Dish> dishes, string fieldName, bool ascending)
+        public List<Dish> SortByName(List<Dish> dishes, bool byAscending)
         {
-            List<Dish> sortedDishes;
-
-            if (ascending)
+            if (byAscending)
             {
-                switch (fieldName)
-                {
-                    case "Name":
-                        sortedDishes = dishes.OrderBy(p => p.Name).ToList();
-                        break;
-                    case "Cost":
-                        sortedDishes = dishes.OrderBy(p => p.Cost).ToList();
-                        break;
-                    case "Weight":
-                        sortedDishes = dishes.OrderBy(p => p.Weight).ToList();
-                        break;
-                    case "Calories":
-                        sortedDishes = dishes.OrderBy(p => p.Calories).ToList();
-                        break;
-                    case "CoockingTime":
-                        sortedDishes = dishes.OrderBy(p => p.CoockingTime).ToList();
-                        break;
-                    default:
-                        sortedDishes = null;
-                        break;
-                }
+                return dishes.OrderBy(p => p.Name).ToList();
             }
             else
             {
-                switch (fieldName)
-                {
-                    case "Name":
-                        sortedDishes = dishes.OrderByDescending(p => p.Name).ToList();
-                        break;
-                    case "Cost":
-                        sortedDishes = dishes.OrderByDescending(p => p.Cost).ToList();
-                        break;
-                    case "Weight":
-                        sortedDishes = dishes.OrderByDescending(p => p.Weight).ToList();
-                        break;
-                    case "Calories":
-                        sortedDishes = dishes.OrderByDescending(p => p.Calories).ToList();
-                        break;
-                    case "CoockingTime":
-                        sortedDishes = dishes.OrderByDescending(p => p.CoockingTime).ToList();
-                        break;
-                    default:
-                        sortedDishes = null;
-                        break;
-                }
+                return dishes.OrderByDescending(p => p.Name).ToList();
             }
+        }
 
-            return sortedDishes;
+        public List<Dish> SortByCost(List<Dish> dishes, bool byAscending)
+        {
+            if (byAscending)
+            {
+                return dishes.OrderBy(p => p.Cost).ToList();
+            }
+            else
+            {
+                return dishes.OrderByDescending(p => p.Cost).ToList();
+            }
+        }
+
+        public List<Dish> SortByWeight(List<Dish> dishes, bool byAscending)
+        {
+            if (byAscending)
+            {
+                return dishes.OrderBy(p => p.Weight).ToList();
+            }
+            else
+            {
+                return dishes.OrderByDescending(p => p.Weight).ToList();
+            }
+        }
+
+        public List<Dish> SortByCalories(List<Dish> dishes, bool byAscending)
+        {
+            if (byAscending)
+            {
+                return dishes.OrderBy(p => p.Calories).ToList();
+            }
+            else
+            {
+                return dishes.OrderByDescending(p => p.Calories).ToList();
+            }
+        }
+
+        public List<Dish> SortByCoockingTime(List<Dish> dishes, bool byAscending)
+        {
+            if (byAscending)
+            {
+                return dishes.OrderBy(p => p.CoockingTime).ToList();
+            }
+            else
+            {
+                return dishes.OrderByDescending(p => p.CoockingTime).ToList();
+            }
+        }
+
+        public List<Dish> FilterByName(List<Dish> dishes, string name)
+        {
+            return dishes.Where(p => p.Name.Contains(name)).ToList();
+        }
+
+        public List<Dish> FilterByCost(List<Dish> dishes, int minCost, int maxCost)
+        {
+            return dishes.Where(p => p.Cost >= minCost && p.Cost <= maxCost).ToList();
+        }
+
+        public List<Dish> FilterByWeight(List<Dish> dishes, int minWeight, int maxWeight)
+        {
+            return dishes.Where(p => p.Weight >= minWeight && p.Weight <= maxWeight).ToList();
+        }
+
+        public List<Dish> FilterByCalories(List<Dish> dishes, int minCalories, int maxCalories)
+        {
+            return dishes.Where(p => p.Calories >= minCalories && p.Calories <= maxCalories).ToList();
+        }
+
+        public List<Dish> FilterByCoockingTime(List<Dish> dishes, int minCoockingTime, int maxCoockingTime)
+        {
+            return dishes.Where(p => p.CoockingTime >= minCoockingTime && p.CoockingTime <= maxCoockingTime).ToList();
         }
 
         public void UpdateDish(Dish dish)

@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import { Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
-const Filter = () => {
+const Filter = (props) => {
     const cardStyle = {
         width: "250px",
         alignSelf: "flex-start"
     };
 
-    const [name, setName] = useState("");
+    const [name, setName] = useState(null);
     const changeName = (event) => setName(event.target.value);
 
     const [cost, setCost] = useState({ min: -1, max: -1 });
@@ -26,6 +26,28 @@ const Filter = () => {
     const [coockingTime, setCoockingTime] = useState({ min: -1, max: -1 });
     const changeMinCoockingTime = (event) => setCoockingTime({ min: parseInt(event.target.value), max: coockingTime.max });
     const changeMaxCoockingTime = (event) => setCoockingTime({ min: coockingTime.min, max: parseInt(event.target.value) });
+
+    const filter = () => {
+        let filters = {
+            Name: name,
+            cost: cost,
+            weight: weight,
+            calories: calories,
+            coockingTime: coockingTime
+        };
+
+        props.filter(filters);
+    }
+
+    const reset = () => {
+        setName("");
+        setCost({ min: -1, max: -1 });
+        setWeight({ min: -1, max: -1 });
+        setCalories({ min: -1, max: -1 });
+        setCoockingTime({ min: -1, max: -1 });
+
+        filter();
+    }
 
     return (
         <Card className="mr-3" style={cardStyle} >
@@ -46,7 +68,7 @@ const Filter = () => {
                     <Label>Weight</Label>
                     <div className="d-flex justify-content-around">
                         <Input className="w-50 mr-3" type="text" placeholder="min" onChange={changeMinWeight} />
-                        <Input className="w-50" type="text" placeholder="max" onChange={changeMaxCost} />
+                        <Input className="w-50" type="text" placeholder="max" onChange={changeMaxWeight} />
                     </div>
                 </FormGroup>
                 <FormGroup>
@@ -64,10 +86,10 @@ const Filter = () => {
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <Button className="w-100" color="primary"> Filter</Button>
+                    <Button className="w-100" color="primary" onClick={filter}>Filter</Button>
                 </FormGroup>
                 <FormGroup>
-                    <Button className="w-100" color="secondary"> Reset</Button>
+                    <Button className="w-100" color="secondary" onClick={reset}>Reset</Button>
                 </FormGroup>
             </CardBody>
         </Card>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './custom.css'
 import { Container } from 'reactstrap';
 import Filter from './components/Filter';
@@ -7,7 +7,6 @@ import Dish from './components/Dish';
 import SortPanel from './components/SortPanel';
 
 const App = () => {
-    const url = "https://localhost:44334/api/dish/";
     const headerStyle = {
         backgroundColor: "#5995DD",
         padding: "10px",
@@ -18,60 +17,87 @@ const App = () => {
         width: "1000px"
     };
 
-    const getDishes = () => {
-        let xhr = new XMLHttpRequest();
-        xhr.open("GET", url, false);
-        xhr.send();
-        return JSON.parse(xhr.responseText);
+    const [dishes, setDishes] = useState([]);
+    const [sortParam, setSortParam] = useState({ fieldName: null, ascending: null });
+    const [filterParam, setFilterParam] = useState({
+        name: null,
+        cost: { min: -1, max: -1 },
+        weight: { min: -1, max: -1 },
+        calories: { min: -1, max: -1 },
+        coockingTime: { min: -1, max: -1 }
+    });
+
+    //const updateDishes = () => {
+    //    let url = "https://localhost:44334/api/dish/";
+
+    //    if (sortParam.fieldName != null && sortParam.ascending != null) {
+    //        url += "?fieldNameSort=" + sortParam.fieldName + "&byAscending=" + sortParam.ascending;
+    //    }
+
+    //    fetch(url)
+    //        .then(resp => resp.json())
+    //        .then(com => setDishes(com));
+    //}
+
+    const updateDishes = async () => {
+        let url = "https://localhost:44334/api/dish/";
+
+        if (sortParam.fieldName != null && sortParam.ascending != null) {
+            url += "?fieldNameSort=" + sortParam.fieldName + "&byAscending=" + sortParam.ascending;
+        }
+
+        fetch(url)
+            .then(resp => resp.json())
+            .then(com => setDishes(com));
     }
 
-    const [dishes, setDishes] = useState(getDishes());
-
     const createDish = (dish) => {
+        let url = "https://localhost:44334/api/dish/";
+
         fetch(url, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },
             body: JSON.stringify(dish)
-        }).then(() => {
-            let newDishes = getDishes();
-            setDishes(newDishes);
-        });
+        }).then(() => updateDishes())
     }
 
     const deleteDish = (id) => {
+        let url = "https://localhost:44334/api/dish/";
+
         fetch(url, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },
             body: JSON.stringify(id)
-        }).then(() => {
-            let newDishes = dishes.filter(item => item.id !== id);
-            setDishes(newDishes);
-        });
+        }).then(() => updateDishes());
+    };
+
+    const sortDishes = (fieldName, ascending) => {
+        setSortParam({ fieldName: fieldName, ascending: true });
     }
 
-    const sortDish = (fieldName, ascending) => {
-        let xhr = new XMLHttpRequest();
-        let sortUrl = url + "?fieldNameSort=" + fieldName + "&ascending=" + ascending;
-        xhr.open("GET", sortUrl, false);
-        xhr.send();
-        setDishes(JSON.parse(xhr.responseText));
+    const filterDishes = (filters) => {
+        setFilterParam(filters);
     }
+
+    useEffect(() => {
+        updateDishes();
+    }, [sortParam]);
 
     return (
-        <div className="App">
+        <div className="App" >
             <Container style={headerStyle} fluid={true}>
                 <h1>Restaurant menu</h1>
             </Container>
             <Container fluid={true}>
                 <main className="d-flex justify-content-center mt-2">
-                    <Filter />
+                    <Filter filter={filterDishes} />
                     <div style={contentStyle} >
                         <DishForm createDish={createDish} />
-                        <SortPanel sortDish={sortDish} />
+                        <SortPanel sortDish={sortDishes} />
                         <div className="d-flex flex-wrap justify-content-start">
                             {dishes.map(item =>
                                 <Dish key={item.id}
@@ -90,5 +116,6 @@ const App = () => {
         </div>
     );
 }
+
 
 export default App;
