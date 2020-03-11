@@ -29,13 +29,9 @@ namespace Restaurant_menu.ControllerBase
             if (fieldNameSort != null) dishes = Sort(dishes, fieldNameSort, byAscending);
 
             if (fName != null) dishes = _dishService.FilterByName(dishes, fName);
-
             if (fMaxCost != 0) dishes = _dishService.FilterByCost(dishes, fMinCost, fMaxCost);
-
             if (fMaxWeight != 0) dishes = _dishService.FilterByWeight(dishes, fMinWeight, fMaxWeight);
-
             if (fMaxCalories != 0) dishes = _dishService.FilterByCalories(dishes, fMinCalories, fMaxCalories);
-
             if (fMaxCoockingTime != 0) dishes = _dishService.FilterByCoockingTime(dishes, fMinCoockingTime, fMaxCoockingTime);
 
             return Json(dishes);

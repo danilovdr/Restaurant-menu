@@ -30,8 +30,6 @@ const App = () => {
     const updateDishes = async () => {
         let url = "https://localhost:44334/api/dish/?";
 
-        console.log(filterParams.name);
-
         if (sortParams.fieldName != null && sortParams.ascending != null) {
             url += "&fieldNameSort=" + sortParams.fieldName + "&byAscending=" + sortParams.ascending;
         }
