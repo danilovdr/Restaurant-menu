@@ -1,10 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Restaurant_menu.Data;
+using Restaurant_menu.Data.Factories;
+using Restaurant_menu.Data.Interfaces;
+using Restaurant_menu.Data.Interfaces.Contexts;
+using Restaurant_menu.Data.Interfaces.Factories;
+using Restaurant_menu.Data.Services;
+using Restaurant_menu.Services.Implementation;
+using Restaurant_menu.Services.Interfaces;
 
 namespace Restaurant_menu
 {
@@ -17,20 +24,23 @@ namespace Restaurant_menu
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IApplcationDbContext, ApplicationDbContext>();
+            services.AddControllers();
 
-            services.AddControllersWithViews();
+            services.AddSingleton<IDefaultIngredientsFactory, DefaultIngredientsFactory>();
+            services.AddSingleton<IDishFactory, DishFactory>();
 
-            // In production, the React files will be served from this directory
+            services.AddScoped<IDishDataService, DishDataService>();
+            services.AddScoped<IDishService, DishService>();
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -40,7 +50,6 @@ namespace Restaurant_menu
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -52,9 +61,7 @@ namespace Restaurant_menu
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
 
             app.UseSpa(spa =>
