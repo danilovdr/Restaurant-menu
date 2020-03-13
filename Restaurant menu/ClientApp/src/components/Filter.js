@@ -11,19 +11,19 @@ const Filter = (props) => {
     const [name, setName] = useState(null);
     const changeName = (event) => setName(event.target.value);
 
-    const [cost, setCost] = useState({ min: -1, max: -1 });
+    const [cost, setCost] = useState({ min: null, max: null });
     const changeMinCost = (event) => setCost({ min: parseInt(event.target.value), max: cost.max });
     const changeMaxCost = (event) => setCost({ min: cost.min, max: parseInt(event.target.value) });
 
-    const [weight, setWeight] = useState({ min: -1, max: -1 });
+    const [weight, setWeight] = useState({ min: null, max: null });
     const changeMinWeight = (event) => setWeight({ min: parseInt(event.target.value), max: weight.max });
     const changeMaxWeight = (event) => setWeight({ min: weight.min, max: parseInt(event.target.value) });
 
-    const [calories, setCalories] = useState({ min: -1, max: -1 });
+    const [calories, setCalories] = useState({ min: null, max: null });
     const changeMinCalories = (event) => setCalories({ min: parseInt(event.target.value), max: calories.max });
     const changeMaxCalories = (event) => setCalories({ min: calories.min, max: parseInt(event.target.value) });
 
-    const [coockingTime, setCoockingTime] = useState({ min: -1, max: -1 });
+    const [coockingTime, setCoockingTime] = useState({ min: null, max: null });
     const changeMinCoockingTime = (event) => setCoockingTime({ min: parseInt(event.target.value), max: coockingTime.max });
     const changeMaxCoockingTime = (event) => setCoockingTime({ min: coockingTime.min, max: parseInt(event.target.value) });
 
@@ -42,10 +42,10 @@ const Filter = (props) => {
 
     const reset = () => {
         setName(null);
-        setCost({ min: -1, max: -1 });
-        setWeight({ min: -1, max: -1 });
-        setCalories({ min: -1, max: -1 });
-        setCoockingTime({ min: -1, max: -1 });
+        setCost({ min: null, max: null });
+        setWeight({ min: null, max: null });
+        setCalories({ min: null, max: null });
+        setCoockingTime({ min: null, max: null });
 
         filter();
     }

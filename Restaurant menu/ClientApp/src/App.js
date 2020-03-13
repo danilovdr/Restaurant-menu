@@ -21,38 +21,42 @@ const App = () => {
     const [sortParams, setSortParam] = useState({ fieldName: null, ascending: null });
     const [filterParams, setFilterParam] = useState({
         name: null,
-        cost: { min: -1, max: -1 },
-        weight: { min: -1, max: -1 },
-        calories: { min: -1, max: -1 },
-        coockingTime: { min: -1, max: -1 }
+        cost: { min: null, max: null },
+        weight: { min: null, max: null },
+        calories: { min: null, max: null },
+        coockingTime: { min: null, max: null }
     });
 
-    const updateDishes = async () => {
+    const updateDishes = () => {
         let url = "https://localhost:44334/api/dish/?";
 
         if (sortParams.fieldName != null && sortParams.ascending != null) {
-            url += "&fieldNameSort=" + sortParams.fieldName + "&byAscending=" + sortParams.ascending;
+            url += "FieldNameSort=" + sortParams.fieldName + "&SortByAscending=" + sortParams.ascending;
+        } else {
+            url += "FieldNameSort=Name&SortByAscending=true";
         }
 
-        if (filterParams.name != null) url += "&fName=" + filterParams.name;
+        if (filterParams.name) url += "&FilterName=" + filterParams.name;
 
-        if (filterParams.cost.min != -1) url += "&fMinCost=" + filterParams.cost.min;
-        if (filterParams.cost.max != -1) url += "&fMaxCost=" + filterParams.cost.max;
+        if (filterParams.cost.min) url += "&FilterMinCost=" + filterParams.cost.min;
+        if (filterParams.cost.max) url += "&FilterMaxCost=" + filterParams.cost.max;
 
-        if (filterParams.weight.min != -1) url += "&fMinWeight=" + filterParams.weight.min;
-        if (filterParams.weight.max != -1) url += "&fMaxWeight=" + filterParams.weight.max;
+        if (filterParams.weight.min) url += "&FilterMinWeight=" + filterParams.weight.min;
+        if (filterParams.weight.max) url += "&FilterMaxWeight=" + filterParams.weight.max;
 
-        if (filterParams.calories.min != -1) url += "&fMinCalories=" + filterParams.calories.min;
-        if (filterParams.calories.max != -1) url += "&fMaxCalories=" + filterParams.calories.max;
+        if (filterParams.calories.min) url += "&FilterMinCalories=" + filterParams.calories.min;
+        if (filterParams.calories.max) url += "&FilterMaxCalories=" + filterParams.calories.max;
 
-        if (filterParams.coockingTime.min != -1) url += "&fMinCoockingTime=" + filterParams.coockingTime.min;
-        if (filterParams.coockingTime.max != -1) url += "&fMaxCoockingTime=" + filterParams.coockingTime.max;
-
-        console.log(url);
+        if (filterParams.coockingTime.min) url += "&FilterMinCoockingTime=" + filterParams.coockingTime.min;
+        if (filterParams.coockingTime.max) url += "&FilterMaxCoockingTime=" + filterParams.coockingTime.max;
 
         fetch(url)
             .then(resp => resp.json())
-            .then(com => setDishes(com));
+            .then(com => {
+                console.log(url);
+                console.log(com);
+                setDishes(com.dishes);
+            });
     }
 
     const createDish = (dish) => {

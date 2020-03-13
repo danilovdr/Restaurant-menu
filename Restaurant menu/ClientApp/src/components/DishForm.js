@@ -19,35 +19,39 @@ function DishForm(props) {
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
 
-    const [name, setName] = useState("");
+    const [name, setName] = useState(null);
     const changeName = (event) => setName(event.target.value);
 
-    const [description, setDescription] = useState("");
+    const [description, setDescription] = useState(null);
     const changeDescription = (event) => setDescription(event.target.value);
 
-    const [cost, setCost] = useState(-1);
+    const [cost, setCost] = useState(null);
     const changeCost = (event) => setCost(parseInt(event.target.value));
 
-    const [weight, setWeight] = useState(-1);
+    const [weight, setWeight] = useState(null);
     const changeWeight = (event) => setWeight(parseInt(event.target.value));
 
-    const [calories, setCalories] = useState(-1);
+    const [calories, setCalories] = useState(null);
     const changeCalories = (event) => setCalories(parseInt(event.target.value));
 
-    const [coockingTime, setCoockingTime] = useState(-1);
+    const [coockingTime, setCoockingTime] = useState(null);
     const changeCoockingTime = (event) => setCoockingTime(parseInt(event.target.value));
 
     const createDish = () => {
-        let dish = {
-            Name: name,
-            Description: description,
-            Cost: cost,
-            Weight: weight,
-            Calories: calories,
-            CoockingTime: coockingTime
-        }
+        if (name || description || cost || weight ||
+            calories || coockingTime) {
 
-        props.createDish(dish);
+            let dish = {
+                Name: name,
+                Description: description,
+                Cost: cost,
+                Weight: weight,
+                Calories: calories,
+                CoockingTime: coockingTime
+            }
+
+            props.createDish(dish);
+        }
     };
 
     return (

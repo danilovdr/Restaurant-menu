@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Restaurant_menu.Data.Interfaces;
 using Restaurant_menu.Data.Interfaces.Contexts;
-using Restaurant_menu.Data.Interfaces.Factories;
 using Restaurant_menu.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,18 +9,12 @@ namespace Restaurant_menu.Data.Services
 {
     public class DishDataService : IDishDataService
     {
-        public DishDataService([FromServices] IApplcationDbContext dbContext,
-            [FromServices] IDishFactory dishFactory,
-            [FromServices] IDefaultIngredientsFactory ingredientsFactory)
+        public DishDataService([FromServices] IApplcationDbContext dbContext)
         {
             _dbContext = dbContext;
-            _dishFactory = dishFactory;
-            _ingredientsFactory = ingredientsFactory;
         }
 
         private IApplcationDbContext _dbContext;
-        private IDishFactory _dishFactory;
-        private IDefaultIngredientsFactory _ingredientsFactory;
 
         public Dish Get(long id)
         {
@@ -31,19 +24,7 @@ namespace Restaurant_menu.Data.Services
 
         public void Create(Dish dish)
         {
-            Dish createdDish = _dishFactory.CreateDish(
-                dish.Name,
-                dish.Description,
-                dish.Cost,
-                dish.Weight,
-                dish.Calories,
-                dish.CoockingTime);
-
-            Ingredient[] ingredients = _ingredientsFactory.GetIngredients(createdDish);
-            createdDish.Ingredients.AddRange(ingredients);
-
-            _dbContext.Ingredients.AddRange(ingredients);
-            _dbContext.Dishes.Add(createdDish);
+            _dbContext.Dishes.Add(dish);
             _dbContext.SaveChanges();
         }
 
@@ -74,7 +55,6 @@ namespace Restaurant_menu.Data.Services
                 updatedDish.Calories = dish.Calories;
                 updatedDish.CoockingTime = dish.CoockingTime;
 
-                _dbContext.Dishes.Update(updatedDish);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -85,6 +65,91 @@ namespace Restaurant_menu.Data.Services
         public List<Dish> GetAll()
         {
             return _dbContext.Dishes.ToList();
+        }
+
+        public List<Dish> SortByName(bool byAscending)
+        {
+            if (byAscending)
+            {
+                return _dbContext.Dishes.OrderBy(p => p.Name).ToList();
+            }
+            else
+            {
+                return _dbContext.Dishes.OrderByDescending(p => p.Name).ToList();
+            }
+        }
+
+        public List<Dish> SortByCost(bool byAscending)
+        {
+            if (byAscending)
+            {
+                return _dbContext.Dishes.OrderBy(p => p.Cost).ToList();
+            }
+            else
+            {
+                return _dbContext.Dishes.OrderByDescending(p => p.Cost).ToList();
+            }
+        }
+
+        public List<Dish> SortByWeight(bool byAscending)
+        {
+            if (byAscending)
+            {
+                return _dbContext.Dishes.OrderBy(p => p.Weight).ToList();
+            }
+            else
+            {
+                return _dbContext.Dishes.OrderByDescending(p => p.Weight).ToList();
+            }
+        }
+
+        public List<Dish> SortByCalories(bool byAscending)
+        {
+            if (byAscending)
+            {
+                return _dbContext.Dishes.OrderBy(p => p.Calories).ToList();
+            }
+            else
+            {
+                return _dbContext.Dishes.OrderByDescending(p => p.Calories).ToList();
+            }
+        }
+
+        public List<Dish> SortByCoockingTime( bool byAscending)
+        {
+            if (byAscending)
+            {
+                return _dbContext.Dishes.OrderBy(p => p.CoockingTime).ToList();
+            }
+            else
+            {
+                return _dbContext.Dishes.OrderByDescending(p => p.CoockingTime).ToList();
+            }
+        }
+
+        public List<Dish> FilterByName(string name)
+        {
+            return _dbContext.Dishes.Where(p => p.Name.Contains(name)).ToList();
+        }
+
+        public List<Dish> FilterByCost(int minCost, int maxCost)
+        {
+            return _dbContext.Dishes.Where(p => p.Cost >= minCost && p.Cost <= maxCost).ToList();
+        }
+
+        public List<Dish> FilterByWeight(int minWeight, int maxWeight)
+        {
+            return _dbContext.Dishes.Where(p => p.Weight >= minWeight && p.Weight <= maxWeight).ToList();
+        }
+
+        public List<Dish> FilterByCalories(int minCalories, int maxCalories)
+        {
+            return _dbContext.Dishes.Where(p => p.Calories >= minCalories && p.Calories <= maxCalories).ToList();
+        }
+
+        public List<Dish> FilterByCoockingTime(int minCoockingTime, int maxCoockingTime)
+        {
+            return _dbContext.Dishes.Where(p => p.CoockingTime >= minCoockingTime && p.CoockingTime <= maxCoockingTime).ToList();
         }
     }
 }

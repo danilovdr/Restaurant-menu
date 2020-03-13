@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Restaurant_menu.Data.Interfaces.Contexts;
+using System.Collections.Generic;
+using System.Linq;
 using Restaurant_menu.Models;
 using Restaurant_menu.Services.Interfaces;
-using System.Collections.Generic;
 
 namespace Restaurant_menu.ControllerBase
 {
@@ -17,55 +17,56 @@ namespace Restaurant_menu.ControllerBase
 
         private IDishService _dishService;
 
-        public IApplcationDbContext ApplcationDbContext { get; }
-
         [HttpGet]
-        public IActionResult Get(string fieldNameSort, bool byAscending, string fName,
-            int fMinCost, int fMaxCost, int fMinWeight, int fMaxWeight,
-            int fMinCalories, int fMaxCalories, int fMinCoockingTime, int fMaxCoockingTime)
+        public IActionResult Get([FromQuery] ViewReceiveData data)
         {
             List<Dish> dishes = _dishService.GetAll();
 
-            if (fieldNameSort != null) dishes = Sort(dishes, fieldNameSort, byAscending);
+            if (data.FieldNameSort != null) dishes = _dishService.SortByFieldName(data.FieldNameSort, data.SortByAscending);
 
-            if (fName != null) dishes = _dishService.FilterByName(dishes, fName);
-            if (fMaxCost != 0) dishes = _dishService.FilterByCost(dishes, fMinCost, fMaxCost);
-            if (fMaxWeight != 0) dishes = _dishService.FilterByWeight(dishes, fMinWeight, fMaxWeight);
-            if (fMaxCalories != 0) dishes = _dishService.FilterByCalories(dishes, fMinCalories, fMaxCalories);
-            if (fMaxCoockingTime != 0) dishes = _dishService.FilterByCoockingTime(dishes, fMinCoockingTime, fMaxCoockingTime);
+            List<Dish> filterDishes;
 
-            return Json(dishes);
-        }
-
-        private List<Dish> Sort(List<Dish> dishes, string fieldName, bool byAscending)
-        {
-            switch (fieldName)
+            if (data.FilterName != null)
             {
-                case "Name":
-                    dishes = _dishService.SortByName(dishes, byAscending);
-                    break;
-                case "Cost":
-                    dishes = _dishService.SortByCost(dishes, byAscending);
-                    break;
-                case "Weight":
-                    dishes = _dishService.SortByWeight(dishes, byAscending);
-                    break;
-                case "Calories":
-                    dishes = _dishService.SortByCalories(dishes, byAscending);
-                    break;
-                case "CoockingTime":
-                    dishes = _dishService.SortByCoockingTime(dishes, byAscending);
-                    break;
+                filterDishes = _dishService.FilterByName(data.FilterName);
+                dishes = dishes.Intersect(filterDishes).ToList();
             }
 
-            return dishes;
-        }
+            if (data.FilterMinCost != null || data.FilterMaxCost != null)
+            {
+                int minCost = data.FilterMinCost ?? default;
+                int maxCost = data.FilterMaxCost ?? default;
+                filterDishes = _dishService.FilterByCost(minCost, maxCost);
+                dishes = dishes.Intersect(filterDishes).ToList();
+            }
 
+            if (data.FilterMinWeight != null || data.FilterMaxWeight != null)
+            {
+                int minWeight = data.FilterMinWeight ?? default;
+                int maxWeight = data.FilterMaxWeight ?? default;
+                filterDishes = _dishService.FilterByWeight(minWeight, maxWeight);
+                dishes = dishes.Intersect(filterDishes).ToList();
+            }
 
+            if (data.FilterMinCalories != null || data.FilterMaxCalories != null)
+            {
+                int minCalories = data.FilterMinCalories ?? default;
+                int maxCalories = data.FilterMaxCalories ?? default;
+                filterDishes = _dishService.FilterByCalories(minCalories, maxCalories);
+                dishes = dishes.Intersect(filterDishes).ToList();
+            }
 
-        private List<Dish> Filter(List<Dish> dishes, Dictionary<string, string> filters)
-        {
-            return dishes;
+            if (data.FilterMinCoockingTime != null || data.FilterMaxCoockingTime != null)
+            {
+                int minCoockingTime = data.FilterMinCoockingTime ?? default;
+                int maxCoockingTime = data.FilterMaxCoockingTime ?? default;
+                filterDishes = _dishService.FilterByCoockingTime(minCoockingTime, maxCoockingTime);
+                dishes = dishes.Intersect(filterDishes).ToList();
+            }
+
+            ViewSendData sendData = new ViewSendData() { Dishes = dishes };
+
+            return Json(sendData);
         }
 
         [HttpPost]
