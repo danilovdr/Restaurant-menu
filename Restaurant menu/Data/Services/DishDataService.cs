@@ -2,7 +2,8 @@
 using Restaurant_menu.Data.Interfaces;
 using Restaurant_menu.Data.Interfaces.Contexts;
 using Restaurant_menu.Models;
-using System.Collections.Generic;
+using Restaurant_menu.Models.DTO;
+using System;
 using System.Linq;
 
 namespace Restaurant_menu.Data.Services
@@ -20,6 +21,11 @@ namespace Restaurant_menu.Data.Services
         {
             Dish dish = _dbContext.Dishes.FirstOrDefault(p => p.Id == id);
             return dish;
+        }
+
+        public IQueryable<Dish> GetAll()
+        {
+            return _dbContext.Dishes;
         }
 
         public void Create(Dish dish)
@@ -62,94 +68,88 @@ namespace Restaurant_menu.Data.Services
             return false;
         }
 
-        public List<Dish> GetAll()
+        public IQueryable<Dish> Sort(string fieldName)
         {
-            return _dbContext.Dishes.ToList();
+            return fieldName switch
+            {
+                "Name" => _dbContext.Dishes.OrderBy(p => p.Name),
+                "Cost" => _dbContext.Dishes.OrderBy(p => p.Cost),
+                "Weight" => _dbContext.Dishes.OrderBy(p => p.Weight),
+                "Calories" => _dbContext.Dishes.OrderBy(p => p.Calories),
+                "CoockingTime" => _dbContext.Dishes.OrderBy(p => p.CoockingTime),
+                _ => GetAll()
+            };
         }
 
-        public List<Dish> SortByName(bool byAscending)
+        public IQueryable<Dish> SortDescending(string fieldName)
         {
-            if (byAscending)
+            return fieldName switch
             {
-                return _dbContext.Dishes.OrderBy(p => p.Name).ToList();
-            }
-            else
-            {
-                return _dbContext.Dishes.OrderByDescending(p => p.Name).ToList();
-            }
+                "Name" => _dbContext.Dishes.OrderByDescending(p => p.Name),
+                "Cost" => _dbContext.Dishes.OrderByDescending(p => p.Cost),
+                "Weight" => _dbContext.Dishes.OrderByDescending(p => p.Weight),
+                "Calories" => _dbContext.Dishes.OrderByDescending(p => p.Calories),
+                "CoockingTime" => _dbContext.Dishes.OrderByDescending(p => p.CoockingTime),
+                _ => GetAll()
+            };
         }
 
-        public List<Dish> SortByCost(bool byAscending)
+        public IQueryable<Dish> Filter(FilterParamsDto filterParams)
         {
-            if (byAscending)
+            if (filterParams == null)
             {
-                return _dbContext.Dishes.OrderBy(p => p.Cost).ToList();
+                throw new ArgumentNullException("filterParams is null");
             }
-            else
+
+            IQueryable<Dish> dishQuery = _dbContext.Dishes;
+
+            if (filterParams.Name != null)
             {
-                return _dbContext.Dishes.OrderByDescending(p => p.Cost).ToList();
+                dishQuery = dishQuery.Where(p => p.Name.Contains(filterParams.Name));
             }
-        }
 
-        public List<Dish> SortByWeight(bool byAscending)
-        {
-            if (byAscending)
+            if (filterParams.MinCost != null)
             {
-                return _dbContext.Dishes.OrderBy(p => p.Weight).ToList();
+                dishQuery = dishQuery.Where(p => p.Cost >= filterParams.MinCost);
             }
-            else
+
+            if (filterParams.MaxCost != null)
             {
-                return _dbContext.Dishes.OrderByDescending(p => p.Weight).ToList();
+                dishQuery = dishQuery.Where(p => p.Cost <= filterParams.MaxCost);
             }
-        }
 
-        public List<Dish> SortByCalories(bool byAscending)
-        {
-            if (byAscending)
+            if (filterParams.MinWeight != null)
             {
-                return _dbContext.Dishes.OrderBy(p => p.Calories).ToList();
+                dishQuery = dishQuery.Where(p => p.Weight >= filterParams.MinWeight);
             }
-            else
+
+            if (filterParams.MaxWeight != null)
             {
-                return _dbContext.Dishes.OrderByDescending(p => p.Calories).ToList();
+                dishQuery = dishQuery.Where(p => p.Weight <= filterParams.MaxWeight);
             }
-        }
 
-        public List<Dish> SortByCoockingTime( bool byAscending)
-        {
-            if (byAscending)
+            if (filterParams.MinCalories != null)
             {
-                return _dbContext.Dishes.OrderBy(p => p.CoockingTime).ToList();
+                dishQuery = dishQuery.Where(p => p.Calories >= filterParams.MinCalories);
             }
-            else
+
+            if (filterParams.MaxCalories != null)
             {
-                return _dbContext.Dishes.OrderByDescending(p => p.CoockingTime).ToList();
+                dishQuery = dishQuery.Where(p => p.Calories <= filterParams.MaxCalories);
             }
-        }
 
-        public List<Dish> FilterByName(string name)
-        {
-            return _dbContext.Dishes.Where(p => p.Name.Contains(name)).ToList();
-        }
+            if (filterParams.MinCoockingTime != null)
+            {
+                dishQuery = dishQuery.Where(p => p.CoockingTime >= filterParams.MinCoockingTime);
+            }
 
-        public List<Dish> FilterByCost(int minCost, int maxCost)
-        {
-            return _dbContext.Dishes.Where(p => p.Cost >= minCost && p.Cost <= maxCost).ToList();
-        }
+            if (filterParams.MaxCoockingTime != null)
+            {
+                dishQuery = dishQuery.Where(p => p.CoockingTime <= filterParams.MaxCoockingTime);
+            }
 
-        public List<Dish> FilterByWeight(int minWeight, int maxWeight)
-        {
-            return _dbContext.Dishes.Where(p => p.Weight >= minWeight && p.Weight <= maxWeight).ToList();
-        }
+            return dishQuery;
 
-        public List<Dish> FilterByCalories(int minCalories, int maxCalories)
-        {
-            return _dbContext.Dishes.Where(p => p.Calories >= minCalories && p.Calories <= maxCalories).ToList();
-        }
-
-        public List<Dish> FilterByCoockingTime(int minCoockingTime, int maxCoockingTime)
-        {
-            return _dbContext.Dishes.Where(p => p.CoockingTime >= minCoockingTime && p.CoockingTime <= maxCoockingTime).ToList();
         }
     }
 }

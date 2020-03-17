@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 using Restaurant_menu.Models;
 using Restaurant_menu.Services.Interfaces;
+using Restaurant_menu.Models.DTO;
 
 namespace Restaurant_menu.ControllerBase
 {
@@ -18,55 +17,18 @@ namespace Restaurant_menu.ControllerBase
         private IDishService _dishService;
 
         [HttpGet]
-        public IActionResult Get([FromQuery] ViewReceiveData data)
+        public IActionResult Get([FromQuery] SortParamsDto sortParams, [FromQuery] FilterParamsDto filterParams)
         {
-            List<Dish> dishes = _dishService.GetAll();
-
-            if (data.FieldNameSort != null) dishes = _dishService.SortByFieldName(data.FieldNameSort, data.SortByAscending);
-
-            List<Dish> filterDishes;
-
-            if (data.FilterName != null)
+            if (sortParams.FieldName == null)
             {
-                filterDishes = _dishService.FilterByName(data.FilterName);
-                dishes = dishes.Intersect(filterDishes).ToList();
+                var dishes = _dishService.Filter(filterParams);
+                return Json(dishes);
             }
-
-            if (data.FilterMinCost != null || data.FilterMaxCost != null)
+            else
             {
-                int minCost = data.FilterMinCost ?? default;
-                int maxCost = data.FilterMaxCost ?? default;
-                filterDishes = _dishService.FilterByCost(minCost, maxCost);
-                dishes = dishes.Intersect(filterDishes).ToList();
+                var dishes = _dishService.FilterAndSort(filterParams, sortParams);
+                return Json(dishes);
             }
-
-            if (data.FilterMinWeight != null || data.FilterMaxWeight != null)
-            {
-                int minWeight = data.FilterMinWeight ?? default;
-                int maxWeight = data.FilterMaxWeight ?? default;
-                filterDishes = _dishService.FilterByWeight(minWeight, maxWeight);
-                dishes = dishes.Intersect(filterDishes).ToList();
-            }
-
-            if (data.FilterMinCalories != null || data.FilterMaxCalories != null)
-            {
-                int minCalories = data.FilterMinCalories ?? default;
-                int maxCalories = data.FilterMaxCalories ?? default;
-                filterDishes = _dishService.FilterByCalories(minCalories, maxCalories);
-                dishes = dishes.Intersect(filterDishes).ToList();
-            }
-
-            if (data.FilterMinCoockingTime != null || data.FilterMaxCoockingTime != null)
-            {
-                int minCoockingTime = data.FilterMinCoockingTime ?? default;
-                int maxCoockingTime = data.FilterMaxCoockingTime ?? default;
-                filterDishes = _dishService.FilterByCoockingTime(minCoockingTime, maxCoockingTime);
-                dishes = dishes.Intersect(filterDishes).ToList();
-            }
-
-            ViewSendData sendData = new ViewSendData() { Dishes = dishes };
-
-            return Json(sendData);
         }
 
         [HttpPost]
