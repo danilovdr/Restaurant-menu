@@ -1,6 +1,6 @@
-﻿import React, { useState } from 'react';
+﻿import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Card, CardTitle, CardBody, Col, InputGroup, Label, Input } from 'reactstrap';
+import { Card, CardBody, Label, Input } from 'reactstrap';
 
 const SortPanel = (props) => {
     const sort = (event) => {

@@ -8,13 +8,20 @@ namespace Restaurant_menu.Models
     {
         public long Id { get; set; }
         public DateTime CreateDate { get; set; }
-        [MaxLength(250)]
+        //[Required]
+        //[MaxLength(255)]
         public string Name { get; set; }
+        //[Required]
+        //[MaxLength(500)]
         public string Description { get; set; }
-        public int Cost { get; set; }
-        public int Weight { get; set; }
-        public int Calories { get; set; }
-        public int CoockingTime { get; set; }
+        //[Required]
+        public int? Cost { get; set; }
+        //[Required]
+        public int? Weight { get; set; }
+        //[Required]
+        public int? Calories { get; set; }
+        //[Required]
+        public int? CoockingTime { get; set; }
         public List<Ingredient> Ingredients { get; set; }
     }
 }

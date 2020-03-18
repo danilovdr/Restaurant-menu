@@ -9,8 +9,8 @@ namespace Restaurant_menu.Data.Interfaces
         Dish Get(long id);
         IQueryable<Dish> GetAll();
         void Create(Dish dish);
-        bool Delete(long id);
-        bool Update(Dish dish);
+        void Delete(long id);
+        void Update(Dish dish);
         IQueryable<Dish> Sort(string fieldName);
         IQueryable<Dish> SortDescending(string fieldName);
         IQueryable<Dish> Filter(FilterParamsDto filterParams);

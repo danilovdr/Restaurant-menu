@@ -88,8 +88,6 @@ function Dish(props) {
             },
             body: JSON.stringify(data)
         });
-
-        //props.updateDishes();
     };
 
     const toggleEdit = () => {

@@ -69,19 +69,19 @@ function DishForm(props) {
                     </FormGroup>
                     <FormGroup>
                         <Label for="costForm">Cost</Label>
-                        <Input type="number" id="costForm" placeholder="Cost" onChange={changeCost} />
+                        <Input type="text" id="costForm" placeholder="Cost" onChange={changeCost} />
                     </FormGroup>
                     <FormGroup>
                         <Label for="weightForm">Weight</Label>
-                        <Input type="number" id="weightForm" placeholder="Weight" onChange={changeWeight} />
+                        <Input type="text" id="weightForm" placeholder="Weight" onChange={changeWeight} />
                     </FormGroup>
                     <FormGroup>
                         <Label for="caloriesForm">Calories</Label>
-                        <Input type="number" id="caloriesForm" placeholder="Calories" onChange={changeCalories} />
+                        <Input type="text" id="caloriesForm" placeholder="Calories" onChange={changeCalories} />
                     </FormGroup>
                     <FormGroup>
                         <Label for="coockingTimeForm">Coocking time</Label>
-                        <Input type="number" id="coockingTimeForm" placeholder="Coocking time" onChange={changeCoockingTime} />
+                        <Input type="text" id="coockingTimeForm" placeholder="Coocking time" onChange={changeCoockingTime} />
                     </FormGroup>
                     <FormGroup>
                         <Button color="success" style={buttonStyle} onClick={createDish} >Create</Button>
