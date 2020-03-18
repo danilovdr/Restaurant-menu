@@ -211,8 +211,6 @@ function Dish(props) {
             body: JSON.stringify(props.id)
         });
 
-        console.log("DELETE");
-
         if (resp.ok) {
             props.updateDishes();
         }

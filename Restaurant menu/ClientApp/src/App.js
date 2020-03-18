@@ -48,7 +48,6 @@ const App = () => {
 
         if (resp.ok) {
             let data = await resp.json();
-            console.log(data);
             setDishes(data);
         }
     }

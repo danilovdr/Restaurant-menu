@@ -4,7 +4,6 @@ import { Card, CardBody, Label, Input } from 'reactstrap';
 
 const Sort = (props) => {
     const sort = (event) => {
-        console.log(event.target.value);
         switch (event.target.value) {
             case "Name":
                 props.setSortParams({ fieldName: "Name", ascending: true });

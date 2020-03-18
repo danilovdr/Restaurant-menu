@@ -28,7 +28,6 @@ const Filter = (props) => {
     const changeMaxCoockingTime = (event) => setCoockingTime({ min: coockingTime.min, max: parseInt(event.target.value) });
 
     const filter = () => {
-        console.log(name);
         let filters = {
             name: name,
             cost: cost,
