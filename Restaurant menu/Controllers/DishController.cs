@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Restaurant_menu.Data.Interfaces.Contexts;
 using Restaurant_menu.Models;
 using Restaurant_menu.Services.Interfaces;
-using System.Collections.Generic;
+using Restaurant_menu.Models.DTO;
+using System;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Restaurant_menu.ControllerBase
 {
@@ -17,67 +18,70 @@ namespace Restaurant_menu.ControllerBase
 
         private IDishService _dishService;
 
-        public IApplcationDbContext ApplcationDbContext { get; }
-
         [HttpGet]
-        public IActionResult Get(string fieldNameSort, bool byAscending, string fName,
-            int fMinCost, int fMaxCost, int fMinWeight, int fMaxWeight,
-            int fMinCalories, int fMaxCalories, int fMinCoockingTime, int fMaxCoockingTime)
+        public IActionResult GetAll([FromQuery] SortParamsDto sortParams, [FromQuery] FilterParamsDto filterParams)
         {
-            List<Dish> dishes = _dishService.GetAll();
-
-            if (fieldNameSort != null) dishes = Sort(dishes, fieldNameSort, byAscending);
-
-            if (fName != null) dishes = _dishService.FilterByName(dishes, fName);
-            if (fMaxCost != 0) dishes = _dishService.FilterByCost(dishes, fMinCost, fMaxCost);
-            if (fMaxWeight != 0) dishes = _dishService.FilterByWeight(dishes, fMinWeight, fMaxWeight);
-            if (fMaxCalories != 0) dishes = _dishService.FilterByCalories(dishes, fMinCalories, fMaxCalories);
-            if (fMaxCoockingTime != 0) dishes = _dishService.FilterByCoockingTime(dishes, fMinCoockingTime, fMaxCoockingTime);
-
-            return Json(dishes);
+            if (sortParams.FieldName == null)
+            {
+                var dishes = _dishService.Filter(filterParams);
+                return Json(dishes);
+            }
+            else
+            {
+                var dishes = _dishService.FilterAndSort(filterParams, sortParams);
+                return Json(dishes);
+            }
         }
 
-        private List<Dish> Sort(List<Dish> dishes, string fieldName, bool byAscending)
+        [HttpGet("{id}")]
+        public IActionResult Get(long id)
         {
-            switch (fieldName)
+            Dish dish;
+
+            try
             {
-                case "Name":
-                    dishes = _dishService.SortByName(dishes, byAscending);
-                    break;
-                case "Cost":
-                    dishes = _dishService.SortByCost(dishes, byAscending);
-                    break;
-                case "Weight":
-                    dishes = _dishService.SortByWeight(dishes, byAscending);
-                    break;
-                case "Calories":
-                    dishes = _dishService.SortByCalories(dishes, byAscending);
-                    break;
-                case "CoockingTime":
-                    dishes = _dishService.SortByCoockingTime(dishes, byAscending);
-                    break;
+                dish = _dishService.GetById(id);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound();
             }
 
-            return dishes;
-        }
-
-
-
-        private List<Dish> Filter(List<Dish> dishes, Dictionary<string, string> filters)
-        {
-            return dishes;
+            return Json(_dishService.GetById(id));
         }
 
         [HttpPost]
         public IActionResult Update([FromBody] Dish dish)
         {
-            _dishService.UpdateDish(dish);
+            Validate(dish);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                _dishService.UpdateDish(dish);
+            }
+            catch (NullReferenceException)
+            {
+                return NotFound();
+            }
+
             return Ok();
         }
 
         [HttpPut]
         public IActionResult Create([FromBody] Dish dish)
         {
+            Validate(dish);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _dishService.CreateDish(dish);
             return Ok();
         }
@@ -85,8 +89,75 @@ namespace Restaurant_menu.ControllerBase
         [HttpDelete]
         public IActionResult Delete([FromBody] long id)
         {
-            _dishService.DeleteDish(id);
+            try
+            {
+                _dishService.DeleteDish(id);
+            }
+            catch (NullReferenceException)
+            {
+                NotFound();
+            }
+
             return Ok();
+        }
+
+        private ModelStateDictionary Validate(Dish dish)
+        {
+            if (string.IsNullOrWhiteSpace(dish.Name))
+            {
+                ModelState.AddModelError("Name", "Name is null or empty or white space");
+            }
+            else if (dish.Name.Length > 255)
+            {
+                ModelState.AddModelError("Name", "Name length is over 255 symbols");
+            }
+
+            if (string.IsNullOrWhiteSpace(dish.Description))
+            {
+                ModelState.AddModelError("Description", "Description is null or empty or white space");
+            }
+            else if (dish.Description.Length > 500)
+            {
+                ModelState.AddModelError("Description", "Description length is over 500 symbols");
+            }
+
+            if (dish.Cost == null)
+            {
+                ModelState.AddModelError("Cost", "Cost is null");
+            }
+            else if (dish.Cost < 0)
+            {
+                ModelState.AddModelError("Cost", "Cost is less than zero");
+            }
+
+            if (dish.Weight == null)
+            {
+                ModelState.AddModelError("Weight", "Weight is null");
+            }
+            else if (dish.Weight < 0)
+            {
+                ModelState.AddModelError("Weight", "Weight is less than zero");
+            }
+
+            if (dish.Calories == null)
+            {
+                ModelState.AddModelError("Calories", "Calories is null");
+            }
+            else if (dish.Calories < 0)
+            {
+                ModelState.AddModelError("Calories", "Calories is less than zero");
+            }
+
+            if (dish.CoockingTime == null)
+            {
+                ModelState.AddModelError("CoockingTime", "CoockingTime is null");
+            }
+            else if (dish.CoockingTime < 0)
+            {
+                ModelState.AddModelError("CoockingTime", "CoockingTime is less than zero");
+            }
+
+            return ModelState;
         }
     }
 }
