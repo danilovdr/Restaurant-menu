@@ -1,28 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './custom.css'
-import { Container } from 'reactstrap';
-import Form from './components/Form';
-import Filter from './components/Filter';
-import Dish from './components/Dish';
-import Sort from './components/Sort';
+import Header from './components/Header';
+import Main from './components/Main';
 import LoadScreen from './components/LoadScreen';
 
 const App = () => {
-    //Styles
-    const headerStyle = {
-        backgroundColor: "#5995DD",
-        padding: "10px",
-        textAlign: "center"
-    };
-
-    const contentStyle = {
-        width: "1000px"
-    };
-
     //dishes
     const [dishes, setDishes] = useState([]);
-    const [sortParams, setSortParams] = useState(null);
-    const [filterParams, setFilterParams] = useState(null);
 
     //LoadScreen
     const [loadVisible, setLoadVisible] = useState(false);
@@ -39,7 +23,7 @@ const App = () => {
     }
 
     //GetAllDishes
-    const updateDishes = async () => {
+    const updateDishes = async (sortParams, filterParams) => {
         showLoadScreen();
 
         let url = "https://localhost:44334/api/dish/?";
@@ -71,39 +55,17 @@ const App = () => {
             setDishes(data);
             hideLoadScreen();
         }
+        
     }
 
-    useEffect(() => { updateDishes() }, [sortParams, filterParams]);
+    useEffect(() => { updateDishes() }, []);
 
     return (
         <>
             <LoadScreen visible={loadVisible} />
             <div className="App" style={{ display: appDisplay }} >
-                <Container style={headerStyle} fluid={true}>
-                    <h1>Restaurant menu</h1>
-                </Container>
-                <Container fluid={true}>
-                    <main className="d-flex justify-content-center mt-2">
-                        <Filter setFilterParams={setFilterParams} />
-                        <div style={contentStyle} >
-                            <Form updateDishes={updateDishes} />
-                            <Sort setSortParams={setSortParams} />
-                            <div className="d-flex flex-wrap justify-content-start">
-                                {dishes.map(item =>
-                                    <Dish key={item.id}
-                                        id={item.id}
-                                        createDate={item.createDate}
-                                        name={item.name}
-                                        description={item.description}
-                                        cost={item.cost}
-                                        weight={item.weight}
-                                        calories={item.calories}
-                                        coockingTime={item.coockingTime}
-                                        updateDishes={updateDishes} />)}
-                            </div>
-                        </div>
-                    </main>
-                </Container>
+                <Header />
+                <Main updateDishes={updateDishes} dishes={dishes} />
             </div>
         </>
     );
