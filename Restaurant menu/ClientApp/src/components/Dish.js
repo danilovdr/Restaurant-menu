@@ -67,9 +67,17 @@ function Dish(props) {
     const [caloriesAlertDisplay, setCaloriesAlertDisplay] = useState("none");
 
     //CoockingTime
+    const convertTime = (min) => {
+        let hours = (min / 60);
+        let rhours = Math.floor(hours);
+        let minutes = (hours - rhours) * 60;
+        let rminutes = Math.round(minutes);
+        return rhours + " h : " + rminutes + " m";
+    }
+
     const [coockingTime, setCoockingTime] = useState(props.coockingTime);
     const changeCoockimgTime = (event) => setCoockingTime(event.target.value);
-    const coockingTimeComponentText = <p>{coockingTime}</p>;
+    const coockingTimeComponentText = <p>{convertTime(coockingTime)}</p>;
     const coockingTimeComponentInput = <Input type="text" defaultValue={coockingTime} onChange={changeCoockimgTime} />;
     const [coockingTimeComponent, setCoockingTimeComponent] = useState(coockingTimeComponentText);
     const [coockingTimeAlertText, setCoockingTimeAlertText] = useState(null);
@@ -209,7 +217,6 @@ function Dish(props) {
             props.updateDishes();
         }
     }
-
 
     return (
         <Card className="mt-3 mr-3" style={cardStyle} >
