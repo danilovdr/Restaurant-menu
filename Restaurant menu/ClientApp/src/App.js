@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './custom.css'
 import { Container } from 'reactstrap';
+import Form from './components/Form';
 import Filter from './components/Filter';
-import DishForm from './components/DishForm';
 import Dish from './components/Dish';
-import SortPanel from './components/SortPanel';
+import Sort from './components/Sort';
 
 const App = () => {
     const headerStyle = {
@@ -18,78 +18,41 @@ const App = () => {
     };
 
     const [dishes, setDishes] = useState([]);
-    const [sortParams, setSortParam] = useState({ fieldName: null, ascending: null });
-    const [filterParams, setFilterParam] = useState({
-        name: null,
-        cost: { min: null, max: null },
-        weight: { min: null, max: null },
-        calories: { min: null, max: null },
-        coockingTime: { min: null, max: null }
-    });
+    const [sortParams, setSortParams] = useState();
+    const [filterParams, setFilterParams] = useState(null);
 
-    const updateDishes = () => {
+    const updateDishes = async () => {
         let url = "https://localhost:44334/api/dish/?";
 
-        if (sortParams.fieldName != null && sortParams.ascending != null) {
+        if (sortParams != null && sortParams.fieldName != null && sortParams.ascending != null) {
             url += "FieldName=" + sortParams.fieldName + "&ByAscending=" + sortParams.ascending;
         }
 
-        if (filterParams.name) url += "&Name=" + filterParams.name;
+        if (filterParams != null) {
 
-        if (filterParams.cost.min) url += "&MinCost=" + filterParams.cost.min;
-        if (filterParams.cost.max) url += "&MaxCost=" + filterParams.cost.max;
+            if (filterParams.name) url += "&Name=" + filterParams.name;
 
-        if (filterParams.weight.min) url += "&MinWeight=" + filterParams.weight.min;
-        if (filterParams.weight.max) url += "&MaxWeight=" + filterParams.weight.max;
+            if (filterParams.cost.min) url += "&MinCost=" + filterParams.cost.min;
+            if (filterParams.cost.max) url += "&MaxCost=" + filterParams.cost.max;
 
-        if (filterParams.calories.min) url += "&MinCalories=" + filterParams.calories.min;
-        if (filterParams.calories.max) url += "&MaxCalories=" + filterParams.calories.max;
+            if (filterParams.weight.min) url += "&MinWeight=" + filterParams.weight.min;
+            if (filterParams.weight.max) url += "&MaxWeight=" + filterParams.weight.max;
 
-        if (filterParams.coockingTime.min) url += "&MinCoockingTime=" + filterParams.coockingTime.min;
-        if (filterParams.coockingTime.max) url += "&MaxCoockingTime=" + filterParams.coockingTime.max;
+            if (filterParams.calories.min) url += "&MinCalories=" + filterParams.calories.min;
+            if (filterParams.calories.max) url += "&MaxCalories=" + filterParams.calories.max;
 
-        console.log(url);
+            if (filterParams.coockingTime.min) url += "&MinCoockingTime=" + filterParams.coockingTime.min;
+            if (filterParams.coockingTime.max) url += "&MaxCoockingTime=" + filterParams.coockingTime.max;
+        }
+        let resp = await fetch(url);
 
-        fetch(url)
-            .then(resp => resp.json())
-            .then(com =>  setDishes(com));
+        if (resp.ok) {
+            let data = await resp.json();
+            setDishes(data);
+        }
     }
 
-    const createDish = (dish) => {
-        let url = "https://localhost:44334/api/dish/";
-
-        fetch(url, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            },
-            body: JSON.stringify(dish)
-        }).then(() => updateDishes())
-    }
-
-    const deleteDish = (id) => {
-        let url = "https://localhost:44334/api/dish/";
-
-        fetch(url, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            },
-            body: JSON.stringify(id)
-        }).then(() => updateDishes());
-    };
-
-    const sortDishes = (fieldName, ascending) => {
-        setSortParam({ fieldName: fieldName, ascending: ascending });
-    }
-
-    const filterDishes = (filters) => {
-        setFilterParam(filters);
-    }
-
-    useEffect(() => {
-        updateDishes();
-    }, [sortParams, filterParams]);
+    useEffect(() => { updateDishes() }, [sortParams, filterParams]);
 
     return (
         <div className="App" >
@@ -98,10 +61,10 @@ const App = () => {
             </Container>
             <Container fluid={true}>
                 <main className="d-flex justify-content-center mt-2">
-                    <Filter filter={filterDishes} />
+                    <Filter setFilterParams={setFilterParams} />
                     <div style={contentStyle} >
-                        <DishForm createDish={createDish} />
-                        <SortPanel sortDish={sortDishes} />
+                        <Form />
+                        <Sort setSortParams={setSortParams} />
                         <div className="d-flex flex-wrap justify-content-start">
                             {dishes.map(item =>
                                 <Dish key={item.id}
@@ -112,7 +75,7 @@ const App = () => {
                                     weight={item.weight}
                                     calories={item.calories}
                                     coockingTime={item.coockingTime}
-                                    deleteDish={deleteDish} />)}
+                                    updateDishes={updateDishes} />)}
                         </div>
                     </div>
                 </main>

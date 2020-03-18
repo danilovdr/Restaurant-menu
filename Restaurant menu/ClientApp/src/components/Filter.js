@@ -37,7 +37,7 @@ const Filter = (props) => {
             coockingTime: coockingTime
         };
 
-        props.filter(filters);
+        props.setFilterParams(filters);
     }
 
     const reset = () => {
