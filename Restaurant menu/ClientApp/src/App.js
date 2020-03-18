@@ -18,17 +18,17 @@ const App = () => {
     };
 
     const [dishes, setDishes] = useState([]);
-    const [sortParams, setSortParams] = useState();
+    const [sortParams, setSortParams] = useState(null);
     const [filterParams, setFilterParams] = useState(null);
 
     const updateDishes = async () => {
         let url = "https://localhost:44334/api/dish/?";
 
-        if (sortParams != null && sortParams.fieldName != null && sortParams.ascending != null) {
+        if (sortParams && sortParams.fieldName && sortParams.ascending) {
             url += "FieldName=" + sortParams.fieldName + "&ByAscending=" + sortParams.ascending;
         }
 
-        if (filterParams != null) {
+        if (filterParams) {
 
             if (filterParams.name) url += "&Name=" + filterParams.name;
 
@@ -48,6 +48,7 @@ const App = () => {
 
         if (resp.ok) {
             let data = await resp.json();
+            console.log(data);
             setDishes(data);
         }
     }
@@ -63,12 +64,13 @@ const App = () => {
                 <main className="d-flex justify-content-center mt-2">
                     <Filter setFilterParams={setFilterParams} />
                     <div style={contentStyle} >
-                        <Form />
+                        <Form updateDishes={updateDishes} />
                         <Sort setSortParams={setSortParams} />
                         <div className="d-flex flex-wrap justify-content-start">
                             {dishes.map(item =>
                                 <Dish key={item.id}
                                     id={item.id}
+                                    createDate={item.createDate}
                                     name={item.name}
                                     description={item.description}
                                     cost={item.cost}

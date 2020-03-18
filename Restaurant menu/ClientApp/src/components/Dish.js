@@ -16,7 +16,12 @@ function Dish(props) {
         width: "125px"
     }
 
-    //name
+    //CreateTime
+    console.log(props.createTime);
+    let unixTime = Date.parse(props.createDate);
+    const createTime = new Date(unixTime).toLocaleString();
+
+    //Name
     const [name, setName] = useState(props.name);
     const changeName = (event) => setName(event.target.value);
     const nameComponentText = <p>{name}</p>;
@@ -209,6 +214,10 @@ function Dish(props) {
     return (
         <Card className="mt-3 mr-3" style={cardStyle} >
             <CardBody>
+                <FormGroup>
+                    <Label>Create date</Label>
+                    <p>{createTime}</p>
+                </FormGroup>
                 <FormGroup>
                     <Label>Name</Label>
                     {nameComponent}
