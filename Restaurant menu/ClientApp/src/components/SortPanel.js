@@ -1,44 +1,56 @@
 ﻿import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Card, CardTitle, CardBody, Nav, NavItem, NavLink, Button } from 'reactstrap';
+import { Card, CardTitle, CardBody, Col, InputGroup, Label, Input } from 'reactstrap';
 
 const SortPanel = (props) => {
-    //const arrayUp = <>&#11014;</>;
-    //const arrayDown = <>&#11015;</>;
-
-    //const [isNameSort, setIsNameSort] = useState(false);
-    //const [isCostSort, setIsCostSort] = useState(false);
-    //const [isWeightSort, setIsWeightSort] = useState(false);
-    //const [isCaloriesSort, setIsCaloriesSort] = useState(false);
-    //const [isCoockingTimeSort, setIsCoockingTimeSort] = useState(false);
-
-    const sortByName = () => props.sortDish("Name");
-    const sortByCost = () => props.sortDish("Cost");
-    const sortByWeight = () => props.sortDish("Weight");
-    const sortByCalories = () => props.sortDish("Calories");
-    const sortByCoockingTime = () => props.sortDish("CoockingTime");
+    const sort = (event) => {
+        console.log(event.target.value);
+        switch (event.target.value) {
+            case "Name":
+                props.sortDish("Name", true);
+                break;
+            case "Cost: Low to High":
+                props.sortDish("Cost", true);
+                break;
+            case "Cost: High to Low":
+                props.sortDish("Cost", false);
+                break;
+            case "Weight: Low to High":
+                props.sortDish("Weight", true);
+                break;
+            case "Weight: High to Low":
+                props.sortDish("Weight", false);
+                break;
+            case "Calories: Low to High":
+                props.sortDish("Calories", true);
+                break;
+            case "Calories: High to Low":
+                props.sortDish("Calories", false);
+                break;
+            case "Coocking time: Low to High":
+                props.sortDish("CoockingTime", true);
+                break;
+            case "Coocking time: High to Low":
+                props.sortDish("CoockingTime", false);
+                break;
+        }
+    }
 
     return (
         <Card className="mt-3">
             <CardBody>
-                <CardTitle>Sort</CardTitle>
-                <Nav>
-                    <NavItem>
-                        <NavLink href="#" onClick={sortByName}> Name</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#" onClick={sortByCost} > Cost</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#" onClick={sortByWeight} > Weight</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#" onClick={sortByCalories} > Calories</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink href="#" onClick={sortByCoockingTime} > Coocking time</NavLink>
-                    </NavItem>
-                </Nav>
+                <Label for="sortSelect">Sort by:</Label>
+                <Input className="w-25" type="select" name="select" id="sortSelect" onChange={sort}>
+                    <option>Name</option>
+                    <option>Cost: Low to High</option>
+                    <option>Cost: High to Low</option>
+                    <option>Weight: Low to High</option>
+                    <option>Weight: High to Low</option>
+                    <option>Calories: Low to High</option>
+                    <option>Calories: High to Low</option>
+                    <option>Coocking time: Low to High</option>
+                    <option>Coocking time: High to Low</option>
+                </Input>
             </CardBody>
         </Card>
     )

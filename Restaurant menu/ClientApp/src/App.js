@@ -34,39 +34,25 @@ const App = () => {
             url += "FieldName=" + sortParams.fieldName + "&ByAscending=" + sortParams.ascending;
         }
 
-        if (filterParams.name) url += "&FilterName=" + filterParams.name;
-
-        //url += "&Name=" + filterParams.name;
+        if (filterParams.name) url += "&Name=" + filterParams.name;
 
         if (filterParams.cost.min) url += "&MinCost=" + filterParams.cost.min;
         if (filterParams.cost.max) url += "&MaxCost=" + filterParams.cost.max;
 
-        //url += "&MinCost=" + filterParams.cost.min;
-        //url += "&MaxCost=" + filterParams.cost.max;
-
         if (filterParams.weight.min) url += "&MinWeight=" + filterParams.weight.min;
         if (filterParams.weight.max) url += "&MaxWeight=" + filterParams.weight.max;
-
-        //url += "&MinWeight=" + filterParams.weight.min;
-        //url += "&MaxWeight=" + filterParams.weight.max;
 
         if (filterParams.calories.min) url += "&MinCalories=" + filterParams.calories.min;
         if (filterParams.calories.max) url += "&MaxCalories=" + filterParams.calories.max;
 
-        //url += "&MinCalories=" + filterParams.calories.min;
-        //url += "&MaxCalories=" + filterParams.calories.max;
-
         if (filterParams.coockingTime.min) url += "&MinCoockingTime=" + filterParams.coockingTime.min;
         if (filterParams.coockingTime.max) url += "&MaxCoockingTime=" + filterParams.coockingTime.max;
-
-        //url += "&MinCoockingTime=" + filterParams.coockingTime.min;
-        //url += "&MaxCoockingTime=" + filterParams.coockingTime.max;
 
         console.log(url);
 
         fetch(url)
             .then(resp => resp.json())
-            .then(com => setDishes(com));
+            .then(com =>  setDishes(com));
     }
 
     const createDish = (dish) => {
@@ -94,7 +80,7 @@ const App = () => {
     };
 
     const sortDishes = (fieldName, ascending) => {
-        setSortParam({ fieldName: fieldName, ascending: true });
+        setSortParam({ fieldName: fieldName, ascending: ascending });
     }
 
     const filterDishes = (filters) => {

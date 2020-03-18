@@ -88,6 +88,7 @@ namespace Restaurant_menu.Services.Implementation
                 "Weight" => dishes.OrderBy(p => p.Weight),
                 "Calories" => dishes.OrderBy(p => p.Calories),
                 "CoockingTime" => dishes.OrderBy(p => p.CoockingTime),
+                _ => dishes
             };
         }
 
@@ -100,6 +101,7 @@ namespace Restaurant_menu.Services.Implementation
                 "Weight" => dishes.OrderByDescending(p => p.Weight),
                 "Calories" => dishes.OrderByDescending(p => p.Calories),
                 "CoockingTime" => dishes.OrderByDescending(p => p.CoockingTime),
+                _ => dishes
             };
         }
     }

@@ -103,7 +103,7 @@ namespace Restaurant_menu.Data.Services
 
             IQueryable<Dish> dishQuery = _dbContext.Dishes;
 
-            if (filterParams.Name != null)
+            if (filterParams.Name != null && filterParams.Name != "")
             {
                 dishQuery = dishQuery.Where(p => p.Name.Contains(filterParams.Name));
             }
