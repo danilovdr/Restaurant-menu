@@ -3,8 +3,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Card, CardBody, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 
 function Dish(props) {
+    //Styles
     const cardStyle = {
-        width: "300px"
+        width: "300px",
+        alignSelf: "flex-start"
     }
 
     const buttonContainerStyle = {
@@ -182,6 +184,22 @@ function Dish(props) {
         }
     };
 
+    const deleteDish = async () => {
+        let url = "https://localhost:44334/api/dish/";
+
+        let resp = await fetch(url, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json;charset=utf-8"
+            },
+            body: JSON.stringify(props.id)
+        });
+
+        if (resp.ok) {
+            props.updateDishes();
+        }
+    }
+
     const toggleEdit = () => {
         setIsEdit(!isEdit);
 
@@ -196,22 +214,6 @@ function Dish(props) {
             setEditBtnText(acceptText);
         } else {
             updateDish();
-        }
-    }
-
-    const deleteDish = async () => {
-        let url = "https://localhost:44334/api/dish/";
-
-        let resp = await fetch(url, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            },
-            body: JSON.stringify(props.id)
-        });
-
-        if (resp.ok) {
-            props.updateDishes();
         }
     }
 

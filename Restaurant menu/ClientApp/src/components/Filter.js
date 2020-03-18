@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
 const Filter = (props) => {
+    //Styles
     const cardStyle = {
         width: "250px",
         alignSelf: "flex-start"

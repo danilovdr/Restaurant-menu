@@ -96,7 +96,7 @@ namespace Restaurant_menu.ControllerBase
         }
 
         [HttpDelete]
-        public IActionResult Delete(long id)
+        public IActionResult Delete([FromBody] long id)
         {
             try
             {
