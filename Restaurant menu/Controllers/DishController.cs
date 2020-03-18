@@ -4,6 +4,7 @@ using Restaurant_menu.Services.Interfaces;
 using Restaurant_menu.Models.DTO;
 using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Restaurant_menu.Models.Excaptions;
 
 namespace Restaurant_menu.ControllerBase
 {
@@ -11,7 +12,7 @@ namespace Restaurant_menu.ControllerBase
     [Route("api/[controller]")]
     public class DishController : Controller
     {
-        public DishController([FromServices] IDishService dishService)
+        public DishController(IDishService dishService)
         {
             _dishService = dishService;
         }
@@ -42,16 +43,20 @@ namespace Restaurant_menu.ControllerBase
             {
                 dish = _dishService.GetById(id);
             }
-            catch (NullReferenceException)
+            catch (NotFoundDishException)
             {
                 return NotFound();
             }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-            return Json(_dishService.GetById(id));
+            return Json(dish);
         }
 
         [HttpPost]
-        public IActionResult Update([FromBody] Dish dish)
+        public IActionResult Update(Dish dish)
         {
             Validate(dish);
 
@@ -64,16 +69,20 @@ namespace Restaurant_menu.ControllerBase
             {
                 _dishService.UpdateDish(dish);
             }
-            catch (NullReferenceException)
+            catch (NotFoundDishException)
             {
                 return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
 
             return Ok();
         }
 
         [HttpPut]
-        public IActionResult Create([FromBody] Dish dish)
+        public IActionResult Create(Dish dish)
         {
             Validate(dish);
 
@@ -87,15 +96,19 @@ namespace Restaurant_menu.ControllerBase
         }
 
         [HttpDelete]
-        public IActionResult Delete([FromBody] long id)
+        public IActionResult Delete(long id)
         {
             try
             {
                 _dishService.DeleteDish(id);
             }
-            catch (NullReferenceException)
+            catch (NotFoundDishException)
             {
                 NotFound();
+            }
+            catch (Exception ex)
+            {
+                BadRequest(ex.Message);
             }
 
             return Ok();

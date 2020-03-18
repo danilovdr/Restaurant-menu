@@ -17,7 +17,6 @@ function Dish(props) {
     }
 
     //CreateTime
-    console.log(props.createTime);
     let unixTime = Date.parse(props.createDate);
     const createTime = new Date(unixTime).toLocaleString();
 

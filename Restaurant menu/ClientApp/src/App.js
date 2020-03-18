@@ -24,7 +24,7 @@ const App = () => {
     const updateDishes = async () => {
         let url = "https://localhost:44334/api/dish/?";
 
-        if (sortParams && sortParams.fieldName && sortParams.ascending) {
+        if (sortParams && sortParams.fieldName && sortParams.ascending != null) {
             url += "FieldName=" + sortParams.fieldName + "&ByAscending=" + sortParams.ascending;
         }
 
@@ -45,6 +45,8 @@ const App = () => {
             if (filterParams.coockingTime.max) url += "&MaxCoockingTime=" + filterParams.coockingTime.max;
         }
         let resp = await fetch(url);
+
+        console.log(url);
 
         if (resp.ok) {
             let data = await resp.json();

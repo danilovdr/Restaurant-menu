@@ -1,30 +1,34 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Restaurant_menu.Data.Interfaces;
+﻿using Restaurant_menu.Data.Interfaces;
 using Restaurant_menu.Data.Interfaces.Contexts;
 using Restaurant_menu.Models;
 using Restaurant_menu.Models.DTO;
-using System;
 using System.Linq;
 
 namespace Restaurant_menu.Data.Services
 {
     public class DishDataService : IDishDataService
     {
-        public DishDataService([FromServices] IApplcationDbContext dbContext)
+        public DishDataService(IApplcationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         private IApplcationDbContext _dbContext;
 
+        public bool HasDish(long id)
+        {
+            Dish dish = _dbContext.Dishes.Find(id);
+            return dish != null;
+        }
+
         public Dish Get(long id)
         {
             Dish dish = _dbContext.Dishes.FirstOrDefault(p => p.Id == id);
 
-            if (dish == null)
-            {
-                throw new NullReferenceException("Can not find dish by " + id + " id");
-            }
+            //if (dish == null)
+            //{
+            //    throw new NullReferenceException("Can not find dish by " + id + " id");
+            //}
 
             return dish;
         }
@@ -44,10 +48,10 @@ namespace Restaurant_menu.Data.Services
         {
             Dish deletedDish = Get(id);
 
-            if (deletedDish == null)
-            {
-                throw new NullReferenceException("Can not find deleted dish");
-            }
+            //if (deletedDish == null)
+            //{
+            //    throw new NullReferenceException("Can not find deleted dish");
+            //}
 
             _dbContext.Dishes.Remove(deletedDish);
             _dbContext.SaveChanges();
@@ -57,10 +61,10 @@ namespace Restaurant_menu.Data.Services
         {
             Dish updatedDish = Get(dish.Id);
 
-            if (updatedDish == null)
-            {
-                throw new NullReferenceException("Can not find updated dish");
-            }
+            //if (updatedDish == null)
+            //{
+            //    throw new NullReferenceException("Can not find updated dish");
+            //}
 
             updatedDish.Name = dish.Name;
             updatedDish.Description = dish.Description;
@@ -79,7 +83,7 @@ namespace Restaurant_menu.Data.Services
                 "Name" => _dbContext.Dishes.OrderBy(p => p.Name),
                 "Cost" => _dbContext.Dishes.OrderBy(p => p.Cost),
                 "Weight" => _dbContext.Dishes.OrderBy(p => p.Weight),
-                "Calories" => _dbContext.Dishes.OrderBy(p => p.Calories),
+                "Calories" => _dbContext.Dishes.OrderBy(p => p.Calories * p.Weight),
                 "CoockingTime" => _dbContext.Dishes.OrderBy(p => p.CoockingTime),
                 _ => GetAll()
             };
@@ -92,19 +96,40 @@ namespace Restaurant_menu.Data.Services
                 "Name" => _dbContext.Dishes.OrderByDescending(p => p.Name),
                 "Cost" => _dbContext.Dishes.OrderByDescending(p => p.Cost),
                 "Weight" => _dbContext.Dishes.OrderByDescending(p => p.Weight),
-                "Calories" => _dbContext.Dishes.OrderByDescending(p => p.Calories),
+                "Calories" => _dbContext.Dishes.OrderByDescending(p => p.Calories * p.Weight),
                 "CoockingTime" => _dbContext.Dishes.OrderByDescending(p => p.CoockingTime),
                 _ => GetAll()
             };
         }
 
+        public IQueryable<Dish> Sort(IQueryable<Dish> dishes, string fieldName)
+        {
+            return fieldName switch
+            {
+                "Name" => dishes.OrderBy(p => p.Name),
+                "Cost" => dishes.OrderBy(p => p.Cost),
+                "Weight" => dishes.OrderBy(p => p.Weight),
+                "Calories" => dishes.OrderBy(p => p.Calories * p.Weight),
+                "CoockingTime" => dishes.OrderBy(p => p.CoockingTime),
+                _ => dishes
+            };
+        }
+
+        public IQueryable<Dish> SortDescending(IQueryable<Dish> dishes, string fieldName)
+        {
+            return fieldName switch
+            {
+                "Name" => dishes.OrderByDescending(p => p.Name),
+                "Cost" => dishes.OrderByDescending(p => p.Cost),
+                "Weight" => dishes.OrderByDescending(p => p.Weight),
+                "Calories" => dishes.OrderByDescending(p => p.Calories * p.Weight),
+                "CoockingTime" => dishes.OrderByDescending(p => p.CoockingTime),
+                _ => dishes
+            };
+        }
+
         public IQueryable<Dish> Filter(FilterParamsDto filterParams)
         {
-            if (filterParams == null)
-            {
-                throw new ArgumentNullException("filterParams is null");
-            }
-
             IQueryable<Dish> dishQuery = _dbContext.Dishes;
 
             if (filterParams.Name != null && filterParams.Name != "")
@@ -153,7 +178,56 @@ namespace Restaurant_menu.Data.Services
             }
 
             return dishQuery;
+        }
 
+        public IQueryable<Dish> Filter(IQueryable<Dish> dishes, FilterParamsDto filterParams)
+        {
+            if (filterParams.Name != null && filterParams.Name != "")
+            {
+                dishes = dishes.Where(p => p.Name.Contains(filterParams.Name));
+            }
+
+            if (filterParams.MinCost != null)
+            {
+                dishes = dishes.Where(p => p.Cost >= filterParams.MinCost);
+            }
+
+            if (filterParams.MaxCost != null)
+            {
+                dishes = dishes.Where(p => p.Cost <= filterParams.MaxCost);
+            }
+
+            if (filterParams.MinWeight != null)
+            {
+                dishes = dishes.Where(p => p.Weight >= filterParams.MinWeight);
+            }
+
+            if (filterParams.MaxWeight != null)
+            {
+                dishes = dishes.Where(p => p.Weight <= filterParams.MaxWeight);
+            }
+
+            if (filterParams.MinCalories != null)
+            {
+                dishes = dishes.Where(p => p.Calories >= filterParams.MinCalories);
+            }
+
+            if (filterParams.MaxCalories != null)
+            {
+                dishes = dishes.Where(p => p.Calories <= filterParams.MaxCalories);
+            }
+
+            if (filterParams.MinCoockingTime != null)
+            {
+                dishes = dishes.Where(p => p.CoockingTime >= filterParams.MinCoockingTime);
+            }
+
+            if (filterParams.MaxCoockingTime != null)
+            {
+                dishes = dishes.Where(p => p.CoockingTime <= filterParams.MaxCoockingTime);
+            }
+
+            return dishes;
         }
     }
 }

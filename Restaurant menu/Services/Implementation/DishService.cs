@@ -1,6 +1,7 @@
 ﻿using Restaurant_menu.Data.Interfaces;
 using Restaurant_menu.Models;
 using Restaurant_menu.Models.DTO;
+using Restaurant_menu.Models.Excaptions;
 using Restaurant_menu.Services.Interfaces;
 using Restaurant_menu.Services.Interfaces.Factories;
 using System;
@@ -38,12 +39,26 @@ namespace Restaurant_menu.Services.Implementation
 
         public void DeleteDish(long id)
         {
-            _dishDataService.Delete(id);
+            if (_dishDataService.HasDish(id))
+            {
+                _dishDataService.Delete(id);
+            }
+            else
+            {
+                throw new NotFoundDishException("Dish not found");
+            }
         }
 
         public void UpdateDish(Dish dish)
         {
-            _dishDataService.Update(dish);
+            if (_dishDataService.HasDish(dish.Id))
+            {
+                _dishDataService.Update(dish);
+            }
+            else
+            {
+                throw new NotFoundDishException("Dish not found");
+            }
         }
 
         public Dish[] Sort(SortParamsDto sortParams)
@@ -69,40 +84,14 @@ namespace Restaurant_menu.Services.Implementation
 
             if (sortParams.ByAscending)
             {
-                Sort(ref dishes, sortParams.FieldName);
+                dishes = _dishDataService.Sort(dishes, sortParams.FieldName);
             }
             else
             {
-                SortDescending(ref dishes, sortParams.FieldName);
+                dishes = _dishDataService.SortDescending(dishes, sortParams.FieldName);
             }
 
             return dishes.ToArray();
-        }
-
-        private void Sort(ref IQueryable<Dish> dishes, string fieldName)
-        {
-            dishes = fieldName switch
-            {
-                "Name" => dishes.OrderBy(p => p.Name),
-                "Cost" => dishes.OrderBy(p => p.Cost),
-                "Weight" => dishes.OrderBy(p => p.Weight),
-                "Calories" => dishes.OrderBy(p => p.Calories),
-                "CoockingTime" => dishes.OrderBy(p => p.CoockingTime),
-                _ => dishes
-            };
-        }
-
-        private void SortDescending(ref IQueryable<Dish> dishes, string fieldName)
-        {
-            dishes = fieldName switch
-            {
-                "Name" => dishes.OrderByDescending(p => p.Name),
-                "Cost" => dishes.OrderByDescending(p => p.Cost),
-                "Weight" => dishes.OrderByDescending(p => p.Weight),
-                "Calories" => dishes.OrderByDescending(p => p.Calories),
-                "CoockingTime" => dishes.OrderByDescending(p => p.CoockingTime),
-                _ => dishes
-            };
         }
     }
 }
