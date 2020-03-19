@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Container } from 'reactstrap';
 import Form from './Form';
 import Filter from './Filter';
@@ -17,6 +17,8 @@ const Main = (props) => {
         props.updateDishes(sortParams, filterParams);
     }
 
+    useEffect(() => { updateDishes() }, [sortParams, filterParams]);
+
     return (
         <Container fluid={true} className="d-flex justify-content-center mt-2">
             <Filter setFilterParams={setFilterParams} />
@@ -34,6 +36,7 @@ const Main = (props) => {
                             weight={item.weight}
                             calories={item.calories}
                             coockingTime={item.coockingTime}
+                            showLoadScreen={props.showLoadScreen}
                             updateDishes={updateDishes} />)}
                 </div>
             </div>

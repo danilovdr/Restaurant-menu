@@ -70,6 +70,7 @@ function Form(props) {
     }
 
     const createDish = async () => {
+
         reset();
 
         let dish = {

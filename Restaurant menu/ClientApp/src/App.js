@@ -65,7 +65,7 @@ const App = () => {
             <LoadScreen visible={loadVisible} />
             <div className="App" style={{ display: appDisplay }} >
                 <Header />
-                <Main updateDishes={updateDishes} dishes={dishes} />
+                <Main updateDishes={updateDishes} showLoadScreen={showLoadScreen} dishes={dishes} />
             </div>
         </>
     );

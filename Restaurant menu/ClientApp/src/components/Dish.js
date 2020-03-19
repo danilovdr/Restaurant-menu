@@ -116,6 +116,7 @@ function Dish(props) {
     }
 
     const updateDish = async () => {
+        props.showLoadScreen();
         reset();
 
         let data = {
@@ -185,6 +186,7 @@ function Dish(props) {
     };
 
     const deleteDish = async () => {
+        props.showLoadScreen();
         let url = "https://localhost:44334/api/dish/";
 
         let resp = await fetch(url, {
