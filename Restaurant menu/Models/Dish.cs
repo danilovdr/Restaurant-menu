@@ -13,6 +13,6 @@ namespace Restaurant_menu.Models
         public int? Weight { get; set; }
         public int? Calories { get; set; }
         public int? CoockingTime { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
+        public string Ingredients { get; set; }
     }
 }

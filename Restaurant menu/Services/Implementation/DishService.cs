@@ -33,7 +33,7 @@ namespace Restaurant_menu.Services.Implementation
         public void CreateDish(Dish dish)
         {
             dish.CreateDate = DateTime.Now;
-            dish.Ingredients = _defaultIngredientsFactory.GetIngredients(dish);
+            dish.Ingredients = _defaultIngredientsFactory.GetDefaultIngredients();
             _dishDataService.Create(dish);
         }
 

@@ -3,12 +3,6 @@ import React, { useState } from 'react';
 import { Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
 const Filter = (props) => {
-    //Styles
-    const cardStyle = {
-        width: "250px",
-        alignSelf: "flex-start"
-    };
-
     const [name, setName] = useState("");
     const changeName = (event) => setName(event.target.value);
 
@@ -49,7 +43,7 @@ const Filter = (props) => {
     }
 
     return (
-        <Card className="mr-3" style={cardStyle} >
+        <Card>
             <CardBody>
                 <h3>Filter</h3>
                 <FormGroup>
