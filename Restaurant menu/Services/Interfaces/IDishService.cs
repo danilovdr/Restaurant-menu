@@ -11,7 +11,7 @@ namespace Restaurant_menu.Services.Interfaces
         IQueryable<Dish> GetPage(PageParamsDto pageParams);
         IQueryable<Dish> GetPage(IQueryable<Dish> dishes, PageParamsDto pageParams);
         int GetCountDishes();
-        int GetTotalPages(int pageSize);
+        int GetTotalPages(int countDishes, int pageSize);
         void CreateDish(Dish dish);
         IQueryable<Dish> Sort(IQueryable<Dish> dishes, SortParamsDto sortParams);
         IQueryable<Dish> Filter(IQueryable<Dish> dishes, FilterParamsDto filterParams);

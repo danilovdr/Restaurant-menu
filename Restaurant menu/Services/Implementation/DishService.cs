@@ -82,9 +82,8 @@ namespace Restaurant_menu.Services.Implementation
             return dishes;
         }
 
-        public int GetTotalPages(int pageSize)
+        public int GetTotalPages(int countDishes, int pageSize)
         {
-            int countDishes = GetCountDishes();
             return (int)Math.Ceiling(countDishes / (double)pageSize);
         }
 

@@ -50,7 +50,7 @@ namespace Restaurant_menu.ControllerBase
                 viewModel.FilteredDishes = dishes.Count();
                 dishes = _dishService.GetPage(dishes, pageParams);
                 viewModel.Dishes = dishes.ToArray();
-                viewModel.TotalPages = _dishService.GetTotalPages((int)pageParams.SizePage);
+                viewModel.TotalPages = _dishService.GetTotalPages(viewModel.Dishes.Length, (int)pageParams.SizePage);
                 viewModel.CountAllDishes = _dishService.GetCountDishes();
                 return Json(viewModel);
             }
