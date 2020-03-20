@@ -45,44 +45,44 @@ const Filter = (props) => {
     return (
         <Card>
             <CardBody>
-                <h3>Filter</h3>
+                <h3>Фильтер</h3>
                 <FormGroup>
-                    <Label form="nameFilter">Name</Label>
-                    <Input type="text" id="nameFilter" placeholder="Name" value={name} onChange={changeName} />
+                    <Label form="nameFilter">Имя</Label>
+                    <Input type="text" id="nameFilter" placeholder="Имя" value={name} onChange={changeName} />
                 </FormGroup>
                 <FormGroup>
-                    <Label>Cost</Label>
+                    <Label>Цена</Label>
                     <div className="d-flex justify-content-around">
-                        <Input className="w-50 mr-3" type="text" placeholder="min" value={cost.min} onChange={changeMinCost} />
-                        <Input className="w-50" type="text" placeholder="max" value={cost.max}  onChange={changeMaxCost} />
+                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={cost.min} onChange={changeMinCost} />
+                        <Input className="w-50" type="text" placeholder="Макс" value={cost.max}  onChange={changeMaxCost} />
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <Label>Weight</Label>
+                    <Label>Вес</Label>
                     <div className="d-flex justify-content-around">
-                        <Input className="w-50 mr-3" type="text" placeholder="min" value={weight.min} onChange={changeMinWeight} />
-                        <Input className="w-50" type="text" placeholder="max" value={weight.max} onChange={changeMaxWeight} />
+                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={weight.min} onChange={changeMinWeight} />
+                        <Input className="w-50" type="text" placeholder="Макс" value={weight.max} onChange={changeMaxWeight} />
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <Label>Calories</Label>
+                    <Label>Калорийность</Label>
                     <div className="d-flex justify-content-around">
-                        <Input className="w-50 mr-3" type="text" placeholder="min" value={calories.min} onChange={changeMinCalories} />
-                        <Input className="w-50" type="text" placeholder="max" value={calories.max} onChange={changeMaxCalories} />
+                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={calories.min} onChange={changeMinCalories} />
+                        <Input className="w-50" type="text" placeholder="Макс" value={calories.max} onChange={changeMaxCalories} />
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <Label>Coocking time</Label>
+                    <Label>Время приготовления</Label>
                     <div className="d-flex justify-content-around">
-                        <Input className="w-50 mr-3" type="text" placeholder="min" value={coockingTime.min} onChange={changeMinCoockingTime} />
-                        <Input className="w-50" type="text" placeholder="max" value={coockingTime.max} onChange={changeMaxCoockingTime} />
+                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={coockingTime.min} onChange={changeMinCoockingTime} />
+                        <Input className="w-50" type="text" placeholder="Макс" value={coockingTime.max} onChange={changeMaxCoockingTime} />
                     </div>
                 </FormGroup>
                 <FormGroup>
-                    <Button className="w-100" color="primary" onClick={filter}>Accept</Button>
+                    <Button className="w-100" color="primary" onClick={filter}>Найти</Button>
                 </FormGroup>
                 <FormGroup>
-                    <Button className="w-100" color="secondary" onClick={reset}>Reset</Button>
+                    <Button className="w-100" color="secondary" onClick={reset}>Сбросить</Button>
                 </FormGroup>
             </CardBody>
         </Card>

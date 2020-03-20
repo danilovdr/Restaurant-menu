@@ -166,6 +166,21 @@ const Dish = (props) => {
         props.update();
     }
 
+    console.log(props.dish.coockingTime);
+
+    const convertTime = () => {
+        let hours = (props.dish.coockingTime / 60);
+        let rhours = Math.floor(hours);
+        let minutes = (hours - rhours) * 60;
+        let rminutes = Math.round(minutes);
+        return rhours + " час : " + rminutes + " мин";
+    }
+
+    const parseCreateTime = () => {
+        let unixTime = Date.parse(props.dish.createDate);
+        return new Date(unixTime).toLocaleString();
+    }
+
 
     return (
         <Card>
@@ -173,6 +188,8 @@ const Dish = (props) => {
                 <CardTitle>{props.name}</CardTitle>
             </CardHeader>
             <CardBody>
+                <CardSubtitle>Дата создания</CardSubtitle>
+                <CardText>{parseCreateTime()}</CardText>
                 <CardSubtitle>Описание</CardSubtitle>
                 <CardText>{props.dish.description}</CardText>
                 <CardSubtitle>Состав</CardSubtitle>
@@ -183,8 +200,8 @@ const Dish = (props) => {
                 <CardText>{props.dish.weight}</CardText>
                 <CardSubtitle>Калорийность</CardSubtitle>
                 <CardText>{props.dish.calories}</CardText>
-                <CardSubtitle>Время приготовления</CardSubtitle>
-                <CardText>{props.dish.coockingTime}</CardText>
+                    <CardSubtitle>Время приготовления</CardSubtitle>
+                    <CardText>{convertTime()}</CardText>
             </CardBody>
             <CardFooter className="d-flex justify-content-between">
                 {/* View */}
@@ -197,7 +214,7 @@ const Dish = (props) => {
                     </ModalHeader>
                     <ModalBody>
                         <p>Дата создания</p>
-                        <p>{props.dish.createDate}</p>
+                        <p>{parseCreateTime()}</p>
                         <p>Состав</p>
                         <p>{props.dish.ingredients}</p>
                         <p>Описание</p>
@@ -209,7 +226,7 @@ const Dish = (props) => {
                         <p>Калории</p>
                         <p>{props.dish.calories}</p>
                         <p>Время приготовления</p>
-                        <p>{props.dish.coockingTime}</p>
+                        <p>{convertTime()}</p>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={toggleViewModal}>Закрыть</Button>
