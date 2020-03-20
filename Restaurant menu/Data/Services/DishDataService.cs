@@ -24,12 +24,6 @@ namespace Restaurant_menu.Data.Services
         public Dish Get(long id)
         {
             Dish dish = _dbContext.Dishes.FirstOrDefault(p => p.Id == id);
-
-            //if (dish == null)
-            //{
-            //    throw new NullReferenceException("Can not find dish by " + id + " id");
-            //}
-
             return dish;
         }
 
@@ -38,10 +32,14 @@ namespace Restaurant_menu.Data.Services
             return _dbContext.Dishes;
         }
 
-
         public IQueryable<Dish> GetRange(int fromIndex, int toIndex)
         {
             return _dbContext.Dishes.Skip(fromIndex).Take(toIndex);
+        }
+
+        public IQueryable<Dish> GetRange(IQueryable<Dish> dishes, int fromIndex, int toIndex)
+        {
+            return dishes.Skip(fromIndex).Take(toIndex);
         }
 
         public int GetCountDishes()
@@ -58,12 +56,6 @@ namespace Restaurant_menu.Data.Services
         public void Delete(long id)
         {
             Dish deletedDish = Get(id);
-
-            //if (deletedDish == null)
-            //{
-            //    throw new NullReferenceException("Can not find deleted dish");
-            //}
-
             _dbContext.Dishes.Remove(deletedDish);
             _dbContext.SaveChanges();
         }
@@ -71,12 +63,6 @@ namespace Restaurant_menu.Data.Services
         public void Update(Dish dish)
         {
             Dish updatedDish = Get(dish.Id);
-
-            //if (updatedDish == null)
-            //{
-            //    throw new NullReferenceException("Can not find updated dish");
-            //}
-
             updatedDish.Name = dish.Name;
             updatedDish.Ingredients = dish.Ingredients;
             updatedDish.Description = dish.Description;

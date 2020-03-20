@@ -33,6 +33,7 @@ namespace Restaurant_menu.ControllerBase
                 dishes = _dishService.Filter(dishes, filterParams);
                 dishes = _dishService.Sort(dishes, sortParams);
                 viewModel.Dishes = dishes.ToArray();
+                viewModel.FilteredDishes = dishes.Count();
                 viewModel.TotalPages = 0;
                 viewModel.CountAllDishes = _dishService.GetCountDishes();
                 return Json(viewModel);
@@ -43,19 +44,11 @@ namespace Restaurant_menu.ControllerBase
                 {
                     return BadRequest("Указан номер страницы но не указан размер страницы");
                 }
-                IQueryable<Dish> dishes;
 
-                try
-                {
-                    dishes = _dishService.GetPage(pageParams);
-                }
-                catch (GetPageException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-
-                dishes = _dishService.Filter(dishes, filterParams);
+                IQueryable<Dish> dishes = _dishService.Filter(filterParams);
                 dishes = _dishService.Sort(dishes, sortParams);
+                viewModel.FilteredDishes = dishes.Count();
+                dishes = _dishService.GetPage(dishes, pageParams);
                 viewModel.Dishes = dishes.ToArray();
                 viewModel.TotalPages = _dishService.GetTotalPages((int)pageParams.SizePage);
                 viewModel.CountAllDishes = _dishService.GetCountDishes();

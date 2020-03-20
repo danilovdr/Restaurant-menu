@@ -56,6 +56,32 @@ namespace Restaurant_menu.Services.Implementation
             return query;
         }
 
+        public IQueryable<Dish> GetPage(IQueryable<Dish> dishes, PageParamsDto pageParams)
+        {
+            int sizePage = pageParams.SizePage == null ? throw new ArgumentNullException("Размер страницы null") : (int)pageParams.SizePage;
+            int numberPage = pageParams.NumberPage == null ? throw new ArgumentNullException("Номер страницы null") : (int)pageParams.NumberPage;
+
+            int from = sizePage * numberPage;
+            int to = (numberPage + 1) * sizePage;
+            int count = _dishDataService.GetCountDishes();
+
+            if (from > count)
+            {
+                throw new GetPageException("Начальный индекс больше максимального");
+            }
+
+            if (to > count)
+            {
+                dishes = _dishDataService.GetRange(dishes, from, count);
+            }
+            else
+            {
+                dishes = _dishDataService.GetRange(dishes, from, to);
+            }
+
+            return dishes;
+        }
+
         public int GetTotalPages(int pageSize)
         {
             int countDishes = GetCountDishes();

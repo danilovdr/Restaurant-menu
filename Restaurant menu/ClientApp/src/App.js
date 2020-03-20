@@ -52,7 +52,7 @@ const App = () => {
     }, [numberPage, sortParams, filterParams]);
 
     //Data
-    const [data, setData] = useState({ dishes: [], totalPages: 0, countAllDishes: 0 });
+    const [data, setData] = useState({ dishes: [], filteredDishes: 0, totalPages: 0, countAllDishes: 0 });
 
     const createDishes = () => {
         return data.dishes.map(item =>
