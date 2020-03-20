@@ -28,7 +28,7 @@ const DishPagination = (props) => {
     const changePage = (event) => props.setNumberPage(parseInt(event.target.id));
 
     const nextPage = () => {
-        if (props.numberPage < props.totalPages) {
+        if (props.numberPage < props.totalPages - 1) {
             props.setNumberPage(props.numberPage + 1);
         }
     }
