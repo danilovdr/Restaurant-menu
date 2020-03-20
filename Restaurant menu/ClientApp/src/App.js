@@ -80,6 +80,8 @@ const App = () => {
         fetchData();
     }, [url, countUpdates]);
 
+    console.log(data);
+
     return (
         <>
             <div className="App" >

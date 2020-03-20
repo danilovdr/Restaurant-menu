@@ -6,8 +6,6 @@ using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Restaurant_menu.Models.Excaptions;
 using Restaurant_menu.Models.ViewModels;
-using System.Linq;
-using Restaurant_menu.Models.Exceptions;
 
 namespace Restaurant_menu.ControllerBase
 {
@@ -27,33 +25,23 @@ namespace Restaurant_menu.ControllerBase
         {
             DishViewModel viewModel = new DishViewModel();
 
-            if (pageParams.NumberPage == null)
+            Dish[] dishes = _dishService.FilterAndSort(filterParams, sortParams);
+
+            if (pageParams.NumberPage != null && pageParams.SizePage != null)
             {
-                IQueryable<Dish> dishes = _dishService.GetAll();
-                dishes = _dishService.Filter(dishes, filterParams);
-                dishes = _dishService.Sort(dishes, sortParams);
-                viewModel.Dishes = dishes.ToArray();
-                viewModel.FilteredDishes = dishes.Count();
-                viewModel.TotalPages = 0;
-                viewModel.CountAllDishes = _dishService.GetCountDishes();
-                return Json(viewModel);
+                viewModel.FilteredDishes = dishes.Length;
+                viewModel.TotalPages = _dishService.GetTotalPages(dishes.Length, (int)pageParams.SizePage);
+                dishes = _dishService.GetPage(dishes, pageParams);
             }
             else
             {
-                if (pageParams.SizePage == null)
-                {
-                    return BadRequest("Указан номер страницы но не указан размер страницы");
-                }
-
-                IQueryable<Dish> dishes = _dishService.Filter(filterParams);
-                dishes = _dishService.Sort(dishes, sortParams);
-                viewModel.FilteredDishes = dishes.Count();
-                dishes = _dishService.GetPage(dishes, pageParams);
-                viewModel.Dishes = dishes.ToArray();
-                viewModel.TotalPages = _dishService.GetTotalPages(viewModel.Dishes.Length, (int)pageParams.SizePage);
-                viewModel.CountAllDishes = _dishService.GetCountDishes();
-                return Json(viewModel);
+                viewModel.FilteredDishes = dishes.Length;
+                viewModel.TotalPages = 0;
             }
+
+            viewModel.Dishes = dishes;
+            viewModel.CountAllDishes = _dishService.GetCountDishes();
+            return Json(viewModel);
         }
 
         [HttpGet("{id}")]

@@ -32,16 +32,6 @@ namespace Restaurant_menu.Data.Services
             return _dbContext.Dishes;
         }
 
-        public IQueryable<Dish> GetRange(int fromIndex, int toIndex)
-        {
-            return _dbContext.Dishes.Skip(fromIndex).Take(toIndex);
-        }
-
-        public IQueryable<Dish> GetRange(IQueryable<Dish> dishes, int fromIndex, int toIndex)
-        {
-            return dishes.Skip(fromIndex).Take(toIndex);
-        }
-
         public int GetCountDishes()
         {
             return _dbContext.Dishes.Count();
@@ -100,32 +90,6 @@ namespace Restaurant_menu.Data.Services
             };
         }
 
-        public IQueryable<Dish> Sort(IQueryable<Dish> dishes, string fieldName)
-        {
-            return fieldName switch
-            {
-                "Name" => dishes.OrderBy(p => p.Name),
-                "Cost" => dishes.OrderBy(p => p.Cost),
-                "Weight" => dishes.OrderBy(p => p.Weight),
-                "Calories" => dishes.OrderBy(p => p.Calories * p.Weight),
-                "CoockingTime" => dishes.OrderBy(p => p.CoockingTime),
-                _ => dishes
-            };
-        }
-
-        public IQueryable<Dish> SortDescending(IQueryable<Dish> dishes, string fieldName)
-        {
-            return fieldName switch
-            {
-                "Name" => dishes.OrderByDescending(p => p.Name),
-                "Cost" => dishes.OrderByDescending(p => p.Cost),
-                "Weight" => dishes.OrderByDescending(p => p.Weight),
-                "Calories" => dishes.OrderByDescending(p => p.Calories * p.Weight),
-                "CoockingTime" => dishes.OrderByDescending(p => p.CoockingTime),
-                _ => dishes
-            };
-        }
-
         public IQueryable<Dish> Filter(FilterParamsDto filterParams)
         {
             IQueryable<Dish> dishQuery = _dbContext.Dishes;
@@ -176,56 +140,6 @@ namespace Restaurant_menu.Data.Services
             }
 
             return dishQuery;
-        }
-
-        public IQueryable<Dish> Filter(IQueryable<Dish> dishes, FilterParamsDto filterParams)
-        {
-            if (filterParams.Name != null && filterParams.Name != "")
-            {
-                dishes = dishes.Where(p => p.Name.Contains(filterParams.Name));
-            }
-
-            if (filterParams.MinCost != null)
-            {
-                dishes = dishes.Where(p => p.Cost >= filterParams.MinCost);
-            }
-
-            if (filterParams.MaxCost != null)
-            {
-                dishes = dishes.Where(p => p.Cost <= filterParams.MaxCost);
-            }
-
-            if (filterParams.MinWeight != null)
-            {
-                dishes = dishes.Where(p => p.Weight >= filterParams.MinWeight);
-            }
-
-            if (filterParams.MaxWeight != null)
-            {
-                dishes = dishes.Where(p => p.Weight <= filterParams.MaxWeight);
-            }
-
-            if (filterParams.MinCalories != null)
-            {
-                dishes = dishes.Where(p => p.Calories >= filterParams.MinCalories);
-            }
-
-            if (filterParams.MaxCalories != null)
-            {
-                dishes = dishes.Where(p => p.Calories <= filterParams.MaxCalories);
-            }
-
-            if (filterParams.MinCoockingTime != null)
-            {
-                dishes = dishes.Where(p => p.CoockingTime >= filterParams.MinCoockingTime);
-            }
-
-            if (filterParams.MaxCoockingTime != null)
-            {
-                dishes = dishes.Where(p => p.CoockingTime <= filterParams.MaxCoockingTime);
-            }
-
-            return dishes;
         }
     }
 }
