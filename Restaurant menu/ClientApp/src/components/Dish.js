@@ -85,7 +85,7 @@ const Dish = (props) => {
                 "Content-Type": "application/json;charset=utf-8"
             },
             body: JSON.stringify({
-                Id: props.id,
+                Id: props.dish.id,
                 Name: editedName,
                 Ingredients: editedIngredients,
                 Description: editedDescription,
@@ -99,6 +99,7 @@ const Dish = (props) => {
         props.setLoadScreen(false);
 
         if (resp.ok) {
+            console.log("ok");
             props.update();
         } else {
             let errData = await resp.json();

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './custom.css'
-import { Container, Row, Col, Modal, ModalBody, Pagination, PaginationLink, PaginationItem } from 'reactstrap';
+import { Container, Row, Col, Modal, ModalBody } from 'reactstrap';
 import Spinner from './img/spinner.gif';
 import Header from './components/Header';
 import Filter from './components/Filter';
 import Sort from './components/Sort';
 import Dish from './components/Dish';
 import Footer from './components/Footer';
+import DishPagination from './components/DishPagination';
 
 const App = () => {
     //LoadScreen
@@ -16,6 +17,8 @@ const App = () => {
     const update = () => setCountUpdates(countUpdates + 1);
 
     //Params
+    const sizePage = 20;
+    const [numberPage, setNumberPage] = useState(0);
     const [sortParams, setSortParams] = useState(null);
     const [filterParams, setFilterParams] = useState(null);
     const [url, setUrl] = useState("");
@@ -23,8 +26,10 @@ const App = () => {
     useEffect(() => {
         let newUrl = "https://localhost:44334/api/dish/?";
 
+        newUrl += "SizePage=" + sizePage + "&NumberPage=" + numberPage;
+
         if (sortParams && sortParams.fieldName && sortParams.ascending != null) {
-            newUrl += "FieldName=" + sortParams.fieldName + "&ByAscending=" + sortParams.ascending;
+            newUrl += "&FieldName=" + sortParams.fieldName + "&ByAscending=" + sortParams.ascending;
         }
 
         if (filterParams) {
@@ -44,10 +49,21 @@ const App = () => {
         }
 
         setUrl(newUrl);
-    }, [sortParams, filterParams]);
+    }, [numberPage, sortParams, filterParams]);
 
-    //Dishes
-    const [data, setData] = useState({dishes: [], countAllDishes: 0});
+    //Data
+    const [data, setData] = useState({ dishes: [], totalPages: 0, countAllDishes: 0 });
+
+    const createDishes = () => {
+        return data.dishes.map(item =>
+            <Col key={item.id} className="p-3" lg={3}>
+                <Dish
+                    dish={item}
+                    update={update}
+                    setLoadScreen={setLoadScreen} />
+            </Col>
+        );
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,7 +73,6 @@ const App = () => {
 
             if (resp.ok) {
                 let data = await resp.json();
-                console.log(data);
                 setData(data);
             }
         };
@@ -67,64 +82,36 @@ const App = () => {
 
     return (
         <>
-        <div className="App" >
-            <Modal isOpen={loadScreen} fade={false}>
-                <ModalBody className="text-center">
-                    <img src={Spinner} />
-                </ModalBody>
-            </Modal>
-            <Header
-                update={update}
-                setLoadScreen={setLoadScreen} />
-            <Container fluid={true}>
-                <Row className="justify-content-around">
-                    <Col lg={2}>
-                        <Filter setFilterParams={setFilterParams} />
-                    </Col>
-                    <Col lg={9}>
-                        <Sort setSortParams={setSortParams} />
-                        <Row>
-                            {data.dishes.map(item =>
-                                <Col key={item.id} className="p-3" lg={3}>
-                                    <Dish
-                                        dish={item}
-                                        update={update}
-                                        setLoadScreen={setLoadScreen} />
-                                </Col>
-                            )}
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Pagination aria-label="Page navigation example">
-                                    <PaginationItem>
-                                        <PaginationLink previous href="#" />
-                                    </PaginationItem>
-                                    <PaginationItem active>
-                                        <PaginationLink href="#">1</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">2</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">3</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">4</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">5</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink next href="#" />
-                                    </PaginationItem>
-                                </Pagination>
-                            </Col>
-                        </Row>
-                    </Col>
-                </Row>
-            </Container>
-        </div>
-        <Footer data={data} />
+            <div className="App" >
+                <Modal isOpen={loadScreen} fade={false}>
+                    <ModalBody className="text-center">
+                        <img src={Spinner} />
+                    </ModalBody>
+                </Modal>
+                <Header
+                    update={update}
+                    setLoadScreen={setLoadScreen} />
+                <Container fluid={true}>
+                    <Row className="justify-content-around">
+                        <Col lg={2}>
+                            <Filter setFilterParams={setFilterParams} />
+                        </Col>
+                        <Col lg={9}>
+                            <Sort setSortParams={setSortParams} />
+                            <Row>
+                                {createDishes()}
+                            </Row>
+                            <Row>
+                                <DishPagination
+                                    totalPages={data.totalPages}
+                                    numberPage={numberPage}
+                                    setNumberPage={setNumberPage} />
+                            </Row>
+                        </Col>
+                    </Row>
+                </Container>
+            </div>
+            <Footer data={data} />
         </>
     );
 }

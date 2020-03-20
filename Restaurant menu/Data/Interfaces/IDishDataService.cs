@@ -8,6 +8,7 @@ namespace Restaurant_menu.Data.Interfaces
     {
         bool HasDish(long id);
         Dish Get(long id);
+        IQueryable<Dish> GetRange(int fromIndex, int toIndex);
         int GetCountDishes();
         IQueryable<Dish> GetAll();
         void Create(Dish dish);

@@ -38,6 +38,12 @@ namespace Restaurant_menu.Data.Services
             return _dbContext.Dishes;
         }
 
+
+        public IQueryable<Dish> GetRange(int fromIndex, int toIndex)
+        {
+            return _dbContext.Dishes.Skip(fromIndex).Take(toIndex);
+        }
+
         public int GetCountDishes()
         {
             return _dbContext.Dishes.Count();

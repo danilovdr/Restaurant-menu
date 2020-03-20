@@ -1,6 +1,5 @@
 ﻿import 'bootstrap/dist/css/bootstrap.css';
-import React, { useState } from 'react';
-import { Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
+import React from 'react';
 
 const Footer = (props) => {
     const style = {
@@ -10,8 +9,6 @@ const Footer = (props) => {
         position: "fixed",
         textAlign: "left"
     };
-
-    console.log(props.data.dishes.length);
 
     return (
         <footer style={style} >
