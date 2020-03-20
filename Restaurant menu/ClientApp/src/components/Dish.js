@@ -1,102 +1,60 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Card, CardBody, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
+import { Card, CardHeader, CardTitle, CardSubtitle, CardBody, CardFooter, FormGroup, Label, Input, Button, Alert, CardText, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import Open from '../img/open.svg';
+import Edit from '../img/edit.svg';
+import Delete from '../img/delete.svg';
 
-function Dish(props) {
-    const cardStyle = {
-        width: "300px"
-    }
+const Dish = (props) => {
+    //View
+    const [viewModal, setViewModal] = useState(false);
+    const toggleViewModal = () => setViewModal(!viewModal);
 
-    const buttonContainerStyle = {
-        display: "flex",
-        justifyContent: "space-between"
-    }
+    //Edit
+    const [editModal, setEditModal] = useState(false);
+    const toggleEditModal = () => setEditModal(!editModal);
 
-    const buttonStyle = {
-        width: "125px"
-    }
-
-    //CreateTime
-    console.log(props.createTime);
-    let unixTime = Date.parse(props.createDate);
-    const createTime = new Date(unixTime).toLocaleString();
-
-    //Name
-    const [name, setName] = useState(props.name);
-    const changeName = (event) => setName(event.target.value);
-    const nameComponentText = <p>{name}</p>;
-    const nameComponentInput = <Input type="text" defaultValue={name} onChange={changeName} />;
-    const [nameComponent, setNameComponent] = useState(nameComponentText);
+    const [editedName, setEditedName] = useState(props.dish.name);
+    const changeEditedName = (event) => setEditedName(event.target.value);
     const [nameAlertText, setNameAlertText] = useState(null);
     const [nameAlertDisplay, setNameAlertDisplay] = useState("none");
 
-    //Description
-    const [description, setDescription] = useState(props.description);
-    const changeDescription = (event) => setDescription(event.target.value);
-    const descriptionComponentText = <p>{description}</p>;
-    const descriptionComponentInput = <Input type="textarea" defaultValue={description} onChange={changeDescription} />;
-    const [descriptionComponent, setDescriptionComponent] = useState(descriptionComponentText);
+    const [editedIngredients, setEditedIngredients] = useState(props.dish.ingredients);
+    const changeEditedIngredients = (event) => setEditedIngredients(event.target.value);
+    const [ingredientsAlertText, setIngredientsAlertText] = useState(null);
+    const [ingredientsAlertDisplay, setIngredientsAlertDisplay] = useState("none");
+
+    const [editedDescription, setEditedDescription] = useState(props.dish.ingredients);
+    const changeEditedDescription = (event) => setEditedDescription(event.target.value);
     const [descriptionAlertText, setDescriptionAlertText] = useState(null);
     const [descriptionAlertDisplay, setDescriptionAlertDisplay] = useState("none");
 
-    //Cost
-    const [cost, setCost] = useState(props.cost);
-    const changeCost = (event) => setCost(event.target.value);
-    const costComponentText = <p>{cost}</p>;
-    const costComponentInput = <Input type="text" defaultValue={cost} onChange={changeCost} />;
-    const [costComponent, setCostComponent] = useState(costComponentText);
+    const [editedCost, setEditedCost] = useState(props.dish.cost);
+    const changeEditedCost = (event) => setEditedCost(event.target.value);
     const [costAlertText, setCostAlertText] = useState(null);
     const [costAlertDisplay, setCostAlertDisplay] = useState("none");
 
-    //Weight
-    const [weight, setWeight] = useState(props.weight);
-    const changeWeight = (event) => setWeight(event.target.value);
-    const weightComponentText = <p>{weight}</p>;
-    const weightComponentInput = <Input type="text" defaultValue={weight} onChange={changeWeight} />;
-    const [weightComponent, setWeightComponent] = useState(weightComponentText);
+    const [editedWeight, setEditedWeight] = useState(props.dish.weight);
+    const changeEditedWeight = (event) => setEditedWeight(event.target.value);
     const [weightAlertText, setWeightAlertText] = useState(null);
     const [weightAlertDisplay, setWeightAlertDisplay] = useState("none");
 
-    //Calories
-    const [calories, setCalories] = useState(props.calories);
-    const changeCalories = (event) => setCalories(event.target.value);
-    const caloriesComponentText = <p>{calories}</p>;
-    const caloriesComponentInput = <Input type="text" defaultValue={calories} onChange={changeCalories} />;
-    const [caloriesComponent, setCaloriesComponent] = useState(caloriesComponentText);
+    const [editedCalories, setEditedCalories] = useState(props.dish.calories);
+    const changeEditedCalories = (event) => setEditedCalories(event.target.value);
     const [caloriesAlertText, setCaloriesAlertText] = useState(null);
     const [caloriesAlertDisplay, setCaloriesAlertDisplay] = useState("none");
 
-    //CoockingTime
-    const convertTime = (min) => {
-        let hours = (min / 60);
-        let rhours = Math.floor(hours);
-        let minutes = (hours - rhours) * 60;
-        let rminutes = Math.round(minutes);
-        return rhours + " h : " + rminutes + " m";
-    }
-
-    const [coockingTime, setCoockingTime] = useState(props.coockingTime);
-    const changeCoockimgTime = (event) => setCoockingTime(event.target.value);
-    const coockingTimeComponentText = <p>{convertTime(coockingTime)}</p>;
-    const coockingTimeComponentInput = <Input type="text" defaultValue={coockingTime} onChange={changeCoockimgTime} />;
-    const [coockingTimeComponent, setCoockingTimeComponent] = useState(coockingTimeComponentText);
+    const [editedCoockingTime, setEditedCoockingTime] = useState(props.dish.coockingTime);
+    const changeEditedCoockingTime = (event) => setEditedCoockingTime(event.target.value);
     const [coockingTimeAlertText, setCoockingTimeAlertText] = useState(null);
     const [coockingTimeAlertDisplay, setCoockingTimeAlertDisplay] = useState("none");
 
-    //EditBtn
-    const acceptColor = "success";
-    const editColor = "primary";
-    const [editBtnColor, setEditBtnColor] = useState(editColor);
-
-    const acceptText = "Accept";
-    const editText = "Edit";
-    const [editBtnText, setEditBtnText] = useState(editText);
-
-    const [isEdit, setIsEdit] = useState(false);
-
-    const reset = () => {
+    const resetEdit = () => {
         setNameAlertDisplay("none");
         setNameAlertText(null);
+
+        setIngredientsAlertDisplay("none");
+        setIngredientsAlertText(null);
 
         setDescriptionAlertDisplay("none");
         setDescriptionAlertText(null);
@@ -114,46 +72,46 @@ function Dish(props) {
         setCoockingTimeAlertText(null);
     }
 
-    const updateDish = async () => {
-        reset();
-
-        let data = {
-            Id: props.id,
-            Name: name,
-            Description: description,
-            Cost: parseInt(cost),
-            Weight: parseInt(weight),
-            Calories: parseInt(calories),
-            CoockingTime: parseInt(coockingTime)
-        };
+    const editDish = async () => {
+        resetEdit();
 
         let url = "https://localhost:44334/api/dish/";
+
+        props.setLoadScreen(true);
 
         let resp = await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({
+                Id: props.dish.id,
+                Name: editedName,
+                Ingredients: editedIngredients,
+                Description: editedDescription,
+                Cost: parseInt(editedCost),
+                Weight: parseInt(editedWeight),
+                Calories: parseInt(editedCalories),
+                CoockingTime: parseInt(editedCoockingTime)
+            })
         });
 
-        if (resp.ok) {
-            props.updateDishes();
+        props.setLoadScreen(false);
 
-            setNameComponent(nameComponentText);
-            setDescriptionComponent(descriptionComponentText);
-            setCostComponent(costComponentText);
-            setWeightComponent(weightComponentText);
-            setCaloriesComponent(caloriesComponentText);
-            setCoockingTimeComponent(coockingTimeComponentText);
-            setEditBtnColor(editColor);
-            setEditBtnText(editText);
+        if (resp.ok) {
+            console.log("ok");
+            props.update();
         } else {
             let errData = await resp.json();
 
             if (errData["Name"]) {
                 setNameAlertDisplay("block");
                 setNameAlertText(errData["Name"]);
+            }
+
+            if (errData["Ingredients"]) {
+                setIngredientsAlertDisplay("block");
+                setIngredientsAlertText(errData["Ingredients"]);
             }
 
             if (errData["Description"]) {
@@ -181,87 +139,174 @@ function Dish(props) {
                 setCoockingTimeAlertText(errData["CoockingTime"]);
             }
         }
-    };
-
-    const toggleEdit = () => {
-        setIsEdit(!isEdit);
-
-        if (!isEdit) {
-            setNameComponent(nameComponentInput);
-            setDescriptionComponent(descriptionComponentInput);
-            setCostComponent(costComponentInput);
-            setWeightComponent(weightComponentInput);
-            setCaloriesComponent(caloriesComponentInput);
-            setCoockingTimeComponent(coockingTimeComponentInput);
-            setEditBtnColor(acceptColor);
-            setEditBtnText(acceptText);
-        } else {
-            updateDish();
-        }
     }
 
-    const deleteDish = async () => {
-        let url = "https://localhost:44334/api/dish/";
+    useEffect(() => {
+        resetEdit();
+    }, [editModal])
 
-        let resp = await fetch(url, {
+    //Delete
+    const [deleteModal, setDeleteModal] = useState(false);
+    const toggleDeleteModal = () => setDeleteModal(!deleteModal);
+
+    const deleteDish = async () => {
+        let url = "https://localhost:44334/api/dish/"
+
+        props.setLoadScreen(true);
+
+        await fetch(url, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },
-            body: JSON.stringify(props.id)
+            body: props.dish.id
         });
 
-        if (resp.ok) {
-            props.updateDishes();
-        }
+        props.setLoadScreen(false);
+        props.update();
     }
 
+    console.log(props.dish.coockingTime);
+
+    const parseCoockingTime = () => {
+        let hours = (props.dish.coockingTime / 60);
+        let rhours = Math.floor(hours);
+        let minutes = (hours - rhours) * 60;
+        let rminutes = Math.round(minutes);
+        return rhours + " час : " + rminutes + " мин";
+    }
+
+    const parseCalories = () => {
+        return props.dish.calories / 100 * props.dish.weight;
+    }
+
+    const parseCreateDate = () => {
+        let unixTime = Date.parse(props.dish.createDate);
+        return new Date(unixTime).toLocaleString();
+    }
+
+
     return (
-        <Card className="mt-3 mr-3" style={cardStyle} >
+        <Card>
+            <CardHeader>
+                <CardTitle>{props.name}</CardTitle>
+            </CardHeader>
             <CardBody>
-                <FormGroup>
-                    <Label>Create date</Label>
-                    <p>{createTime}</p>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Name</Label>
-                    {nameComponent}
-                    <Alert className="mt-2" color="danger" style={{ display: nameAlertDisplay }}>{nameAlertText}</Alert>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Description</Label>
-                    {descriptionComponent}
-                    <Alert className="mt-2" color="danger" style={{ display: descriptionAlertDisplay }}>{descriptionAlertText}</Alert>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Cost</Label>
-                    {costComponent}
-                    <Alert className="mt-2" color="danger" style={{ display: costAlertDisplay }}>{costAlertText}</Alert>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Weight</Label>
-                    {weightComponent}
-                    <Alert className="mt-2" color="danger" style={{ display: weightAlertDisplay }}>{weightAlertText}</Alert>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Calories</Label>
-                    {caloriesComponent}
-                    <Alert className="mt-2" color="danger" style={{ display: caloriesAlertDisplay }}>{caloriesAlertText}</Alert>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Coocking time</Label>
-                    {coockingTimeComponent}
-                    <Alert className="mt-2" color="danger" style={{ display: coockingTimeAlertDisplay }}>{coockingTimeAlertText}</Alert>
-                </FormGroup>
-                <FormGroup>
-                    <div style={buttonContainerStyle}>
-                        <Button color={editBtnColor} style={buttonStyle} onClick={toggleEdit}>{editBtnText}</Button>
-                        <Button color="danger" style={buttonStyle} onClick={deleteDish}> Delete</Button>
-                    </div>
-                </FormGroup>
+                <CardSubtitle>Дата создания</CardSubtitle>
+                <CardText>{parseCreateDate()}</CardText>
+                <CardSubtitle>Описание</CardSubtitle>
+                <CardText>{props.dish.description}</CardText>
+                <CardSubtitle>Состав</CardSubtitle>
+                <CardText>{props.dish.ingredients}</CardText>
+                <CardSubtitle>Цена</CardSubtitle>
+                <CardText>{props.dish.cost}</CardText>
+                <CardSubtitle>Вес</CardSubtitle>
+                <CardText>{props.dish.weight}</CardText>
+                <CardSubtitle>Калорийность</CardSubtitle>
+                <CardText>{parseCalories()}</CardText>
+                    <CardSubtitle>Время приготовления</CardSubtitle>
+                    <CardText>{parseCoockingTime()}</CardText>
             </CardBody>
+            <CardFooter className="d-flex justify-content-between">
+                {/* View */}
+                <Button color="white" onClick={toggleViewModal} >
+                    <img className="p-1" src={Open} />
+                </Button>
+                <Modal isOpen={viewModal} >
+                    <ModalHeader>
+                        {props.dish.name}
+                    </ModalHeader>
+                    <ModalBody>
+                        <p>Дата создания</p>
+                        <p>{parseCreateDate()}</p>
+                        <p>Состав</p>
+                        <p>{props.dish.ingredients}</p>
+                        <p>Описание</p>
+                        <p>{props.dish.description}</p>
+                        <p>Цена</p>
+                        <p>{props.dish.cost}</p>
+                        <p>Вес</p>
+                        <p>{props.dish.weight}</p>
+                        <p>Калории</p>
+                        <p>{props.dish.calories}</p>
+                        <p>Время приготовления</p>
+                        <p>{parseCoockingTime()}</p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={toggleViewModal}>Закрыть</Button>
+                    </ModalFooter>
+                </Modal>
+                {/* Edit */}
+                <Button color="white" onClick={toggleEditModal} >
+                    <img className="p-1" src={Edit} />
+                </Button>
+                <Modal isOpen={editModal} >
+                    <ModalHeader><p>Изменение <span className="font-weight-bold">{props.dish.name}</span></p></ModalHeader>
+                    <ModalBody>
+                        <FormGroup>
+                            <Label>Имя
+                                <Input type="text" defaultValue={props.dish.name} onChange={changeEditedName} />
+                            </Label>
+                            <Alert className="mt-2" color="danger" style={{ display: nameAlertDisplay }}>{nameAlertText}</Alert>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Состав
+                                <Input type="text" defaultValue={props.dish.ingredients} onChange={changeEditedIngredients} />
+                            </Label>
+                            <Alert className="mt-2" color="danger" style={{ display: ingredientsAlertDisplay }}>{ingredientsAlertText}</Alert>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Описание
+                                <Input type="textarea" defaultValue={props.dish.description} onChange={changeEditedDescription} />
+                            </Label>
+                            <Alert className="mt-2" color="danger" style={{ display: descriptionAlertDisplay }}>{descriptionAlertText}</Alert>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Цена
+                                <Input type="text" defaultValue={props.dish.cost} onChange={changeEditedCost} />
+                            </Label>
+                            <Alert className="mt-2" color="danger" style={{ display: costAlertDisplay }}>{costAlertText}</Alert>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Вес
+                                <Input type="text" defaultValue={props.dish.weight} onChange={changeEditedWeight} />
+                            </Label>
+                            <Alert className="mt-2" color="danger" style={{ display: weightAlertDisplay }}>{weightAlertText}</Alert>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Калорийность
+                                <Input type="text" defaultValue={props.dish.calories} onChange={changeEditedCalories} />
+                            </Label>
+                            <Alert className="mt-2" color="danger" style={{ display: caloriesAlertDisplay }}>{caloriesAlertText}</Alert>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Время приготовления
+                                <Input type="text" defaultValue={props.dish.coockingTime} onChange={changeEditedCoockingTime} />
+                            </Label>
+                            <Alert className="mt-2" color="danger" style={{ display: coockingTimeAlertDisplay }}>{coockingTimeAlertText}</Alert>
+                        </FormGroup>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" onClick={editDish}>Сохранить</Button>
+                        <Button color="primary" onClick={toggleEditModal}>Закрыть</Button>
+                    </ModalFooter>
+                </Modal>
+                {/* Delete */}
+                <Button color="white" onClick={toggleDeleteModal} >
+                    <img className="p-1" src={Delete} />
+                </Button>
+                <Modal isOpen={deleteModal} >
+                    <ModalBody>
+                        <p>Вы действительно хотите удалить блюдо <span className="font-weight-bold">{props.dish.name}</span>?</p>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="danger" onClick={deleteDish} > Да</Button>
+                        <Button color="primary" onClick={toggleDeleteModal}>Нет</Button>
+                    </ModalFooter>
+                </Modal>
+            </CardFooter>
         </Card>
-    )
+    );
 }
 
 export default Dish;

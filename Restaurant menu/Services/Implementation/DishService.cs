@@ -1,8 +1,9 @@
 ﻿using Restaurant_menu.Data.Interfaces;
 using Restaurant_menu.Models;
 using Restaurant_menu.Models.DTO;
+using Restaurant_menu.Models.Excaptions;
+using Restaurant_menu.Models.Exceptions;
 using Restaurant_menu.Services.Interfaces;
-using Restaurant_menu.Services.Interfaces.Factories;
 using System;
 using System.Linq;
 
@@ -10,14 +11,12 @@ namespace Restaurant_menu.Services.Implementation
 {
     public class DishService : IDishService
     {
-        public DishService(IDishDataService dishDataService, IDefaultIngredientsFactory defaultIngredientsFactory)
+        public DishService(IDishDataService dishDataService)
         {
             _dishDataService = dishDataService;
-            _defaultIngredientsFactory = defaultIngredientsFactory;
         }
 
         private IDishDataService _dishDataService;
-        private IDefaultIngredientsFactory _defaultIngredientsFactory;
 
         public Dish GetById(long id)
         {
@@ -29,77 +28,108 @@ namespace Restaurant_menu.Services.Implementation
             return _dishDataService.GetAll().ToArray();
         }
 
+        public Dish[] GetPage(Dish[] dishes, PageParamsDto pageParams)
+        {
+            int sizePage = pageParams.SizePage == null ? throw new ArgumentNullException("Размер страницы null") : (int)pageParams.SizePage;
+            int numberPage = pageParams.NumberPage == null ? throw new ArgumentNullException("Номер страницы null") : (int)pageParams.NumberPage;
+
+            int from = sizePage * numberPage;
+            int to = (numberPage + 1) * sizePage;
+            int count = _dishDataService.GetCountDishes();
+
+            if (from > count)
+            {
+                throw new GetPageException("Начальный индекс больше максимального");
+            }
+
+            return to > count ? dishes.Skip(from).Take(count).ToArray() : dishes.Skip(from).Take(to).ToArray();
+        }
+
+        public int GetTotalPages(int countDishes, int pageSize)
+        {
+            return (int)Math.Ceiling(countDishes / (double)pageSize);
+        }
+
+        public int GetCountDishes()
+        {
+            return _dishDataService.GetCountDishes();
+        }
+
         public void CreateDish(Dish dish)
         {
             dish.CreateDate = DateTime.Now;
-            dish.Ingredients = _defaultIngredientsFactory.GetIngredients(dish);
             _dishDataService.Create(dish);
         }
 
         public void DeleteDish(long id)
         {
-            _dishDataService.Delete(id);
+            if (_dishDataService.HasDish(id))
+            {
+                _dishDataService.Delete(id);
+            }
+            else
+            {
+                throw new NotFoundDishException("Dish not found");
+            }
         }
 
         public void UpdateDish(Dish dish)
         {
-            _dishDataService.Update(dish);
-        }
-
-        public Dish[] Sort(SortParamsDto sortParams)
-        {
-            if (sortParams.ByAscending)
+            if (_dishDataService.HasDish(dish.Id))
             {
-                return _dishDataService.Sort(sortParams.FieldName).ToArray();
+                _dishDataService.Update(dish);
             }
             else
             {
-                return _dishDataService.SortDescending(sortParams.FieldName).ToArray();
+                throw new NotFoundDishException("Dish not found");
             }
-        }
-
-        public Dish[] Filter(FilterParamsDto filterParams)
-        {
-            return _dishDataService.Filter(filterParams).ToArray();
         }
 
         public Dish[] FilterAndSort(FilterParamsDto filterParams, SortParamsDto sortParams)
         {
-            IQueryable<Dish> dishes = _dishDataService.Filter(filterParams);
+            IQueryable<Dish> dishes = Filter(filterParams);
 
+            return sortParams.FieldName == null ? dishes.ToArray() : Sort(dishes, sortParams).ToArray();
+        }
+
+        private IQueryable<Dish> Filter(FilterParamsDto filterParams)
+        {
+            return _dishDataService.Filter(filterParams);
+        }
+
+        private IQueryable<Dish> Sort(IQueryable<Dish> dishes, SortParamsDto sortParams)
+        {
             if (sortParams.ByAscending)
             {
-                Sort(ref dishes, sortParams.FieldName);
+                return Sort(dishes, sortParams.FieldName);
             }
             else
             {
-                SortDescending(ref dishes, sortParams.FieldName);
+                return SortDescending(dishes, sortParams.FieldName);
             }
-
-            return dishes.ToArray();
         }
 
-        private void Sort(ref IQueryable<Dish> dishes, string fieldName)
+        private IQueryable<Dish> Sort(IQueryable<Dish> dishes, string fieldName)
         {
-            dishes = fieldName switch
+            return fieldName switch
             {
                 "Name" => dishes.OrderBy(p => p.Name),
                 "Cost" => dishes.OrderBy(p => p.Cost),
                 "Weight" => dishes.OrderBy(p => p.Weight),
-                "Calories" => dishes.OrderBy(p => p.Calories),
+                "Calories" => dishes.OrderBy(p => p.Calories * p.Weight),
                 "CoockingTime" => dishes.OrderBy(p => p.CoockingTime),
                 _ => dishes
             };
         }
 
-        private void SortDescending(ref IQueryable<Dish> dishes, string fieldName)
+        private IQueryable<Dish> SortDescending(IQueryable<Dish> dishes, string fieldName)
         {
-            dishes = fieldName switch
+            return fieldName switch
             {
                 "Name" => dishes.OrderByDescending(p => p.Name),
                 "Cost" => dishes.OrderByDescending(p => p.Cost),
                 "Weight" => dishes.OrderByDescending(p => p.Weight),
-                "Calories" => dishes.OrderByDescending(p => p.Calories),
+                "Calories" => dishes.OrderByDescending(p => p.Calories * p.Weight),
                 "CoockingTime" => dishes.OrderByDescending(p => p.CoockingTime),
                 _ => dishes
             };

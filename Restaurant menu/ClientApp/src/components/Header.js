@@ -1,28 +1,30 @@
-﻿import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import { Collapse, Card, CardBody, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
+﻿import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Alert } from 'reactstrap';
 
-function Form(props) {
-    const cardStyle = {
-        width: "100%"
+const Header = (props) => {
+    //Styles
+    const headerStyle = {
+        backgroundColor: "#5995DD",
+        padding: "10px",
+        textAlign: "center"
     };
 
     const buttonStyle = {
-        width: "200px",
+        position: "absolute",
+        top: "20px",
+        left: "25px"
     };
 
-    const toggleStyle = {
-        width: "200px",
-        marginBottom: "1rem"
-    };
-
-    const [isOpen, setIsOpen] = useState(false);
-    const toggle = () => setIsOpen(!isOpen);
-
+    //DishForms
     const [name, setName] = useState(null);
     const changeName = (event) => setName(event.target.value);
     const [nameAlertText, setNameAlertText] = useState(null);
     const [nameAlertDisplay, setNameAlertDisplay] = useState("none");
+
+    const [ingredients, setIngredients] = useState(null);
+    const changeIngredients = (event) => setIngredients(event.target.value);
+    const [ingredientsAlertText, setIngredientsAlertText] = useState(null);
+    const [ingredientsAlertDisplay, setIngredientsAlertDisplay] = useState("none");
 
     const [description, setDescription] = useState(null);
     const changeDescription = (event) => setDescription(event.target.value);
@@ -49,7 +51,7 @@ function Form(props) {
     const [coockingTimeAlertText, setCoockingTimeAlertText] = useState(null);
     const [coockingTimeAlertDisplay, setCoockingTimeAlertDisplay] = useState("none");
 
-    const reset = () => {
+    const resetAlerts = () => {
         setNameAlertDisplay("none");
         setNameAlertText(null);
 
@@ -69,36 +71,45 @@ function Form(props) {
         setCoockingTimeAlertText(null);
     }
 
+    //CreateDish
     const createDish = async () => {
-        reset();
-
-        let dish = {
-            Name: name,
-            Description: description,
-            Cost: cost,
-            Weight: weight,
-            Calories: calories,
-            CoockingTime: coockingTime
-        };
+        resetAlerts();
 
         let url = "https://localhost:44334/api/dish/";
+
+        props.setLoadScreen(true);
 
         let response = await fetch(url, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json;charset=utf-8"
             },
-            body: JSON.stringify(dish)
+            body: JSON.stringify({
+                Name: name,
+                Ingredients: ingredients,
+                Description: description,
+                Cost: cost,
+                Weight: weight,
+                Calories: calories,
+                CoockingTime: coockingTime
+            })
         });
 
+        props.setLoadScreen(false);
+
         if (response.ok) {
-            props.updateDishes();
+            props.update();
         } else {
             let errData = await response.json();
 
             if (errData["Name"]) {
                 setNameAlertDisplay("block");
                 setNameAlertText(errData["Name"]);
+            }
+
+            if (errData["Ingredients"]) {
+                setIngredientsAlertDisplay("block");
+                setIngredientsAlertText(errData["Ingredients"]);
             }
 
             if (errData["Description"]) {
@@ -128,48 +139,95 @@ function Form(props) {
         }
     };
 
+    //Modal
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
+
+    const reset = () => {
+        setNameAlertDisplay("none");
+        setNameAlertText(null);
+
+        setIngredientsAlertDisplay("none");
+        setIngredientsAlertText(null);
+
+        setDescriptionAlertDisplay("none");
+        setDescriptionAlertText(null);
+
+        setCostAlertDisplay("none");
+        setCostAlertText(null);
+
+        setWeightAlertDisplay("none");
+        setWeightAlertText(null);
+
+        setCaloriesAlertDisplay("none");
+        setCaloriesAlertText(null);
+
+        setCoockingTimeAlertDisplay("none");
+        setCoockingTimeAlertText(null);
+    }
+
+    useEffect(() => {
+        reset();
+    }, [modal]);
+
     return (
-        <Card style={cardStyle} >
-            <CardBody>
-                <Button color="primary" onClick={toggle} style={toggleStyle}>Create dish</Button>
-                <Collapse isOpen={isOpen} >
+        <Container style={headerStyle} fluid={true}>
+
+            <Button style={buttonStyle} onClick={toggle}>Создать блюдо</Button>
+            <Modal isOpen={modal}>
+                <ModalHeader>Создать блюдо</ModalHeader>
+                <ModalBody>
                     <FormGroup>
-                        <Label for="nameForm">Name</Label>
-                        <Input type="text" id="nameForm" placeholder="Name" onChange={changeName} />
+                        <Label>Имя
+                                <Input type="text" onChange={changeName} />
+                        </Label>
                         <Alert className="mt-2" color="danger" style={{ display: nameAlertDisplay }}>{nameAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="descriptionForm">Description</Label>
-                        <Input type="textarea" id="descriptionForm" placeholder="Description" onChange={changeDescription} />
+                        <Label>Состав
+                                <Input type="text" onChange={changeIngredients} />
+                        </Label>
+                        <Alert className="mt-2" color="danger" style={{ display: ingredientsAlertDisplay }}>{ingredientsAlertText}</Alert>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Описание
+                                <Input type="textarea" onChange={changeDescription} />
+                        </Label>
                         <Alert className="mt-2" color="danger" style={{ display: descriptionAlertDisplay }}>{descriptionAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="costForm">Cost</Label>
-                        <Input type="text" id="costForm" placeholder="Cost" onChange={changeCost} />
+                        <Label>Цена
+                                <Input type="text" onChange={changeCost} />
+                        </Label>
                         <Alert className="mt-2" color="danger" style={{ display: costAlertDisplay }}>{costAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="weightForm">Weight</Label>
-                        <Input type="text" id="weightForm" placeholder="Weight" onChange={changeWeight} />
+                        <Label>Вес
+                                <Input type="text" onChange={changeWeight} />
+                        </Label>
                         <Alert className="mt-2" color="danger" style={{ display: weightAlertDisplay }}>{weightAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="caloriesForm">Calories</Label>
-                        <Input type="text" id="caloriesForm" placeholder="Calories" onChange={changeCalories} />
+                        <Label>Калорийность
+                                <Input type="text" onChange={changeCalories} />
+                        </Label>
                         <Alert className="mt-2" color="danger" style={{ display: caloriesAlertDisplay }}>{caloriesAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="coockingTimeForm">Coocking time</Label>
-                        <Input type="text" id="coockingTimeForm" placeholder="Coocking time" onChange={changeCoockingTime} />
+                        <Label>Время приготовления
+                                <Input type="text" onChange={changeCoockingTime} />
+                        </Label>
                         <Alert className="mt-2" color="danger" style={{ display: coockingTimeAlertDisplay }}>{coockingTimeAlertText}</Alert>
                     </FormGroup>
-                    <FormGroup>
-                        <Button color="success" style={buttonStyle} onClick={createDish} >Create</Button>
-                    </FormGroup>
-                </Collapse>
-            </CardBody>
-        </Card>
-    )
+                </ModalBody>
+                <ModalFooter>
+                    <Button className="w-75" color="success" onClick={createDish} >Create</Button>
+                    <Button className="w-75" color="primary" onClick={toggle}>Выйти</Button>
+                </ModalFooter>
+            </Modal>
+            <h1>Меню ресторана</h1>
+        </Container >
+    );
 }
 
-export default Form;
+export default Header;

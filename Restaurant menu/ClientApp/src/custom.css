@@ -1,4 +1,8 @@
 /* Provide sufficient contrast against white background */
+#root {
+    height: 100vh;
+}
+
 a {
   color: #0366d6;
 }

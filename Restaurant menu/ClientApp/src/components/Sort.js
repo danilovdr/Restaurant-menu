@@ -5,31 +5,34 @@ import { Card, CardBody, Label, Input } from 'reactstrap';
 const Sort = (props) => {
     const sort = (event) => {
         switch (event.target.value) {
-            case "Name":
+            case "Умолчанию":
+                props.setSortParams({ fieldName: null, ascending: true });
+                break;
+            case "Имя":
                 props.setSortParams({ fieldName: "Name", ascending: true });
                 break;
-            case "Cost: Low to High":
+            case "Цена: по возрастанию":
                 props.setSortParams({ fieldName: "Cost", ascending: true });
                 break;
-            case "Cost: High to Low":
+            case "Цена: по убыванию":
                 props.setSortParams({ fieldName: "Cost", ascending: false });
                 break;
-            case "Weight: Low to High":
+            case "Вес: по возрастанию":
                 props.setSortParams({ fieldName: "Weight", ascending: true });
                 break;
-            case "Weight: High to Low":
+            case "Вес: по убыванию":
                 props.setSortParams({ fieldName: "Weight", ascending: false });
                 break;
-            case "Calories: Low to High":
+            case "Калорийность: по возрастанию":
                 props.setSortParams({ fieldName: "Calories", ascending: true });
                 break;
-            case "Calories: High to Low":
+            case "Калорийность: по убыванию":
                 props.setSortParams({ fieldName: "Calories", ascending: false });
                 break;
-            case "Coocking time: Low to High":
+            case "Время приготовления: по возрастанию":
                 props.setSortParams({ fieldName: "CoockingTime", ascending: true });
                 break;
-            case "Coocking time: High to Low":
+            case "Время приготовления: по убыванию":
                 props.setSortParams({ fieldName: "CoockingTime", ascending: false });
                 break;
         }
@@ -38,17 +41,18 @@ const Sort = (props) => {
     return (
         <Card className="mt-3">
             <CardBody>
-                <Label for="sortSelect">Sort by:</Label>
+                <Label for="sortSelect">Сортировать по:</Label>
                 <Input className="w-25" type="select" name="select" id="sortSelect" onChange={sort}>
-                    <option>Name</option>
-                    <option>Cost: Low to High</option>
-                    <option>Cost: High to Low</option>
-                    <option>Weight: Low to High</option>
-                    <option>Weight: High to Low</option>
-                    <option>Calories: Low to High</option>
-                    <option>Calories: High to Low</option>
-                    <option>Coocking time: Low to High</option>
-                    <option>Coocking time: High to Low</option>
+                    <option>Умолчанию</option>
+                    <option>Имя</option>
+                    <option>Цена: по возрастанию</option>
+                    <option>Цена: по убыванию</option>
+                    <option>Вес: по возрастанию</option>
+                    <option>Вес: по убыванию</option>
+                    <option>Калорийность: по возрастанию</option>
+                    <option>Калорийность: по убыванию</option>
+                    <option>Время приготовления: по возрастанию</option>
+                    <option>Время приготовления: по убыванию</option>
                 </Input>
             </CardBody>
         </Card>

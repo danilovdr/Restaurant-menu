@@ -7,10 +7,11 @@ namespace Restaurant_menu.Services.Interfaces
     {
         Dish GetById(long id);
         Dish[] GetAll();
-        void CreateDish(Dish dish);
-        Dish[] Sort(SortParamsDto sortParams);
-        Dish[] Filter(FilterParamsDto filterParams);
+        Dish[] GetPage(Dish[] dishes, PageParamsDto pageParams);
+        int GetCountDishes();
+        int GetTotalPages(int countDishes, int pageSize);
         Dish[] FilterAndSort(FilterParamsDto filterParams, SortParamsDto sortParams);
+        void CreateDish(Dish dish);
         void UpdateDish(Dish dish);
         void DeleteDish(long id);
 
