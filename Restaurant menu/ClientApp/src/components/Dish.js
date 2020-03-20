@@ -168,7 +168,7 @@ const Dish = (props) => {
 
     console.log(props.dish.coockingTime);
 
-    const convertTime = () => {
+    const parseCoockingTime = () => {
         let hours = (props.dish.coockingTime / 60);
         let rhours = Math.floor(hours);
         let minutes = (hours - rhours) * 60;
@@ -176,7 +176,11 @@ const Dish = (props) => {
         return rhours + " час : " + rminutes + " мин";
     }
 
-    const parseCreateTime = () => {
+    const parseCalories = () => {
+        return props.dish.calories / 100 * props.dish.weight;
+    }
+
+    const parseCreateDate = () => {
         let unixTime = Date.parse(props.dish.createDate);
         return new Date(unixTime).toLocaleString();
     }
@@ -189,7 +193,7 @@ const Dish = (props) => {
             </CardHeader>
             <CardBody>
                 <CardSubtitle>Дата создания</CardSubtitle>
-                <CardText>{parseCreateTime()}</CardText>
+                <CardText>{parseCreateDate()}</CardText>
                 <CardSubtitle>Описание</CardSubtitle>
                 <CardText>{props.dish.description}</CardText>
                 <CardSubtitle>Состав</CardSubtitle>
@@ -199,9 +203,9 @@ const Dish = (props) => {
                 <CardSubtitle>Вес</CardSubtitle>
                 <CardText>{props.dish.weight}</CardText>
                 <CardSubtitle>Калорийность</CardSubtitle>
-                <CardText>{props.dish.calories}</CardText>
+                <CardText>{parseCalories()}</CardText>
                     <CardSubtitle>Время приготовления</CardSubtitle>
-                    <CardText>{convertTime()}</CardText>
+                    <CardText>{parseCoockingTime()}</CardText>
             </CardBody>
             <CardFooter className="d-flex justify-content-between">
                 {/* View */}
@@ -214,7 +218,7 @@ const Dish = (props) => {
                     </ModalHeader>
                     <ModalBody>
                         <p>Дата создания</p>
-                        <p>{parseCreateTime()}</p>
+                        <p>{parseCreateDate()}</p>
                         <p>Состав</p>
                         <p>{props.dish.ingredients}</p>
                         <p>Описание</p>
@@ -226,7 +230,7 @@ const Dish = (props) => {
                         <p>Калории</p>
                         <p>{props.dish.calories}</p>
                         <p>Время приготовления</p>
-                        <p>{convertTime()}</p>
+                        <p>{parseCoockingTime()}</p>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={toggleViewModal}>Закрыть</Button>
