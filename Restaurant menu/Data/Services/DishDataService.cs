@@ -38,6 +38,11 @@ namespace Restaurant_menu.Data.Services
             return _dbContext.Dishes;
         }
 
+        public int GetCountDishes()
+        {
+            return _dbContext.Dishes.Count();
+        }
+
         public void Create(Dish dish)
         {
             _dbContext.Dishes.Add(dish);
@@ -67,6 +72,7 @@ namespace Restaurant_menu.Data.Services
             //}
 
             updatedDish.Name = dish.Name;
+            updatedDish.Ingredients = dish.Ingredients;
             updatedDish.Description = dish.Description;
             updatedDish.Cost = dish.Cost;
             updatedDish.Weight = dish.Weight;

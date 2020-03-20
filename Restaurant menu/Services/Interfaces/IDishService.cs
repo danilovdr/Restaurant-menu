@@ -7,6 +7,7 @@ namespace Restaurant_menu.Services.Interfaces
     {
         Dish GetById(long id);
         Dish[] GetAll();
+        int GetCountDishes();
         void CreateDish(Dish dish);
         Dish[] Sort(SortParamsDto sortParams);
         Dish[] Filter(FilterParamsDto filterParams);

@@ -27,6 +27,11 @@ namespace Restaurant_menu.Services.Implementation
             return _dishDataService.GetAll().ToArray();
         }
 
+        public int GetCountDishes()
+        {
+            return _dishDataService.GetCountDishes();
+        }
+
         public void CreateDish(Dish dish)
         {
             dish.CreateDate = DateTime.Now;

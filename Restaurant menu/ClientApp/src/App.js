@@ -47,7 +47,7 @@ const App = () => {
     }, [sortParams, filterParams]);
 
     //Dishes
-    const [dishes, setDishes] = useState([]);
+    const [data, setData] = useState({dishes: [], countAllDishes: 0});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -58,7 +58,7 @@ const App = () => {
             if (resp.ok) {
                 let data = await resp.json();
                 console.log(data);
-                setDishes(data);
+                setData(data);
             }
         };
 
@@ -66,6 +66,7 @@ const App = () => {
     }, [url, countUpdates]);
 
     return (
+        <>
         <div className="App" >
             <Modal isOpen={loadScreen} fade={false}>
                 <ModalBody className="text-center">
@@ -83,7 +84,7 @@ const App = () => {
                     <Col lg={9}>
                         <Sort setSortParams={setSortParams} />
                         <Row>
-                            {dishes.map(item =>
+                            {data.dishes.map(item =>
                                 <Col key={item.id} className="p-3" lg={3}>
                                     <Dish
                                         dish={item}
@@ -122,8 +123,9 @@ const App = () => {
                     </Col>
                 </Row>
             </Container>
-            <Footer />
         </div>
+        <Footer data={data} />
+        </>
     );
 }
 

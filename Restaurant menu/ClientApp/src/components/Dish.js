@@ -53,6 +53,9 @@ const Dish = (props) => {
         setNameAlertDisplay("none");
         setNameAlertText(null);
 
+        setIngredientsAlertDisplay("none");
+        setIngredientsAlertText(null);
+
         setDescriptionAlertDisplay("none");
         setDescriptionAlertText(null);
 
@@ -84,6 +87,7 @@ const Dish = (props) => {
             body: JSON.stringify({
                 Id: props.id,
                 Name: editedName,
+                Ingredients: editedIngredients,
                 Description: editedDescription,
                 Cost: parseInt(editedCost),
                 Weight: parseInt(editedWeight),

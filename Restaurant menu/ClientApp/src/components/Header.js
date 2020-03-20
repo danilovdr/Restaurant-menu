@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Label, Input, Alert } from 'reactstrap';
 
 const Header = (props) => {
@@ -14,10 +14,6 @@ const Header = (props) => {
         top: "20px",
         left: "25px"
     };
-
-    //Modal
-    const [modal, setModal] = useState(false);
-    const toggle = () => setModal(!modal);
 
     //DishForms
     const [name, setName] = useState(null);
@@ -142,6 +138,37 @@ const Header = (props) => {
             }
         }
     };
+
+    //Modal
+    const [modal, setModal] = useState(false);
+    const toggle = () => setModal(!modal);
+
+    const reset = () => {
+        setNameAlertDisplay("none");
+        setNameAlertText(null);
+
+        setIngredientsAlertDisplay("none");
+        setIngredientsAlertText(null);
+
+        setDescriptionAlertDisplay("none");
+        setDescriptionAlertText(null);
+
+        setCostAlertDisplay("none");
+        setCostAlertText(null);
+
+        setWeightAlertDisplay("none");
+        setWeightAlertText(null);
+
+        setCaloriesAlertDisplay("none");
+        setCaloriesAlertText(null);
+
+        setCoockingTimeAlertDisplay("none");
+        setCoockingTimeAlertText(null);
+    }
+
+    useEffect(() => {
+        reset();
+    }, [modal]);
 
     return (
         <Container style={headerStyle} fluid={true}>

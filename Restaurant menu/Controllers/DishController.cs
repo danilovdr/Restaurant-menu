@@ -5,6 +5,7 @@ using Restaurant_menu.Models.DTO;
 using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Restaurant_menu.Models.Excaptions;
+using Restaurant_menu.Models.ViewModels;
 
 namespace Restaurant_menu.ControllerBase
 {
@@ -22,16 +23,10 @@ namespace Restaurant_menu.ControllerBase
         [HttpGet]
         public IActionResult GetAll([FromQuery] SortParamsDto sortParams, [FromQuery] FilterParamsDto filterParams)
         {
-            if (sortParams.FieldName == null)
-            {
-                var dishes = _dishService.Filter(filterParams);
-                return Json(dishes);
-            }
-            else
-            {
-                var dishes = _dishService.FilterAndSort(filterParams, sortParams);
-                return Json(dishes);
-            }
+            DishViewModel viewModel = new DishViewModel();
+            viewModel.Dishes = sortParams.FieldName == null ? _dishService.Filter(filterParams) : _dishService.FilterAndSort(filterParams, sortParams);
+            viewModel.CountAllDishes = _dishService.GetCountDishes();
+            return Json(viewModel);
         }
 
         [HttpGet("{id}")]
@@ -118,56 +113,61 @@ namespace Restaurant_menu.ControllerBase
         {
             if (string.IsNullOrWhiteSpace(dish.Name))
             {
-                ModelState.AddModelError("Name", "Name is null or empty or white space");
+                ModelState.AddModelError("Name", "Имя не должно быть пустым");
             }
             else if (dish.Name.Length > 255)
             {
-                ModelState.AddModelError("Name", "Name length is over 255 symbols");
+                ModelState.AddModelError("Name", "Длина имени не должна быть больше 255 символов");
+            }
+
+            if (string.IsNullOrWhiteSpace(dish.Ingredients))
+            {
+                ModelState.AddModelError("Ingredients", "Состав не должен быть пустым");
             }
 
             if (string.IsNullOrWhiteSpace(dish.Description))
             {
-                ModelState.AddModelError("Description", "Description is null or empty or white space");
+                ModelState.AddModelError("Description", "Описание не должно быть пустым");
             }
             else if (dish.Description.Length > 500)
             {
-                ModelState.AddModelError("Description", "Description length is over 500 symbols");
+                ModelState.AddModelError("Description", "Длина описания не должна быть больше 500 символов");
             }
 
             if (dish.Cost == null)
             {
-                ModelState.AddModelError("Cost", "Cost is null");
+                ModelState.AddModelError("Cost", "Цена должна быть числом");
             }
             else if (dish.Cost < 0)
             {
-                ModelState.AddModelError("Cost", "Cost is less than zero");
+                ModelState.AddModelError("Cost", "Цена должна быть больше нуля");
             }
 
             if (dish.Weight == null)
             {
-                ModelState.AddModelError("Weight", "Weight is null");
+                ModelState.AddModelError("Weight", "Вес должен быть числом");
             }
             else if (dish.Weight < 0)
             {
-                ModelState.AddModelError("Weight", "Weight is less than zero");
+                ModelState.AddModelError("Weight", "Вес должен быть больше нуля");
             }
 
             if (dish.Calories == null)
             {
-                ModelState.AddModelError("Calories", "Calories is null");
+                ModelState.AddModelError("Calories", "Калорийность должна быть числом");
             }
             else if (dish.Calories < 0)
             {
-                ModelState.AddModelError("Calories", "Calories is less than zero");
+                ModelState.AddModelError("Calories", "Калорийность должна быть больше нуля");
             }
 
             if (dish.CoockingTime == null)
             {
-                ModelState.AddModelError("CoockingTime", "CoockingTime is null");
+                ModelState.AddModelError("CoockingTime", "Время приготовления должно быть числом");
             }
             else if (dish.CoockingTime < 0)
             {
-                ModelState.AddModelError("CoockingTime", "CoockingTime is less than zero");
+                ModelState.AddModelError("CoockingTime", "Время приготовления должно быть больше нуля");
             }
 
             return ModelState;
