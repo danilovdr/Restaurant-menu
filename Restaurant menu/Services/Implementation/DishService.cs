@@ -3,7 +3,6 @@ using Restaurant_menu.Models;
 using Restaurant_menu.Models.DTO;
 using Restaurant_menu.Models.Excaptions;
 using Restaurant_menu.Services.Interfaces;
-using Restaurant_menu.Services.Interfaces.Factories;
 using System;
 using System.Linq;
 
@@ -11,14 +10,12 @@ namespace Restaurant_menu.Services.Implementation
 {
     public class DishService : IDishService
     {
-        public DishService(IDishDataService dishDataService, IDefaultIngredientsFactory defaultIngredientsFactory)
+        public DishService(IDishDataService dishDataService)
         {
             _dishDataService = dishDataService;
-            _defaultIngredientsFactory = defaultIngredientsFactory;
         }
 
         private IDishDataService _dishDataService;
-        private IDefaultIngredientsFactory _defaultIngredientsFactory;
 
         public Dish GetById(long id)
         {
@@ -33,7 +30,6 @@ namespace Restaurant_menu.Services.Implementation
         public void CreateDish(Dish dish)
         {
             dish.CreateDate = DateTime.Now;
-            dish.Ingredients = _defaultIngredientsFactory.GetDefaultIngredients();
             _dishDataService.Create(dish);
         }
 

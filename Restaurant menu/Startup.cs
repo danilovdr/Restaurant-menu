@@ -9,9 +9,7 @@ using Restaurant_menu.Data.Interfaces;
 using Restaurant_menu.Data.Interfaces.Contexts;
 using Restaurant_menu.Data.Services;
 using Restaurant_menu.Services.Implementation;
-using Restaurant_menu.Services.Implementation.Factories;
 using Restaurant_menu.Services.Interfaces;
-using Restaurant_menu.Services.Interfaces.Factories;
 
 namespace Restaurant_menu
 {
@@ -28,8 +26,6 @@ namespace Restaurant_menu
         {
             services.AddScoped<IApplcationDbContext, ApplicationDbContext>();
             services.AddControllers();
-
-            services.AddSingleton<IDefaultIngredientsFactory, DefaultIngredientsFactory>();
 
             services.AddScoped<IDishDataService, DishDataService>();
             services.AddScoped<IDishService, DishService>();
