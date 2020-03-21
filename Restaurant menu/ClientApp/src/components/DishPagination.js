@@ -39,17 +39,25 @@ const DishPagination = (props) => {
         }
     }
 
-    return (
-        <Pagination>
-            <PaginationItem>
-                <PaginationLink previous onClick={prevPage} />
-            </PaginationItem>
-            {createPaginationItems()}
-            <PaginationItem>
-                <PaginationLink next onClick={nextPage} />
-            </PaginationItem>
-        </Pagination>
-    );
+    const createPagination = () => {
+        if (props.totalPages > 1) {
+            return (
+                <Pagination>
+                    <PaginationItem>
+                        <PaginationLink previous onClick={prevPage} />
+                    </PaginationItem>
+                    {createPaginationItems()}
+                    <PaginationItem>
+                        <PaginationLink next onClick={nextPage} />
+                    </PaginationItem>
+                </Pagination>
+            );
+        } else {
+            return <></>
+        }
+    }
+
+    return createPagination();
 }
 
 export default DishPagination;

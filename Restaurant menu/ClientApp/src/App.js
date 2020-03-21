@@ -35,6 +35,10 @@ const App = () => {
         if (filterParams) {
             if (filterParams.name) newUrl += "&Name=" + filterParams.name;
 
+            if (filterParams.ingredients) newUrl += "&Ingredients=" + filterParams.ingredients;
+
+            if (filterParams.description) newUrl += "&Description=" + filterParams.description;
+
             if (filterParams.cost.min) newUrl += "&MinCost=" + filterParams.cost.min;
             if (filterParams.cost.max) newUrl += "&MaxCost=" + filterParams.cost.max;
 
@@ -74,13 +78,16 @@ const App = () => {
             if (resp.ok) {
                 let data = await resp.json();
                 setData(data);
+                console.log(numberPage);
+                console.log(data);
+                if (numberPage >= data.totalPages) {
+                    setNumberPage(data.totalPages - 1);
+                }
             }
         };
 
         fetchData();
     }, [url, countUpdates]);
-
-    console.log(data);
 
     return (
         <>
@@ -95,10 +102,10 @@ const App = () => {
                     setLoadScreen={setLoadScreen} />
                 <Container fluid={true}>
                     <Row className="justify-content-around">
-                        <Col lg={2}>
+                        <Col className="mt-3" lg={2}>
                             <Filter setFilterParams={setFilterParams} />
                         </Col>
-                        <Col lg={9}>
+                        <Col className="mt-3" lg={9}>
                             <Sort setSortParams={setSortParams} />
                             <Row>
                                 {createDishes()}

@@ -14,6 +14,9 @@ const Dish = (props) => {
     const [editModal, setEditModal] = useState(false);
     const toggleEditModal = () => setEditModal(!editModal);
 
+    const [globalAlertDisplay, setGlobalAlertDisplay] = useState("none");
+    const [globalAlertText, setGlobalAlertText] = useState("");
+
     const [editedName, setEditedName] = useState(props.dish.name);
     const changeEditedName = (event) => setEditedName(event.target.value);
     const [nameAlertText, setNameAlertText] = useState(null);
@@ -50,6 +53,9 @@ const Dish = (props) => {
     const [coockingTimeAlertDisplay, setCoockingTimeAlertDisplay] = useState("none");
 
     const resetEdit = () => {
+        setGlobalAlertDisplay("none");
+        setGlobalAlertText("");
+
         setNameAlertDisplay("none");
         setNameAlertText(null);
 
@@ -99,8 +105,11 @@ const Dish = (props) => {
         props.setLoadScreen(false);
 
         if (resp.ok) {
-            console.log("ok");
             props.update();
+        } else if (resp.status === 500) {
+            let text = await resp.text();
+            setGlobalAlertDisplay("block");
+            setGlobalAlertText(text);
         } else {
             let errData = await resp.json();
 
@@ -163,10 +172,9 @@ const Dish = (props) => {
         });
 
         props.setLoadScreen(false);
+        console.log("update");
         props.update();
     }
-
-    console.log(props.dish.coockingTime);
 
     const parseCoockingTime = () => {
         let hours = (props.dish.coockingTime / 60);
@@ -188,23 +196,23 @@ const Dish = (props) => {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>{props.name}</CardTitle>
+                <CardTitle>{props.dish.name}</CardTitle>
             </CardHeader>
             <CardBody>
                 <CardSubtitle>Дата создания</CardSubtitle>
                 <CardText>{parseCreateDate()}</CardText>
-                <CardSubtitle>Описание</CardSubtitle>
-                <CardText>{props.dish.description}</CardText>
                 <CardSubtitle>Состав</CardSubtitle>
                 <CardText>{props.dish.ingredients}</CardText>
+                <CardSubtitle>Описание</CardSubtitle>
+                <CardText>{props.dish.description}</CardText>
                 <CardSubtitle>Цена</CardSubtitle>
                 <CardText>{props.dish.cost}</CardText>
                 <CardSubtitle>Вес</CardSubtitle>
                 <CardText>{props.dish.weight}</CardText>
                 <CardSubtitle>Калорийность</CardSubtitle>
                 <CardText>{parseCalories()}</CardText>
-                    <CardSubtitle>Время приготовления</CardSubtitle>
-                    <CardText>{parseCoockingTime()}</CardText>
+                <CardSubtitle>Время приготовления</CardSubtitle>
+                <CardText>{parseCoockingTime()}</CardText>
             </CardBody>
             <CardFooter className="d-flex justify-content-between">
                 {/* View */}
@@ -229,7 +237,7 @@ const Dish = (props) => {
                         <p>Калории</p>
                         <p>{props.dish.calories}</p>
                         <p>Время приготовления</p>
-                        <p>{parseCoockingTime()}</p>
+                        <p>{props.dish.coockingTime}</p>
                     </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={toggleViewModal}>Закрыть</Button>
@@ -242,6 +250,7 @@ const Dish = (props) => {
                 <Modal isOpen={editModal} >
                     <ModalHeader><p>Изменение <span className="font-weight-bold">{props.dish.name}</span></p></ModalHeader>
                     <ModalBody>
+                        <Alert className="mt-2" color="danger" style={{ display: globalAlertDisplay }}>{globalAlertText}</Alert>
                         <FormGroup>
                             <Label>Имя
                                 <Input type="text" defaultValue={props.dish.name} onChange={changeEditedName} />

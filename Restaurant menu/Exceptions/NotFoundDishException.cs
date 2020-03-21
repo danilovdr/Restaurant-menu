@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Restaurant_menu.Models.Excaptions
+namespace Restaurant_menu.Excaptions
 {
     public class NotFoundDishException : Exception
     {
