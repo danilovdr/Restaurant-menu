@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Restaurant_menu.Models.Exceptions
+namespace Restaurant_menu.Exceptions
 {
     public class GetPageException : Exception
     {

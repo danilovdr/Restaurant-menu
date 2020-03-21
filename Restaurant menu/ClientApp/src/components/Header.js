@@ -15,6 +15,9 @@ const Header = (props) => {
         left: "25px"
     };
 
+    const [globalAlertDisplay, setGlobalAlertDisplay] = useState("none");
+    const [globalAlertText, setGlobalAlertText] = useState("");
+
     //DishForms
     const [name, setName] = useState(null);
     const changeName = (event) => setName(event.target.value);
@@ -52,6 +55,9 @@ const Header = (props) => {
     const [coockingTimeAlertDisplay, setCoockingTimeAlertDisplay] = useState("none");
 
     const resetAlerts = () => {
+        setGlobalAlertDisplay("none");
+        setGlobalAlertText("");
+
         setNameAlertDisplay("none");
         setNameAlertText(null);
 
@@ -99,6 +105,10 @@ const Header = (props) => {
 
         if (response.ok) {
             props.update();
+        } else if (response.status === 500) {
+            let text = await response.text();
+            setGlobalAlertDisplay("block");
+            setGlobalAlertText(text);
         } else {
             let errData = await response.json();
 
@@ -177,46 +187,40 @@ const Header = (props) => {
             <Modal isOpen={modal}>
                 <ModalHeader>Создать блюдо</ModalHeader>
                 <ModalBody>
+                    <Alert className="mt-2" color="danger" style={{ display: globalAlertDisplay }}>{globalAlertText}</Alert>
                     <FormGroup>
-                        <Label>Имя
-                                <Input type="text" onChange={changeName} />
-                        </Label>
+                        <Label>Имя</Label>
+                        <Input type="text" onChange={changeName} />
                         <Alert className="mt-2" color="danger" style={{ display: nameAlertDisplay }}>{nameAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label>Состав
-                                <Input type="text" onChange={changeIngredients} />
-                        </Label>
+                        <Label>Состав</Label>
+                        <Input type="text" onChange={changeIngredients} />
                         <Alert className="mt-2" color="danger" style={{ display: ingredientsAlertDisplay }}>{ingredientsAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label>Описание
-                                <Input type="textarea" onChange={changeDescription} />
-                        </Label>
+                        <Label>Описание </Label>
+                        <Input type="textarea" onChange={changeDescription} />
                         <Alert className="mt-2" color="danger" style={{ display: descriptionAlertDisplay }}>{descriptionAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label>Цена
-                                <Input type="text" onChange={changeCost} />
-                        </Label>
+                        <Label>Цена   </Label>
+                        <Input type="text" onChange={changeCost} />
                         <Alert className="mt-2" color="danger" style={{ display: costAlertDisplay }}>{costAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label>Вес
-                                <Input type="text" onChange={changeWeight} />
-                        </Label>
+                        <Label>Вес </Label>
+                        <Input type="text" onChange={changeWeight} />
                         <Alert className="mt-2" color="danger" style={{ display: weightAlertDisplay }}>{weightAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label>Калорийность
-                                <Input type="text" onChange={changeCalories} />
-                        </Label>
+                        <Label>Калорийность </Label>
+                        <Input type="text" onChange={changeCalories} />
                         <Alert className="mt-2" color="danger" style={{ display: caloriesAlertDisplay }}>{caloriesAlertText}</Alert>
                     </FormGroup>
                     <FormGroup>
-                        <Label>Время приготовления
-                                <Input type="text" onChange={changeCoockingTime} />
-                        </Label>
+                        <Label>Время приготовления</Label>
+                        <Input type="text" onChange={changeCoockingTime} />
                         <Alert className="mt-2" color="danger" style={{ display: coockingTimeAlertDisplay }}>{coockingTimeAlertText}</Alert>
                     </FormGroup>
                 </ModalBody>

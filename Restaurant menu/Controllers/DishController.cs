@@ -4,8 +4,9 @@ using Restaurant_menu.Services.Interfaces;
 using Restaurant_menu.Models.DTO;
 using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Restaurant_menu.Models.Excaptions;
 using Restaurant_menu.Models.ViewModels;
+using Restaurant_menu.Exceptions;
+using Restaurant_menu.Excaptions;
 
 namespace Restaurant_menu.ControllerBase
 {
@@ -53,13 +54,13 @@ namespace Restaurant_menu.ControllerBase
             {
                 dish = _dishService.GetById(id);
             }
-            catch (NotFoundDishException)
+            catch (NotFoundDishException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, ex.Message);
             }
 
             return Json(dish);
@@ -79,13 +80,13 @@ namespace Restaurant_menu.ControllerBase
             {
                 _dishService.UpdateDish(dish);
             }
-            catch (NotFoundDishException)
+            catch (NotFoundDishException ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, ex.Message);
             }
 
             return Ok();
@@ -101,7 +102,15 @@ namespace Restaurant_menu.ControllerBase
                 return BadRequest(ModelState);
             }
 
-            _dishService.CreateDish(dish);
+            try
+            {
+                _dishService.CreateDish(dish);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
             return Ok();
         }
 
@@ -118,7 +127,7 @@ namespace Restaurant_menu.ControllerBase
             }
             catch (Exception ex)
             {
-                BadRequest(ex.Message);
+                StatusCode(500, ex.Message);
             }
 
             return Ok();
@@ -126,6 +135,11 @@ namespace Restaurant_menu.ControllerBase
 
         private ModelStateDictionary Validate(Dish dish)
         {
+            if (dish == null)
+            {
+                ModelState.AddModelError("Dish", "Блюдо равняется null");
+            }
+
             if (string.IsNullOrWhiteSpace(dish.Name))
             {
                 ModelState.AddModelError("Name", "Имя не должно быть пустым");
@@ -153,7 +167,7 @@ namespace Restaurant_menu.ControllerBase
             {
                 ModelState.AddModelError("Cost", "Цена должна быть числом");
             }
-            else if (dish.Cost < 0)
+            else if (dish.Cost <= 0)
             {
                 ModelState.AddModelError("Cost", "Цена должна быть больше нуля");
             }
@@ -162,7 +176,7 @@ namespace Restaurant_menu.ControllerBase
             {
                 ModelState.AddModelError("Weight", "Вес должен быть числом");
             }
-            else if (dish.Weight < 0)
+            else if (dish.Weight <= 0)
             {
                 ModelState.AddModelError("Weight", "Вес должен быть больше нуля");
             }
@@ -171,7 +185,7 @@ namespace Restaurant_menu.ControllerBase
             {
                 ModelState.AddModelError("Calories", "Калорийность должна быть числом");
             }
-            else if (dish.Calories < 0)
+            else if (dish.Calories <= 0)
             {
                 ModelState.AddModelError("Calories", "Калорийность должна быть больше нуля");
             }
@@ -180,7 +194,7 @@ namespace Restaurant_menu.ControllerBase
             {
                 ModelState.AddModelError("CoockingTime", "Время приготовления должно быть числом");
             }
-            else if (dish.CoockingTime < 0)
+            else if (dish.CoockingTime <= 0)
             {
                 ModelState.AddModelError("CoockingTime", "Время приготовления должно быть больше нуля");
             }

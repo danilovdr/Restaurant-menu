@@ -7,6 +7,10 @@ namespace Restaurant_menu.Models.DTO
         [BindingBehavior(BindingBehavior.Optional)]
         public string Name { get; set; }
         [BindingBehavior(BindingBehavior.Optional)]
+        public string Ingredients { get; set; }
+        [BindingBehavior(BindingBehavior.Optional)]
+        public string Description { get; set; }
+        [BindingBehavior(BindingBehavior.Optional)]
         public int? MinCost { get; set; }
         [BindingBehavior(BindingBehavior.Optional)]
         public int? MaxCost { get; set; }
