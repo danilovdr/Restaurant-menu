@@ -16,6 +16,7 @@ const Dish = (props) => {
 
     const [globalAlertDisplay, setGlobalAlertDisplay] = useState("none");
     const [globalAlertText, setGlobalAlertText] = useState("");
+    const [globalAlertColor, setGlobalAlertColor] = useState("success");
 
     const [editedName, setEditedName] = useState(props.dish.name);
     const changeEditedName = (event) => setEditedName(event.target.value);
@@ -52,9 +53,9 @@ const Dish = (props) => {
     const [coockingTimeAlertText, setCoockingTimeAlertText] = useState(null);
     const [coockingTimeAlertDisplay, setCoockingTimeAlertDisplay] = useState("none");
 
-    const resetEdit = () => {
+    const resetAlerts = () => {
         setGlobalAlertDisplay("none");
-        setGlobalAlertText("");
+        setGlobalAlertText(null);
 
         setNameAlertDisplay("none");
         setNameAlertText(null);
@@ -76,10 +77,10 @@ const Dish = (props) => {
 
         setCoockingTimeAlertDisplay("none");
         setCoockingTimeAlertText(null);
-    }
+    };
 
     const editDish = async () => {
-        resetEdit();
+        resetAlerts();
 
         let url = "https://localhost:44334/api/dish/";
 
@@ -105,9 +106,13 @@ const Dish = (props) => {
         props.setLoadScreen(false);
 
         if (resp.ok) {
+            setGlobalAlertColor("success");
+            setGlobalAlertDisplay("block");
+            setGlobalAlertText("Данные обновлены");
             props.update();
         } else if (resp.status === 500) {
             let text = await resp.text();
+            setGlobalAlertColor("danger");
             setGlobalAlertDisplay("block");
             setGlobalAlertText(text);
         } else {
@@ -151,6 +156,39 @@ const Dish = (props) => {
     }
 
     useEffect(() => {
+        const resetEdit = () => {
+            setGlobalAlertDisplay("none");
+            setGlobalAlertText(null);
+
+            setEditedName(props.dish.name);
+            setNameAlertDisplay("none");
+            setNameAlertText(null);
+
+            setEditedIngredients(props.dish.ingredients);
+            setIngredientsAlertDisplay("none");
+            setIngredientsAlertText(null);
+
+            setEditedDescription(props.dish.description);
+            setDescriptionAlertDisplay("none");
+            setDescriptionAlertText(null);
+
+            setEditedCost(props.dish.cost);
+            setCostAlertDisplay("none");
+            setCostAlertText(null);
+
+            setEditedWeight(props.dish.weight);
+            setWeightAlertDisplay("none");
+            setWeightAlertText(null);
+
+            setEditedCalories(props.dish.calories);
+            setCaloriesAlertDisplay("none");
+            setCaloriesAlertText(null);
+
+            setEditedCoockingTime(props.dish.coockingTime);
+            setCoockingTimeAlertDisplay("none");
+            setCoockingTimeAlertText(null);
+        };
+
         resetEdit();
     }, [editModal])
 
@@ -250,47 +288,40 @@ const Dish = (props) => {
                 <Modal isOpen={editModal} >
                     <ModalHeader><p>Изменение <span className="font-weight-bold">{props.dish.name}</span></p></ModalHeader>
                     <ModalBody>
-                        <Alert className="mt-2" color="danger" style={{ display: globalAlertDisplay }}>{globalAlertText}</Alert>
+                        <Alert className="mt-2" color={globalAlertColor} style={{ display: globalAlertDisplay }}>{globalAlertText}</Alert>
                         <FormGroup>
-                            <Label>Имя
-                                <Input type="text" defaultValue={props.dish.name} onChange={changeEditedName} />
-                            </Label>
+                            <Label>Имя</Label>
+                            <Input type="text" defaultValue={props.dish.name} onChange={changeEditedName} />
                             <Alert className="mt-2" color="danger" style={{ display: nameAlertDisplay }}>{nameAlertText}</Alert>
                         </FormGroup>
                         <FormGroup>
-                            <Label>Состав
-                                <Input type="text" defaultValue={props.dish.ingredients} onChange={changeEditedIngredients} />
-                            </Label>
+                            <Label>Состав</Label>
+                            <Input type="text" defaultValue={props.dish.ingredients} onChange={changeEditedIngredients} />
                             <Alert className="mt-2" color="danger" style={{ display: ingredientsAlertDisplay }}>{ingredientsAlertText}</Alert>
                         </FormGroup>
                         <FormGroup>
-                            <Label>Описание
-                                <Input type="textarea" defaultValue={props.dish.description} onChange={changeEditedDescription} />
-                            </Label>
+                            <Label>Описание</Label>
+                            <Input type="textarea" defaultValue={props.dish.description} onChange={changeEditedDescription} />
                             <Alert className="mt-2" color="danger" style={{ display: descriptionAlertDisplay }}>{descriptionAlertText}</Alert>
                         </FormGroup>
                         <FormGroup>
-                            <Label>Цена
-                                <Input type="text" defaultValue={props.dish.cost} onChange={changeEditedCost} />
-                            </Label>
+                            <Label>Цена</Label>
+                            <Input type="text" defaultValue={props.dish.cost} onChange={changeEditedCost} />
                             <Alert className="mt-2" color="danger" style={{ display: costAlertDisplay }}>{costAlertText}</Alert>
                         </FormGroup>
                         <FormGroup>
-                            <Label>Вес
-                                <Input type="text" defaultValue={props.dish.weight} onChange={changeEditedWeight} />
-                            </Label>
+                            <Label>Вес</Label>
+                            <Input type="text" defaultValue={props.dish.weight} onChange={changeEditedWeight} />
                             <Alert className="mt-2" color="danger" style={{ display: weightAlertDisplay }}>{weightAlertText}</Alert>
                         </FormGroup>
                         <FormGroup>
-                            <Label>Калорийность
-                                <Input type="text" defaultValue={props.dish.calories} onChange={changeEditedCalories} />
-                            </Label>
+                            <Label>Калорийность</Label>
+                            <Input type="text" defaultValue={props.dish.calories} onChange={changeEditedCalories} />
                             <Alert className="mt-2" color="danger" style={{ display: caloriesAlertDisplay }}>{caloriesAlertText}</Alert>
                         </FormGroup>
                         <FormGroup>
-                            <Label>Время приготовления
-                                <Input type="text" defaultValue={props.dish.coockingTime} onChange={changeEditedCoockingTime} />
-                            </Label>
+                            <Label>Время приготовления</Label>
+                            <Input type="text" defaultValue={props.dish.coockingTime} onChange={changeEditedCoockingTime} />
                             <Alert className="mt-2" color="danger" style={{ display: coockingTimeAlertDisplay }}>{coockingTimeAlertText}</Alert>
                         </FormGroup>
                     </ModalBody>
