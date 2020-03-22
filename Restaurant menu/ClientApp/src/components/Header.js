@@ -16,6 +16,7 @@ const Header = (props) => {
     };
 
     const [globalAlertDisplay, setGlobalAlertDisplay] = useState("none");
+    const [globalAlertColor, setGlobalAlertColor] = useState("success");
     const [globalAlertText, setGlobalAlertText] = useState("");
 
     //DishForms
@@ -61,6 +62,9 @@ const Header = (props) => {
         setNameAlertDisplay("none");
         setNameAlertText(null);
 
+        setIngredientsAlertDisplay("none");
+        setIngredientsAlertText(null);
+
         setDescriptionAlertDisplay("none");
         setDescriptionAlertText(null);
 
@@ -104,6 +108,9 @@ const Header = (props) => {
         props.setLoadScreen(false);
 
         if (response.ok) {
+            setGlobalAlertColor("success");
+            setGlobalAlertDisplay("block");
+            setGlobalAlertText("Блюдо добавлено");
             props.update();
         } else if (response.status === 500) {
             let text = await response.text();
@@ -153,30 +160,40 @@ const Header = (props) => {
     const [modal, setModal] = useState(false);
     const toggle = () => setModal(!modal);
 
-    const reset = () => {
-        setNameAlertDisplay("none");
-        setNameAlertText(null);
-
-        setIngredientsAlertDisplay("none");
-        setIngredientsAlertText(null);
-
-        setDescriptionAlertDisplay("none");
-        setDescriptionAlertText(null);
-
-        setCostAlertDisplay("none");
-        setCostAlertText(null);
-
-        setWeightAlertDisplay("none");
-        setWeightAlertText(null);
-
-        setCaloriesAlertDisplay("none");
-        setCaloriesAlertText(null);
-
-        setCoockingTimeAlertDisplay("none");
-        setCoockingTimeAlertText(null);
-    }
-
     useEffect(() => {
+        const reset = () => {
+            setGlobalAlertDisplay("none");
+            setGlobalAlertText(null);
+
+            setName(null);
+            setNameAlertDisplay("none");
+            setNameAlertText(null);
+
+            setIngredients(null);
+            setIngredientsAlertDisplay("none");
+            setIngredientsAlertText(null);
+
+            setDescription(null);
+            setDescriptionAlertDisplay("none");
+            setDescriptionAlertText(null);
+
+            setCost(null);
+            setCostAlertDisplay("none");
+            setCostAlertText(null);
+
+            setWeight(null);
+            setWeightAlertDisplay("none");
+            setWeightAlertText(null);
+
+            setCalories(null);
+            setCaloriesAlertDisplay("none");
+            setCaloriesAlertText(null);
+
+            setCoockingTime(null);
+            setCoockingTimeAlertDisplay("none");
+            setCoockingTimeAlertText(null);
+        }
+
         reset();
     }, [modal]);
 
@@ -187,7 +204,7 @@ const Header = (props) => {
             <Modal isOpen={modal}>
                 <ModalHeader>Создать блюдо</ModalHeader>
                 <ModalBody>
-                    <Alert className="mt-2" color="danger" style={{ display: globalAlertDisplay }}>{globalAlertText}</Alert>
+                    <Alert className="mt-2" color={globalAlertColor} style={{ display: globalAlertDisplay }}>{globalAlertText}</Alert>
                     <FormGroup>
                         <Label>Имя</Label>
                         <Input type="text" onChange={changeName} />
@@ -225,7 +242,7 @@ const Header = (props) => {
                     </FormGroup>
                 </ModalBody>
                 <ModalFooter>
-                    <Button className="w-75" color="success" onClick={createDish} >Create</Button>
+                    <Button className="w-75" color="success" onClick={createDish} >Создать</Button>
                     <Button className="w-75" color="primary" onClick={toggle}>Выйти</Button>
                 </ModalFooter>
             </Modal>
