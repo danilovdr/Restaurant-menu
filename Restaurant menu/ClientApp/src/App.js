@@ -59,7 +59,12 @@ const App = () => {
             if (resp.ok) {
                 let json = await resp.json();
                 setData(json);
+
+                if (numberPage >= json.totalPages) {
+                    setNumberPage(numberPage - 1);
+                }
             }
+
             setLoadScreen(false);
         }
 
