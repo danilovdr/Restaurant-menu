@@ -25,18 +25,21 @@ namespace Restaurant_menu.Services.Implementation
         // Отфильтировали данные, отсортировали, разбили на страницы, отдали модельвьюшку
         public DishViewModel GetDishes(GetDishesParamsDto getDishesParams)
         {
-            DishViewModel viewModel = new DishViewModel();
             IQueryable<Dish> dishes = _dishDataService.Filter(getDishesParams);
             dishes = Sort(dishes, getDishesParams);
-            dishes = GetPage(dishes, getDishesParams);
-            viewModel.Dishes = dishes.ToArray();
-            viewModel.TotalPages = GetTotalPages(viewModel.Dishes.Length, (int)getDishesParams.SizePage);
+            Dish[] dishesArr = dishes.ToArray();
+
+            DishViewModel viewModel = new DishViewModel();
             viewModel.CountAllDishes = _dishDataService.GetCountDishes();
+            viewModel.FilteredDishes = dishesArr.Length;
+            viewModel.TotalPages = GetTotalPages(dishesArr.Length, (int)getDishesParams.SizePage);
+            viewModel.Dishes = GetPage(dishesArr, getDishesParams);
+
             return viewModel;
         }
 
         //Спросить что делать если длина больше. Доделать это
-        private IQueryable<Dish> GetPage(IQueryable<Dish> dishes, GetDishesParamsDto pageParams)
+        private Dish[] GetPage(Dish[] dishes, GetDishesParamsDto pageParams)
         {
             if (pageParams.NumberPage == null | pageParams.SizePage == null)
             {
@@ -46,7 +49,7 @@ namespace Restaurant_menu.Services.Implementation
             {
                 int numberPage = (int)pageParams.NumberPage;
                 int sizePage = (int)pageParams.SizePage;
-                return dishes.Skip(numberPage * sizePage).Take(sizePage);
+                return dishes.Skip(numberPage * sizePage).Take(sizePage).ToArray();
             }
         }
 

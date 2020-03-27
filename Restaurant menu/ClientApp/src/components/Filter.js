@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
 const Filter = (props) => {
-    const [name, setName] = useState(null);
+    const [name, setName] = useState("");
     const changeName = (event) => setName(event.target.value);
 
     const [ingredients, setIngredients] = useState("");

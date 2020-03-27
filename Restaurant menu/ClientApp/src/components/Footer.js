@@ -12,7 +12,7 @@ const Footer = (props) => {
 
     return (
         <footer style={style} >
-            <p>{props.data.dishes.length} отфильтрованных записей из {props.data.countAllDishes} записей</p>
+            <p>{props.data.filteredDishes} отфильтрованных записей из {props.data.countAllDishes} записей</p>
         </footer>
         )
 } 
