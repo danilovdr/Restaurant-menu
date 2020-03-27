@@ -19,44 +19,55 @@ const App = () => {
     //Params
     const sizePage = 20;
     const [numberPage, setNumberPage] = useState(0);
-    const [sortParams, setSortParams] = useState(null);
-    const [filterParams, setFilterParams] = useState(null);
-    const [url, setUrl] = useState("");
+    const [sortParams, setSortParams] = useState({
+        fieldName: null, ascending: true
+    });
+
+    const [filterParams, setFilterParams] = useState({
+        name: null, ingredients: null, description: null, minCost: null, maxCost: null, minWeight: null, maxWeight: null, minCalories: null, maxCalories: null, minCoockingTime: null, MaxCoockingTime: null
+    });
 
     useEffect(() => {
-        let newUrl = "https://localhost:44334/api/dish/?";
+        const getData = async () => {
+            let url = "https://localhost:44334/api/dish/";
 
-        newUrl += "SizePage=" + sizePage + "&NumberPage=" + numberPage;
+            setLoadScreen(true);
+            let resp = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    SizePage: sizePage,
+                    NumberPage: numberPage,
+                    FieldName: sortParams.fieldName,
+                    ByAscending: sortParams.ascending,
+                    Name: filterParams.name,
+                    Ingredients: filterParams.ingredients,
+                    Description: filterParams.description,
+                    MinCost: filterParams.minCost,
+                    MaxCost: filterParams.maxCost,
+                    MinWeight: filterParams.minWeight,
+                    MaxWeight: filterParams.maxWeight,
+                    MinCalories: filterParams.minCalories,
+                    MaxCalories: filterParams.maxCalories,
+                    MinCoockingTime: filterParams.minCoockingTime,
+                    MaxCoockingTime: filterParams.MaxCoockingTime
+                })
+            });
 
-        if (sortParams && sortParams.fieldName && sortParams.ascending != null) {
-            newUrl += "&FieldName=" + sortParams.fieldName + "&ByAscending=" + sortParams.ascending;
+            if (resp.ok) {
+                let json = await resp.json();
+                setData(json);
+            }
+            setLoadScreen(false);
         }
 
-        if (filterParams) {
-            if (filterParams.name) newUrl += "&Name=" + filterParams.name;
-
-            if (filterParams.ingredients) newUrl += "&Ingredients=" + filterParams.ingredients;
-
-            if (filterParams.description) newUrl += "&Description=" + filterParams.description;
-
-            if (filterParams.cost.min) newUrl += "&MinCost=" + filterParams.cost.min;
-            if (filterParams.cost.max) newUrl += "&MaxCost=" + filterParams.cost.max;
-
-            if (filterParams.weight.min) newUrl += "&MinWeight=" + filterParams.weight.min;
-            if (filterParams.weight.max) newUrl += "&MaxWeight=" + filterParams.weight.max;
-
-            if (filterParams.calories.min) newUrl += "&MinCalories=" + filterParams.calories.min;
-            if (filterParams.calories.max) newUrl += "&MaxCalories=" + filterParams.calories.max;
-
-            if (filterParams.coockingTime.min) newUrl += "&MinCoockingTime=" + filterParams.coockingTime.min;
-            if (filterParams.coockingTime.max) newUrl += "&MaxCoockingTime=" + filterParams.coockingTime.max;
-        }
-
-        setUrl(newUrl);
-    }, [numberPage, sortParams, filterParams]);
+        getData();
+    }, [numberPage, sortParams, filterParams, countUpdates]);
 
     //Data
-    const [data, setData] = useState({ dishes: [], filteredDishes: 0, totalPages: 0, countAllDishes: 0 });
+    const [data, setData] = useState({ dishes: [], countAllDishes: 0, totalPages: 0 });
 
     const createDishes = () => {
         return data.dishes.map(item =>
@@ -68,26 +79,6 @@ const App = () => {
             </Col>
         );
     }
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoadScreen(true);
-            let resp = await fetch(url);
-            setLoadScreen(false);
-
-            if (resp.ok) {
-                let data = await resp.json();
-                setData(data);
-                console.log(numberPage);
-                console.log(data);
-                if (numberPage >= data.totalPages) {
-                    setNumberPage(data.totalPages - 1);
-                }
-            }
-        };
-
-        fetchData();
-    }, [url, countUpdates]);
 
     return (
         <>

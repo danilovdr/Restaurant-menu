@@ -6,14 +6,16 @@ namespace Restaurant_menu.Data.Interfaces
 {
     public interface IDishDataService
     {
+        //Спрость что лучше возвращать, Iqueryable или List
         Dish Get(long id);
-        int GetCountDishes();
         IQueryable<Dish> GetAll();
-        void Create(Dish dish);
+        int GetCountDishes();
+        Dish Create(Dish dish);
+        Dish Update(Dish dish);
         void Delete(long id);
-        void Update(Dish dish);
+        //Спросить как лучше передавать параметры фильтрации
+        IQueryable<Dish> Filter(GetDishesParamsDto filterParams);
         IQueryable<Dish> Sort(string fieldName);
         IQueryable<Dish> SortDescending(string fieldName);
-        IQueryable<Dish> Filter(FilterParamsDto filterParams);
     }
 }

@@ -5,7 +5,6 @@ using Restaurant_menu.Models.DTO;
 using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Restaurant_menu.Models.ViewModels;
-using Restaurant_menu.Exceptions;
 using Restaurant_menu.Excaptions;
 
 namespace Restaurant_menu.ControllerBase
@@ -21,38 +20,14 @@ namespace Restaurant_menu.ControllerBase
 
         private IDishService _dishService;
 
-        [HttpGet]
-        public IActionResult GetAll([FromQuery] PageParamsDto pageParams, [FromQuery] SortParamsDto sortParams, [FromQuery] FilterParamsDto filterParams)
-        {
-            DishViewModel viewModel = new DishViewModel();
-
-            Dish[] dishes = _dishService.FilterAndSort(filterParams, sortParams);
-
-            if (pageParams.NumberPage != null && pageParams.SizePage != null)
-            {
-                viewModel.FilteredDishes = dishes.Length;
-                viewModel.TotalPages = _dishService.GetTotalPages(dishes.Length, (int)pageParams.SizePage);
-                dishes = _dishService.GetPage(dishes, pageParams);
-            }
-            else
-            {
-                viewModel.FilteredDishes = dishes.Length;
-                viewModel.TotalPages = 0;
-            }
-
-            viewModel.Dishes = dishes;
-            viewModel.CountAllDishes = _dishService.GetCountDishes();
-            return Json(viewModel);
-        }
-
         [HttpGet("{id}")]
-        public IActionResult Get(long id)
+        public IActionResult GetDish(long id)
         {
             Dish dish;
 
             try
             {
-                dish = _dishService.GetById(id);
+                dish = _dishService.GetDish(id);
             }
             catch (NotFoundDishException ex)
             {
@@ -67,29 +42,20 @@ namespace Restaurant_menu.ControllerBase
         }
 
         [HttpPost]
-        public IActionResult Update(Dish dish)
+        public IActionResult GetDishes(GetDishesParamsDto getDishesParams)
         {
-            Validate(dish);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            DishViewModel viewModel;
 
             try
             {
-                _dishService.UpdateDish(dish);
-            }
-            catch (NotFoundDishException ex)
-            {
-                return NotFound(ex.Message);
+                viewModel = _dishService.GetDishes(getDishesParams);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
 
-            return Ok();
+            return Json(viewModel);
         }
 
         [HttpPut]
@@ -102,20 +68,52 @@ namespace Restaurant_menu.ControllerBase
                 return BadRequest(ModelState);
             }
 
+            Dish createdDish;
+
             try
             {
-                _dishService.CreateDish(dish);
+                createdDish = _dishService.CreateDish(dish);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
             }
 
-            return Ok();
+            return Json(createdDish);
         }
 
-        [HttpDelete]
-        public IActionResult Delete([FromBody] long id)
+        //Спросить об этом
+        [HttpPost("{id}")]
+        public IActionResult Update(long id, Dish dish)
+        {
+            dish.Id = id;
+            Validate(dish);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Dish updatedDish;
+
+            try
+            {
+                updatedDish = _dishService.UpdateDish(dish);
+            }
+            catch (NotFoundDishException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+            return Json(updatedDish);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
         {
             try
             {

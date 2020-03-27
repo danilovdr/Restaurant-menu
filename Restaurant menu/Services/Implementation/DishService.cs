@@ -1,7 +1,7 @@
 ﻿using Restaurant_menu.Data.Interfaces;
-using Restaurant_menu.Exceptions;
 using Restaurant_menu.Models;
 using Restaurant_menu.Models.DTO;
+using Restaurant_menu.Models.ViewModels;
 using Restaurant_menu.Services.Interfaces;
 using System;
 using System.Linq;
@@ -17,77 +17,45 @@ namespace Restaurant_menu.Services.Implementation
 
         private IDishDataService _dishDataService;
 
-        public Dish GetById(long id)
+        public Dish GetDish(long id)
         {
             return _dishDataService.Get(id);
         }
 
-        public Dish[] GetAll()
+        // Отфильтировали данные, отсортировали, разбили на страницы, отдали модельвьюшку
+        public DishViewModel GetDishes(GetDishesParamsDto getDishesParams)
         {
-            return _dishDataService.GetAll().ToArray();
+            DishViewModel viewModel = new DishViewModel();
+            IQueryable<Dish> dishes = _dishDataService.Filter(getDishesParams);
+            dishes = Sort(dishes, getDishesParams);
+            dishes = GetPage(dishes, getDishesParams);
+            viewModel.Dishes = dishes.ToArray();
+            viewModel.TotalPages = GetTotalPages(viewModel.Dishes.Length, (int)getDishesParams.SizePage);
+            viewModel.CountAllDishes = _dishDataService.GetCountDishes();
+            return viewModel;
         }
 
-        public Dish[] GetPage(Dish[] dishes, PageParamsDto pageParams)
+        //Спросить что делать если длина больше. Доделать это
+        private IQueryable<Dish> GetPage(IQueryable<Dish> dishes, GetDishesParamsDto pageParams)
         {
-            int sizePage = pageParams.SizePage == null ? throw new ArgumentNullException("Размер страницы null") : (int)pageParams.SizePage;
-            int numberPage = pageParams.NumberPage == null ? throw new ArgumentNullException("Номер страницы null") : (int)pageParams.NumberPage;
-
-            int from = sizePage * numberPage;
-            int to = (numberPage + 1) * sizePage;
-            int count = _dishDataService.GetCountDishes();
-
-            if (from > count)
+            if (pageParams.NumberPage == null | pageParams.SizePage == null)
             {
-                throw new GetPageException("Начальный индекс больше максимального");
+                return dishes;
             }
-
-            return to > count ? dishes.Skip(from).Take(count).ToArray() : dishes.Skip(from).Take(to).ToArray();
-        }
-
-        public int GetTotalPages(int countDishes, int pageSize)
-        {
-            return countDishes == 0 ? 1 : (int)Math.Ceiling(countDishes / (double)pageSize);
-        }
-
-        public int GetCountDishes()
-        {
-            return _dishDataService.GetCountDishes();
-        }
-
-        public void CreateDish(Dish dish)
-        {
-            dish.CreateDate = DateTime.Now;
-            _dishDataService.Create(dish);
-        }
-
-        public void DeleteDish(long id)
-        {
-            _dishDataService.Delete(id);
-        }
-
-        public void UpdateDish(Dish dish)
-        {
-            _dishDataService.Update(dish);
-        }
-
-        public Dish[] FilterAndSort(FilterParamsDto filterParams, SortParamsDto sortParams)
-        {
-            if (filterParams == null && sortParams == null)
+            else
             {
-                return _dishDataService.GetAll().ToArray();
+                int numberPage = (int)pageParams.NumberPage;
+                int sizePage = (int)pageParams.SizePage;
+                return dishes.Skip(numberPage * sizePage).Take(sizePage);
             }
-
-            IQueryable<Dish> dishes = Filter(filterParams);
-
-            return sortParams.FieldName == null ? dishes.ToArray() : Sort(dishes, sortParams).ToArray();
         }
 
-        private IQueryable<Dish> Filter(FilterParamsDto filterParams)
+        private int GetTotalPages(int countDishes, int sizePage)
         {
-            return _dishDataService.Filter(filterParams);
+            return countDishes == 0 ? 1 : (int)Math.Ceiling(countDishes / (double)sizePage);
         }
 
-        private IQueryable<Dish> Sort(IQueryable<Dish> dishes, SortParamsDto sortParams)
+        private IQueryable<Dish> Sort(IQueryable<Dish> dishes, GetDishesParamsDto sortParams)
         {
             if (sortParams.ByAscending)
             {
@@ -101,7 +69,7 @@ namespace Restaurant_menu.Services.Implementation
 
         private IQueryable<Dish> Sort(IQueryable<Dish> dishes, string fieldName)
         {
-            return fieldName.ToLower() switch
+            return fieldName == null ? dishes : fieldName.ToLower() switch
             {
                 "createdate" => dishes.OrderBy(p => p.CreateDate),
                 "name" => dishes.OrderBy(p => p.Name),
@@ -117,7 +85,7 @@ namespace Restaurant_menu.Services.Implementation
 
         private IQueryable<Dish> SortDescending(IQueryable<Dish> dishes, string fieldName)
         {
-            return fieldName.ToLower() switch
+            return fieldName == null ? dishes : fieldName.ToLower() switch
             {
                 "createdate" => dishes.OrderByDescending(p => p.CreateDate),
                 "name" => dishes.OrderByDescending(p => p.Name),
@@ -129,6 +97,23 @@ namespace Restaurant_menu.Services.Implementation
                 "coockingtime" => dishes.OrderByDescending(p => p.CoockingTime),
                 _ => dishes
             };
+        }
+
+        public Dish CreateDish(Dish dish)
+        {
+            dish.CreateDate = DateTime.Now;
+            return _dishDataService.Create(dish);
+
+        }
+
+        public Dish UpdateDish(Dish dish)
+        {
+            return _dishDataService.Update(dish);
+        }
+
+        public void DeleteDish(long id)
+        {
+            _dishDataService.Delete(id);
         }
     }
 }

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardBody, FormGroup, Label, Input, Button } from 'reactstrap';
 
 const Filter = (props) => {
-    const [name, setName] = useState("");
+    const [name, setName] = useState(null);
     const changeName = (event) => setName(event.target.value);
 
     const [ingredients, setIngredients] = useState("");
@@ -12,47 +12,57 @@ const Filter = (props) => {
     const [description, setDescription] = useState("");
     const changeDescription = (event) => setDescription(event.target.value);
 
-    const [cost, setCost] = useState({ min: "", max: "" });
-    const changeMinCost = (event) => setCost({ min: event.target.value, max: cost.max });
-    const changeMaxCost = (event) => setCost({ min: cost.min, max: event.target.value });
+    const [minCost, setMinCost] = useState("");
+    const [maxCost, setMaxCost] = useState("");
+    const changeMinCost = (event) => setMinCost(event.target.value);
+    const changeMaxCost = (event) => setMaxCost(event.target.value);
 
-    const [weight, setWeight] = useState({ min: "", max: "" });
-    const changeMinWeight = (event) => setWeight({ min: event.target.value, max: weight.max });
-    const changeMaxWeight = (event) => setWeight({ min: weight.min, max: event.target.value });
+    const [minWeight, setMinWeight] = useState("");
+    const [maxWeight, setMaxWeight] = useState("");
+    const changeMinWeight = (event) => setMinWeight(event.target.value);
+    const changeMaxWeight = (event) => setMaxWeight(event.target.value);
 
-    const [calories, setCalories] = useState({ min: "", max: "" });
-    const changeMinCalories = (event) => setCalories({ min: event.target.value, max: calories.max });
-    const changeMaxCalories = (event) => setCalories({ min: calories.min, max: event.target.value });
+    const [minCalories, setMinCalories] = useState("");
+    const [maxCalories, setMaxCalories] = useState("");
+    const changeMinCalories = (event) => setMinCalories(event.target.value);
+    const changeMaxCalories = (event) => setMaxCalories(event.target.value);
 
-    const [coockingTime, setCoockingTime] = useState({ min: "", max: "" });
-    const changeMinCoockingTime = (event) => setCoockingTime({ min: event.target.value, max: coockingTime.max });
-    const changeMaxCoockingTime = (event) => setCoockingTime({ min: coockingTime.min, max: event.target.value });
+    const [minCoockingTime, setMinCoockingTime] = useState("");
+    const [maxCoockingTime, setMaxCoockingTime] = useState("");
+    const changeMinCoockingTime = (event) => setMinCoockingTime(event.target.value);
+    const changeMaxCoockingTime = (event) => setMaxCoockingTime(event.target.value);
 
     const filter = () => {
-        console.log(cost);
-
         let filters = {
             name: name,
             ingredients: ingredients,
             description: description,
-            cost: cost,
-            weight: weight,
-            calories: calories,
-            coockingTime: coockingTime
+            minCost: parseInt(minCost),
+            maxCost: parseInt(maxCost),
+            minWeight: parseInt(minWeight),
+            maxWeight: parseInt(maxWeight),
+            minCalories: parseInt(minCalories),
+            maxCalories: parseInt(maxCalories),
+            minCoockingTime: parseInt(minCoockingTime),
+            maxCoockingTime: parseInt(maxCoockingTime)
         };
 
         props.setFilterParams(filters);
-    }
+    };
 
     const reset = () => {
         setName("");
         setIngredients("");
         setDescription("");
-        setCost({ min: "", max: ""});
-        setWeight({ min: "", max: ""});
-        setCalories({ min: "", max: ""});
-        setCoockingTime({ min: "", max: ""});
-    }
+        setMinCost("");
+        setMaxCost("");
+        setMinWeight("");
+        setMaxWeight("");
+        setMinCalories("");
+        setMaxCalories("");
+        setMinCoockingTime("");
+        setMaxCoockingTime("");
+    };
 
     return (
         <Card>
@@ -73,29 +83,29 @@ const Filter = (props) => {
                 <FormGroup>
                     <Label>Цена</Label>
                     <div className="d-flex justify-content-around">
-                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={cost.min} onChange={changeMinCost} />
-                        <Input className="w-50" type="text" placeholder="Макс" value={cost.max}  onChange={changeMaxCost} />
+                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={minCost} onChange={changeMinCost} />
+                        <Input className="w-50" type="text" placeholder="Макс" value={maxCost} onChange={changeMaxCost} />
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <Label>Вес грамм</Label>
                     <div className="d-flex justify-content-around">
-                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={weight.min} onChange={changeMinWeight} />
-                        <Input className="w-50" type="text" placeholder="Макс" value={weight.max} onChange={changeMaxWeight} />
+                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={minWeight} onChange={changeMinWeight} />
+                        <Input className="w-50" type="text" placeholder="Макс" value={maxWeight} onChange={changeMaxWeight} />
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <Label>Калорийность на 100 грамм</Label>
                     <div className="d-flex justify-content-around">
-                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={calories.min} onChange={changeMinCalories} />
-                        <Input className="w-50" type="text" placeholder="Макс" value={calories.max} onChange={changeMaxCalories} />
+                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={minCalories} onChange={changeMinCalories} />
+                        <Input className="w-50" type="text" placeholder="Макс" value={maxCalories} onChange={changeMaxCalories} />
                     </div>
                 </FormGroup>
                 <FormGroup>
                     <Label>Время приготовления в минутах</Label>
                     <div className="d-flex justify-content-around">
-                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={coockingTime.min} onChange={changeMinCoockingTime} />
-                        <Input className="w-50" type="text" placeholder="Макс" value={coockingTime.max} onChange={changeMaxCoockingTime} />
+                        <Input className="w-50 mr-3" type="text" placeholder="Мин" value={minCoockingTime} onChange={changeMinCoockingTime} />
+                        <Input className="w-50" type="text" placeholder="Макс" value={maxCoockingTime} onChange={changeMaxCoockingTime} />
                     </div>
                 </FormGroup>
                 <FormGroup>

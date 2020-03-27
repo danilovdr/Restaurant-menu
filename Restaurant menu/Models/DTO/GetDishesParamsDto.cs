@@ -2,8 +2,19 @@
 
 namespace Restaurant_menu.Models.DTO
 {
-    public class FilterParamsDto
+    public class GetDishesParamsDto
     {
+        //Pagination
+        [BindingBehavior(BindingBehavior.Optional)]
+        public int? SizePage { get; set; }
+        [BindingBehavior(BindingBehavior.Optional)]
+        public int? NumberPage { get; set; }
+        //Sort
+        [BindingBehavior(BindingBehavior.Optional)]
+        public string FieldName { get; set; }
+        [BindingBehavior(BindingBehavior.Optional)]
+        public bool ByAscending { get; set; }
+        //Filters
         [BindingBehavior(BindingBehavior.Optional)]
         public string Name { get; set; }
         [BindingBehavior(BindingBehavior.Optional)]

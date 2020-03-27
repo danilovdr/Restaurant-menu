@@ -82,7 +82,7 @@ const Dish = (props) => {
     const editDish = async () => {
         resetAlerts();
 
-        let url = "https://localhost:44334/api/dish/";
+        let url = "https://localhost:44334/api/dish/" + props.dish.id;
 
         props.setLoadScreen(true);
 
@@ -197,17 +197,11 @@ const Dish = (props) => {
     const toggleDeleteModal = () => setDeleteModal(!deleteModal);
 
     const deleteDish = async () => {
-        let url = "https://localhost:44334/api/dish/"
+        let url = "https://localhost:44334/api/dish/" + props.dish.id;
 
         props.setLoadScreen(true);
 
-        await fetch(url, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json;charset=utf-8"
-            },
-            body: props.dish.id
-        });
+        await fetch(url, { method: "DELETE" });
 
         props.setLoadScreen(false);
         console.log("update");
@@ -228,7 +222,8 @@ const Dish = (props) => {
 
     const parseCreateDate = () => {
         let unixTime = Date.parse(props.dish.createDate);
-        return new Date(unixTime).toLocaleString();
+        let date = new Date(unixTime);
+        return date.getDate() + "." + date.getMonth() + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
     }
 
     return (

@@ -4,6 +4,7 @@ using Restaurant_menu.Excaptions;
 using Restaurant_menu.Exceptions;
 using Restaurant_menu.Models;
 using Restaurant_menu.Models.DTO;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Restaurant_menu.Data.Services
@@ -44,7 +45,7 @@ namespace Restaurant_menu.Data.Services
             return _dbContext.Dishes.Count();
         }
 
-        public void Create(Dish dish)
+        public Dish Create(Dish dish)
         {
             if (HasDish(dish.Name))
             {
@@ -53,22 +54,11 @@ namespace Restaurant_menu.Data.Services
 
             _dbContext.Dishes.Add(dish);
             _dbContext.SaveChanges();
+            //return _dbContext.Dishes.Last(); //Спросить как получить последний созданный элемент
+            return null;
         }
 
-        public void Delete(long id)
-        {
-            Dish deletedDish = Get(id);
-
-            if (deletedDish == null)
-            {
-                throw new NotFoundDishException("Удаляемое блюдо не найдено");
-            }
-
-            _dbContext.Dishes.Remove(deletedDish);
-            _dbContext.SaveChanges();
-        }
-
-        public void Update(Dish dish)
+        public Dish Update(Dish dish)
         {
             Dish updatedDish = Get(dish.Id);
 
@@ -91,41 +81,23 @@ namespace Restaurant_menu.Data.Services
             updatedDish.CoockingTime = dish.CoockingTime;
 
             _dbContext.SaveChanges();
+            return updatedDish;
         }
 
-        public IQueryable<Dish> Sort(string fieldName)
+        public void Delete(long id)
         {
-            return fieldName.ToLower() switch
+            Dish deletedDish = Get(id);
+
+            if (deletedDish == null)
             {
-                "createdate" => _dbContext.Dishes.OrderBy(p => p.CreateDate),
-                "name" => _dbContext.Dishes.OrderBy(p => p.Name),
-                "ingredients" => _dbContext.Dishes.OrderBy(p => p.Ingredients),
-                "description" => _dbContext.Dishes.OrderBy(p => p.Description),
-                "cost" => _dbContext.Dishes.OrderBy(p => p.Cost),
-                "weight" => _dbContext.Dishes.OrderBy(p => p.Weight),
-                "calories" => _dbContext.Dishes.OrderBy(p => p.Calories * p.Weight),
-                "coockingtime" => _dbContext.Dishes.OrderBy(p => p.CoockingTime),
-                _ => GetAll()
-            };
+                throw new NotFoundDishException("Удаляемое блюдо не найдено");
+            }
+
+            _dbContext.Dishes.Remove(deletedDish);
+            _dbContext.SaveChanges();
         }
 
-        public IQueryable<Dish> SortDescending(string fieldName)
-        {
-            return fieldName.ToLower() switch
-            {
-                "createdate" => _dbContext.Dishes.OrderByDescending(p => p.CreateDate),
-                "name" => _dbContext.Dishes.OrderByDescending(p => p.Name),
-                "ingredients" => _dbContext.Dishes.OrderByDescending(p => p.Ingredients),
-                "description" => _dbContext.Dishes.OrderByDescending(p => p.Description),
-                "cost" => _dbContext.Dishes.OrderByDescending(p => p.Cost),
-                "weight" => _dbContext.Dishes.OrderByDescending(p => p.Weight),
-                "calories" => _dbContext.Dishes.OrderByDescending(p => p.Calories * p.Weight),
-                "coockingtime" => _dbContext.Dishes.OrderByDescending(p => p.CoockingTime),
-                _ => GetAll()
-            };
-        }
-
-        public IQueryable<Dish> Filter(FilterParamsDto filterParams)
+        public IQueryable<Dish> Filter(GetDishesParamsDto filterParams)
         {
             IQueryable<Dish> dishQuery = _dbContext.Dishes;
 
@@ -190,6 +162,38 @@ namespace Restaurant_menu.Data.Services
             }
 
             return dishQuery;
+        }
+
+        public IQueryable<Dish> Sort(string fieldName)
+        {
+            return fieldName.ToLower() switch
+            {
+                "createdate" => _dbContext.Dishes.OrderBy(p => p.CreateDate),
+                "name" => _dbContext.Dishes.OrderBy(p => p.Name),
+                "ingredients" => _dbContext.Dishes.OrderBy(p => p.Ingredients),
+                "description" => _dbContext.Dishes.OrderBy(p => p.Description),
+                "cost" => _dbContext.Dishes.OrderBy(p => p.Cost),
+                "weight" => _dbContext.Dishes.OrderBy(p => p.Weight),
+                "calories" => _dbContext.Dishes.OrderBy(p => p.Calories * p.Weight),
+                "coockingtime" => _dbContext.Dishes.OrderBy(p => p.CoockingTime),
+                _ => _dbContext.Dishes
+            };
+        }
+
+        public IQueryable<Dish> SortDescending(string fieldName)
+        {
+             return fieldName.ToLower() switch
+            {
+                "createdate" => _dbContext.Dishes.OrderByDescending(p => p.CreateDate),
+                "name" => _dbContext.Dishes.OrderByDescending(p => p.Name),
+                "ingredients" => _dbContext.Dishes.OrderByDescending(p => p.Ingredients),
+                "description" => _dbContext.Dishes.OrderByDescending(p => p.Description),
+                "cost" => _dbContext.Dishes.OrderByDescending(p => p.Cost),
+                "weight" => _dbContext.Dishes.OrderByDescending(p => p.Weight),
+                "calories" => _dbContext.Dishes.OrderByDescending(p => p.Calories * p.Weight),
+                "coockingtime" => _dbContext.Dishes.OrderByDescending(p => p.CoockingTime),
+                _ => _dbContext.Dishes
+            };
         }
     }
 }
