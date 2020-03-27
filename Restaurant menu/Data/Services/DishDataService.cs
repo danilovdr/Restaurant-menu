@@ -25,8 +25,8 @@ namespace Restaurant_menu.Data.Services
 
         private bool HasDish(string name)
         {
-            name = name.Trim(' ');
-            return _dbContext.Dishes.Any(p => p.Name.Trim(' ') == name);
+            name = name.Trim();
+            return _dbContext.Dishes.Any(p => p.Name.Trim() == name);
         }
 
         public Dish Get(long id)
@@ -52,6 +52,7 @@ namespace Restaurant_menu.Data.Services
                 throw new NameDishException("Блюдо с таким именем уже существует");
             }
 
+            dish.Name.Trim();
             _dbContext.Dishes.Add(dish);
             _dbContext.SaveChanges();
             //return _dbContext.Dishes.Last(); //Спросить как получить последний созданный элемент
@@ -182,7 +183,7 @@ namespace Restaurant_menu.Data.Services
 
         public IQueryable<Dish> SortDescending(string fieldName)
         {
-             return fieldName.ToLower() switch
+            return fieldName.ToLower() switch
             {
                 "createdate" => _dbContext.Dishes.OrderByDescending(p => p.CreateDate),
                 "name" => _dbContext.Dishes.OrderByDescending(p => p.Name),

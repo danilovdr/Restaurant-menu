@@ -114,6 +114,7 @@ const Header = (props) => {
             props.update();
         } else if (response.status === 500) {
             let text = await response.text();
+            setGlobalAlertColor("danger");
             setGlobalAlertDisplay("block");
             setGlobalAlertText(text);
         } else {
